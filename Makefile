@@ -10,7 +10,7 @@
         update-readme-all
 
 # Version - update this when releasing a new version
-VERSION ?= 3.0.0
+VERSION ?= 3.1.0
 
 # DockerHub credentials (set via environment variables or .env file)
 DOCKERHUB_USERNAME ?= gperdrizet

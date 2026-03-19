@@ -2,6 +2,7 @@
 langchain
 langchain-community
 langchain-core
+langchain-huggingface
 llama-index
 transformers
 smolagents
@@ -23,6 +24,7 @@ langchain-mistralai
 chromadb
 langchain-chroma
 psycopg2-binary
+psycopg[binary]
 pgvector
 langchain-postgres
 
@@ -30,6 +32,7 @@ langchain-postgres
 gradio
 
 # Supporting libraries
+huggingface-hub
 sentence-transformers
 tiktoken
 python-dotenv

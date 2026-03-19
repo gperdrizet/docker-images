@@ -87,11 +87,6 @@ RUN rm -rf /var/lib/apt/lists/* && \
 
 RUN python -m pip install --no-cache-dir --upgrade pip setuptools wheel
 
-# Copy and install PyTorch wheel from builder stage
-COPY --from=builder /wheels/*.whl /tmp/
-RUN pip install --no-cache-dir --root-user-action=ignore /tmp/*.whl && \
-    rm -rf /tmp/*.whl
-
 # Install Ollama server binary
 RUN curl -fsSL https://ollama.com/install.sh | sh
 
@@ -106,6 +101,12 @@ COPY README.md /workspace/README.md
 # Copy requirements and install LLM Python dependencies
 COPY requirements.txt .
 RUN pip install --no-cache-dir --root-user-action=ignore -r requirements.txt
+
+# Copy and install custom PyTorch wheel from builder stage AFTER requirements
+# This overwrites any torch pulled in by vllm/transformers with our Pascal-compatible build
+COPY --from=builder /wheels/*.whl /tmp/
+RUN pip install --no-cache-dir --root-user-action=ignore --force-reinstall /tmp/*.whl && \
+    rm -rf /tmp/*.whl
 
 # docker build -t gperdrizet/llms-gpu:latest .
 # docker push gperdrizet/llms-gpu:latest

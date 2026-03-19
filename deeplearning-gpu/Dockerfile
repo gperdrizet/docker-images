@@ -58,9 +58,10 @@ COPY requirements.txt .
 RUN pip install --no-cache-dir --root-user-action=ignore --upgrade pip && \
     pip install --no-cache-dir --root-user-action=ignore -r requirements.txt
 
-# Copy and install PyTorch wheel from builder stage
+# Copy and install custom PyTorch wheel from builder stage AFTER requirements
+# This overwrites any torch pulled in by dependencies with our Pascal-compatible build
 COPY --from=builder /wheels/*.whl /tmp/
-RUN pip install --no-cache-dir --root-user-action=ignore /tmp/*.whl && \
+RUN pip install --no-cache-dir --root-user-action=ignore --force-reinstall /tmp/*.whl && \
     rm -rf /tmp/*.whl
 
 # docker build -t gperdrizet/deeplearning-gpu:latest .

@@ -1,6 +1,6 @@
 # Docker Images
 
-A collection of ready-to-use deep learning Docker images for VS Code Dev Containers. All images include a pre-configured `vscode` user (UID 1000) with sudo access for seamless devcontainer integration.
+A collection of ready-to-use deep learning Docker images for VS Code Dev Containers, designed for AI/ML bootcamp students. GPU images are built with wide hardware compatibility (NVIDIA Pascal through Hopper, sm_60-sm_90) so they work across diverse student hardware. All images include a pre-configured `vscode` user (UID 1000) with sudo access for seamless devcontainer integration.
 
 ## Quick Start
 
@@ -85,10 +85,10 @@ Create your DockerHub Personal Access Token at https://hub.docker.com/settings/s
 
 1. deeplearning-gpu
 2. deeplearning-cpu
-3. tensorflow-gpu
-4. tensorflow-cpu
-5. llms-gpu
-6. llms-cpu
+3. llms-gpu
+4. llms-cpu
+5. tensorflow-gpu *(archived)*
+6. tensorflow-cpu *(archived)*
 
 ### 1. deeplearning-gpu
 
@@ -131,46 +131,7 @@ Full-featured deep learning environment for CPU-only systems.
 
 ---
 
-### 3. tensorflow-gpu
-
-TensorFlow-focused environment with NVIDIA GPU support (no PyTorch).
-
-| Component | Version |
-|-----------|---------|
-| Base Image | `nvcr.io/nvidia/tensorflow:24.06-tf2-py3` |
-| TensorFlow | 2.16 |
-| Keras | 3.3 |
-| Python | 3.10 |
-| CUDA | 12.6 |
-
-**Other packages:** numpy, pandas, scikit-learn, scipy, matplotlib, seaborn, jupyterlab, keras_tuner, optuna, tensorboard
-
-**DockerHub:** [`gperdrizet/tensorflow-gpu:latest`](https://hub.docker.com/repository/docker/gperdrizet/tensorflow-gpu/general)
-
-**Devcontainer repository:** [`github.com/gperdrizet/tensorflow-gpu`](https://github.com/gperdrizet/tensorflow-gpu)
-
----
-
-### 4. tensorflow-cpu
-
-Lightweight TensorFlow environment for CPU-only systems (no PyTorch).
-
-| Component | Version |
-|-----------|---------|
-| Base Image | `tensorflow/tensorflow:2.16.1-jupyter` |
-| TensorFlow | 2.16 |
-| Keras | 3.3 |
-| Python | 3.10 |
-
-**Other packages:** numpy, pandas, scikit-learn, scipy, matplotlib, seaborn, jupyterlab, keras_tuner, optuna, tensorboard
-
-**DockerHub:** [`gperdrizet/tensorflow-cpu:latest`](https://hub.docker.com/repository/docker/gperdrizet/tensorflow-cpu/general)
-
-**Devcontainer repository:** [`github.com/gperdrizet/tensorflow-cpu`](https://github.com/gperdrizet/tensorflow-cpu)
-
----
-
-### 5. llms-gpu
+### 3. llms-gpu
 
 LLM application development environment with NVIDIA GPU support. Includes LangChain, LlamaIndex, Hugging Face Transformers, vLLM, and API clients.
 
@@ -194,7 +155,7 @@ LLM application development environment with NVIDIA GPU support. Includes LangCh
 
 ---
 
-### 6. llms-cpu
+### 4. llms-cpu
 
 Lightweight LLM application development environment for CPU-only systems.
 
@@ -213,6 +174,49 @@ Lightweight LLM application development environment for CPU-only systems.
 **DockerHub:** [`gperdrizet/llms-cpu:latest`](https://hub.docker.com/repository/docker/gperdrizet/llms-cpu/general)
 
 **Devcontainer repository:** [`github.com/gperdrizet/llms-cpu`](https://github.com/gperdrizet/llms-cpu)
+
+---
+
+## Archived Containers
+
+The following containers are no longer actively maintained.
+
+### 5. tensorflow-gpu *(archived)*
+
+TensorFlow-focused environment with NVIDIA GPU support (no PyTorch).
+
+| Component | Version |
+|-----------|---------|
+| Base Image | `nvcr.io/nvidia/tensorflow:24.06-tf2-py3` |
+| TensorFlow | 2.16 |
+| Keras | 3.3 |
+| Python | 3.10 |
+| CUDA | 12.6 |
+
+**Other packages:** numpy, pandas, scikit-learn, scipy, matplotlib, seaborn, jupyterlab, keras_tuner, optuna, tensorboard
+
+**DockerHub:** [`gperdrizet/tensorflow-gpu:latest`](https://hub.docker.com/repository/docker/gperdrizet/tensorflow-gpu/general)
+
+**Devcontainer repository:** [`github.com/gperdrizet/tensorflow-gpu`](https://github.com/gperdrizet/tensorflow-gpu)
+
+---
+
+### 6. tensorflow-cpu *(archived)*
+
+Lightweight TensorFlow environment for CPU-only systems (no PyTorch).
+
+| Component | Version |
+|-----------|---------|
+| Base Image | `tensorflow/tensorflow:2.16.1-jupyter` |
+| TensorFlow | 2.16 |
+| Keras | 3.3 |
+| Python | 3.10 |
+
+**Other packages:** numpy, pandas, scikit-learn, scipy, matplotlib, seaborn, jupyterlab, keras_tuner, optuna, tensorboard
+
+**DockerHub:** [`gperdrizet/tensorflow-cpu:latest`](https://hub.docker.com/repository/docker/gperdrizet/tensorflow-cpu/general)
+
+**Devcontainer repository:** [`github.com/gperdrizet/tensorflow-cpu`](https://github.com/gperdrizet/tensorflow-cpu)
 
 ---
 

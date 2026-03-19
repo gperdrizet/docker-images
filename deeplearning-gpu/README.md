@@ -4,7 +4,7 @@ A ready-to-use deep learning environment with NVIDIA GPU support for VS Code. In
 
 **Base image**: [NVIDIA TensorFlow 24.08](https://catalog.ngc.nvidia.com/orgs/nvidia/containers/tensorflow)
 
-> **Note:** This container is designed to be used as part of a VS Code Dev Container environment, not run directly. See the [full environment setup on GitHub](https://github.com/gperdrizet/deeplearning-GPU) for devcontainer configuration and usage instructions.
+> **Note:** This container is designed to be used as part of a VS Code Dev Container environment, not run directly. See the [full environment setup on GitHub](https://github.com/gperdrizet/deeplearning-devcontainer) for devcontainer configuration and usage instructions.
 
 ## Features
 

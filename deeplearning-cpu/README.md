@@ -2,7 +2,7 @@
 
 A ready-to-use deep learning environment for VS Code. Includes both **PyTorch** and **TensorFlow** frameworks. Designed for CPU-only systems or development without GPU dependencies.
 
-> **Note:** This container is designed to be used as part of a VS Code Dev Container environment, not run directly. See the [full environment setup on GitHub](https://github.com/gperdrizet/deeplearning-CPU) for devcontainer configuration and usage instructions.
+> **Note:** This container is designed to be used as part of a VS Code Dev Container environment, not run directly. See the [full environment setup on GitHub](https://github.com/gperdrizet/deeplearning-devcontainer) for devcontainer configuration and usage instructions.
 
 ## Features
 
@@ -24,7 +24,7 @@ A ready-to-use deep learning environment for VS Code. Includes both **PyTorch** 
 ### Additional Python packages
 - `numpy` - Numerical computation
 - `pandas` - Data manipulation
-- `sckit-learn` - Classical machine learning
+- `scikit-learn` - Classical machine learning
 - `scipy` - Scientific and statistical computing
 - `matplotlib` - Data visualization
 - `seaborn` - Statistical data visualization
@@ -61,4 +61,4 @@ This will:
 
 ## License
 
-See the [GitHub repository](https://github.com/gperdrizet/deeplearning-CPU) for license information.
+See the [GitHub repository](https://github.com/gperdrizet/deeplearning-devcontainer) for license information.

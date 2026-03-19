@@ -1,0 +1,7 @@
+ipywidgets
+keras_tuner==1.4.8
+matplotlib==3.10.8
+optuna
+optuna-dashboard
+psycopg2-binary
+seaborn==0.13.2

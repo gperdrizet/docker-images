@@ -1,0 +1,38 @@
+# LLM Frameworks
+langchain
+langchain-community
+langchain-core
+llama-index
+transformers
+smolagents
+
+# Inference (no vLLM - requires CUDA)
+ollama
+
+# API clients
+openai
+anthropic
+langchain-openai
+langchain-anthropic
+langchain-ollama
+langchain-google-genai
+langchain-mistralai
+
+# Vector store
+chromadb
+langchain-chroma
+psycopg2-binary
+pgvector
+langchain-postgres
+
+# UI
+gradio
+
+# Supporting libraries
+sentence-transformers
+tiktoken
+python-dotenv
+pydantic
+accelerate
+datasets
+bitsandbytes

@@ -29,12 +29,15 @@ RUN python -m pip install --no-cache-dir --upgrade pip setuptools wheel
 
 # Build PyTorch wheel for wide GPU compatibility (Pascal through Ada Lovelace)
 # Use stable release tag to avoid bleeding-edge NCCL/CUDA incompatibilities
+# Set explicit version to match tag (shallow clone breaks git-derived versioning)
 RUN mkdir -p /wheels && \
     git clone --depth 1 --branch v2.5.1 https://github.com/pytorch/pytorch /opt/pytorch && \
     cd /opt/pytorch && \
     git submodule sync && \
     git submodule update --init --recursive --depth 1 && \
     pip install --root-user-action=ignore -r requirements.txt && \
+    PYTORCH_BUILD_VERSION=2.5.1 \
+    PYTORCH_BUILD_NUMBER=1 \
     MAX_JOBS=16 \
     BUILD_TEST=0 \
     USE_FBGEMM=0 \
@@ -100,7 +103,8 @@ COPY README.md /workspace/README.md
 
 # Copy requirements and install LLM Python dependencies
 COPY requirements.txt .
-RUN pip install --no-cache-dir --root-user-action=ignore -r requirements.txt
+RUN pip install --no-cache-dir --root-user-action=ignore -r requirements.txt && \
+    pip uninstall -y torchvision torchaudio 2>/dev/null || true
 
 # Copy and install custom PyTorch wheel from builder stage AFTER requirements
 # This overwrites any torch pulled in by vllm/transformers with our Pascal-compatible build

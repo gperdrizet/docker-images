@@ -8,6 +8,7 @@
         "FBGEMM",
         "KINETO",
         "langchain",
+        "NCCL",
         "NOPASSWD",
         "nvcr",
         "tiktoken",

@@ -12,7 +12,7 @@
         extract-wheel-llms-gpu extract-wheel-deeplearning-gpu
 
 # Version - update this when releasing a new version
-VERSION ?= 3.1.0
+VERSION ?= 3.2.0
 
 # DockerHub credentials (set via environment variables or .env file)
 DOCKERHUB_USERNAME ?= gperdrizet

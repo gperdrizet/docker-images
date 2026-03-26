@@ -69,6 +69,15 @@ Create your DockerHub Personal Access Token at https://hub.docker.com/settings/s
 |---------|-------------|
 | `make all` | Build and push all images |
 
+### PyTorch Wheel Commands
+
+| Command | Description |
+|---------|-------------|
+| `make wheel-llms-gpu` | Build PyTorch wheel for llms-gpu |
+| `make wheel-deeplearning-gpu` | Build PyTorch wheel for deeplearning-gpu |
+| `make extract-wheel-llms-gpu` | Extract wheel from llms-gpu builder |
+| `make extract-wheel-deeplearning-gpu` | Extract wheel from deeplearning-gpu builder |
+
 ### README Update Commands
 
 | Command | Description |
@@ -96,18 +105,21 @@ Full-featured deep learning environment with NVIDIA GPU support.
 
 | Component | Version |
 |-----------|---------|
-| Base Image | `nvcr.io/nvidia/tensorflow:24.06-tf2-py3` |
-| TensorFlow | 2.16 |
-| PyTorch | 2.10 |
-| Keras | 3.3 |
+| Base Image | `nvcr.io/nvidia/tensorflow:24.08-tf2-py3` |
+| TensorFlow | 2.17 |
+| PyTorch | 2.5.1 (custom wheel) |
+| Keras | 3.x |
 | Python | 3.10 |
-| CUDA | 12.6 |
+| CUDA | 12.4 |
+| GPU Support | Pascal - Hopper (sm_60 - sm_90) |
+
+**Custom PyTorch Build:** PyTorch is built from source with wide GPU architecture support. The pre-built wheel is downloaded from GitHub Releases during image build. See [Rebuilding PyTorch Wheels](#rebuilding-pytorch-wheels) if you need to rebuild.
 
 **Other packages:** numpy, pandas, scikit-learn, scipy, matplotlib, seaborn, jupyterlab, keras_tuner, optuna, tensorboard
 
-**DockerHub:** [`gperdrizet/deeplearning-gpu:latest`](https://hub.docker.com/repository/docker/gperdrizet/tensorflow-gpu/general)
+**DockerHub:** [`gperdrizet/deeplearning-gpu:latest`](https://hub.docker.com/repository/docker/gperdrizet/deeplearning-gpu/general)
 
-**Devcontainer repository:** [`github.com/gperdrizet/deeplearning-gpu`](https://github.com/gperdrizet/deeplearning-gpu)
+**Devcontainer repository:** [`github.com/gperdrizet/deeplearning-devcontainer`](https://github.com/gperdrizet/deeplearning-devcontainer)
 
 ---
 
@@ -127,23 +139,25 @@ Full-featured deep learning environment for CPU-only systems.
 
 **DockerHub:** [`gperdrizet/deeplearning-cpu:latest`](https://hub.docker.com/repository/docker/gperdrizet/deeplearning-cpu/general)
 
-**Devcontainer repository:** [`github.com/gperdrizet/deeplearning-cpu`](https://github.com/gperdrizet/deeplearning-cpu)
+**Devcontainer repository:** [`github.com/gperdrizet/deeplearning-devcontainer`](https://github.com/gperdrizet/deeplearning-devcontainer)
 
 ---
 
 ### 3. llms-gpu
 
-LLM application development environment with NVIDIA GPU support. Includes LangChain, LlamaIndex, Hugging Face Transformers, vLLM, and API clients.
+LLM application development environment with NVIDIA GPU support. Includes LangChain, LlamaIndex, Hugging Face Transformers, and API clients.
 
 | Component | Version |
 |-----------|--------|
 | Base Image | `nvidia/cuda:12.6.3-cudnn-devel-ubuntu22.04` |
-| PyTorch | Latest (built from source) |
+| PyTorch | 2.5.1 (custom wheel) |
 | Python | 3.11 |
 | CUDA | 12.6 |
 | GPU Support | Pascal - Hopper (sm_60 - sm_90) |
 
-**LLM Frameworks:** langchain, llama-index, transformers, smolagents, vllm
+**Custom PyTorch Build:** PyTorch is built from source with wide GPU architecture support. The pre-built wheel is downloaded from GitHub Releases during image build. See [Rebuilding PyTorch Wheels](#rebuilding-pytorch-wheels) if you need to rebuild.
+
+**LLM Frameworks:** langchain, llama-index, transformers, smolagents
 
 **API Clients:** openai, anthropic, ollama
 
@@ -151,7 +165,7 @@ LLM application development environment with NVIDIA GPU support. Includes LangCh
 
 **DockerHub:** [`gperdrizet/llms-gpu:latest`](https://hub.docker.com/repository/docker/gperdrizet/llms-gpu/general)
 
-**Devcontainer repository:** [`github.com/gperdrizet/llms-gpu`](https://github.com/gperdrizet/llms-gpu)
+**Devcontainer repository:** [`github.com/gperdrizet/llms-devcontainer`](https://github.com/gperdrizet/llms-devcontainer)
 
 ---
 
@@ -173,7 +187,7 @@ Lightweight LLM application development environment for CPU-only systems.
 
 **DockerHub:** [`gperdrizet/llms-cpu:latest`](https://hub.docker.com/repository/docker/gperdrizet/llms-cpu/general)
 
-**Devcontainer repository:** [`github.com/gperdrizet/llms-cpu`](https://github.com/gperdrizet/llms-cpu)
+**Devcontainer repository:** [`github.com/gperdrizet/llms-devcontainer`](https://github.com/gperdrizet/llms-devcontainer)
 
 ---
 
@@ -224,6 +238,70 @@ Lightweight TensorFlow environment for CPU-only systems (no PyTorch).
 
 - **GPU images:** Docker with NVIDIA GPU support and compatible drivers
 - **CPU images:** Docker
+
+## Rebuilding PyTorch Wheels
+
+The `llms-gpu` and `deeplearning-gpu` images use custom-built PyTorch wheels with wide GPU architecture support (Pascal through Hopper). Pre-built wheels are hosted on GitHub Releases and downloaded during image build.
+
+### Why Custom Wheels?
+
+Standard PyTorch wheels only support recent GPU architectures. Our custom builds include `sm_60` through `sm_90` for compatibility with diverse student hardware, from GTX 1060 to RTX 4090.
+
+### When to Rebuild
+
+Rebuild wheels when:
+- Upgrading PyTorch version
+- Adding/removing GPU architecture support
+- Updating CUDA version in base image
+
+### Build Commands
+
+| Command | Description |
+|---------|-------------|
+| `make wheel-llms-gpu` | Build PyTorch wheel for llms-gpu (Python 3.11, CUDA 12.6) |
+| `make wheel-deeplearning-gpu` | Build PyTorch wheel for deeplearning-gpu (Python 3.10, CUDA 12.4) |
+| `make extract-wheel-llms-gpu` | Extract wheel from builder container |
+| `make extract-wheel-deeplearning-gpu` | Extract wheel from builder container |
+
+### Build Configuration
+
+Override defaults via environment variables:
+
+```bash
+# Custom PyTorch version
+make wheel-llms-gpu PYTORCH_VERSION=2.6.0
+
+# Adjust build parallelism (default: 16)
+make wheel-llms-gpu MAX_JOBS=8
+
+# Custom GPU architectures
+make wheel-llms-gpu CUDA_ARCH_LIST="7.0;7.5;8.0;8.6"
+```
+
+### Full Workflow
+
+```bash
+# 1. Build the wheel (takes 3-4 hours)
+make wheel-llms-gpu
+
+# 2. Extract wheel to ./wheels/
+make extract-wheel-llms-gpu
+
+# 3. Upload to GitHub Releases
+gh release create pytorch-2.5.1-cu126 ./wheels/torch-2.5.1-cp311-cp311-linux_x86_64.whl \
+  --title "PyTorch 2.5.1 CUDA 12.6 (Pascal-Hopper)" \
+  --notes "Custom PyTorch wheel with sm_60-sm_90 support"
+
+# 4. Update WHEEL_URL in Dockerfile and rebuild image
+make build-llms-gpu
+```
+
+### Wheel Specifications
+
+| Container | Python | CUDA | Wheel Name |
+|-----------|--------|------|------------|
+| llms-gpu | 3.11 | 12.6 | `torch-X.Y.Z-cp311-cp311-linux_x86_64.whl` |
+| deeplearning-gpu | 3.10 | 12.4 | `torch-X.Y.Z-cp310-cp310-linux_x86_64.whl` |
 
 ## License
 

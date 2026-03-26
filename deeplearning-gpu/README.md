@@ -67,4 +67,4 @@ This will:
 
 ## License
 
-See the [GitHub repository](https://github.com/gperdrizet/deeplearning-GPU) for license information.
+See the [GitHub repository](https://github.com/gperdrizet/deeplearning-devcontainer) for license information.

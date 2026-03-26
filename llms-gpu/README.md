@@ -2,7 +2,7 @@
 
 A ready-to-use LLM application development environment with NVIDIA GPU support for VS Code. Includes **LangChain**, **LlamaIndex**, **Hugging Face Transformers**, **vLLM**, and API clients for OpenAI and Anthropic. Designed for wide GPU compatibility (Pascal+) and suitable for both inference and fine-tuning.
 
-> **Note:** This container is designed to be used as part of a VS Code Dev Container environment, not run directly. See the [full environment setup on GitHub](https://github.com/gperdrizet/llms-gpu) for devcontainer configuration and usage instructions.
+> **Note:** This container is designed to be used as part of a VS Code Dev Container environment, not run directly. See the [full environment setup on GitHub](https://github.com/gperdrizet/llms-devcontainer) for devcontainer configuration and usage instructions.
 
 ## Features
 

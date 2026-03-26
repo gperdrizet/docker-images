@@ -1,18 +1,27 @@
 {
     "cSpell.words": [
         "bdist",
+        "bitsandbytes",
         "bmon",
+        "BUILDKIT",
         "chromadb",
         "cudnn",
         "DOCKERHUB",
+        "dotenv",
         "FBGEMM",
+        "genai",
         "KINETO",
         "langchain",
         "NCCL",
+        "noninteractive",
         "NOPASSWD",
         "nvcr",
+        "pgvector",
+        "pydantic",
         "tiktoken",
         "tmpfs",
+        "torchaudio",
+        "torchvision",
         "zstd"
     ]
 }

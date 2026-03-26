@@ -1,29 +1,5 @@
-# =============================================================================
-# Stage 1: Build PyTorch from source
-# =============================================================================
-FROM nvcr.io/nvidia/tensorflow:24.08-tf2-py3 AS builder
-
-# Build PyTorch wheel for wide GPU compatibility (Pascal through Ada Lovelace)
-# Use stable release tag to avoid bleeding-edge NCCL/CUDA incompatibilities
-# Set explicit version to match tag (shallow clone breaks git-derived versioning)
-RUN mkdir -p /wheels && \
-    git clone --depth 1 --branch v2.5.1 https://github.com/pytorch/pytorch /opt/pytorch && \
-    cd /opt/pytorch && \
-    git submodule sync && \
-    git submodule update --init --recursive --depth 1 && \
-    pip install --root-user-action=ignore -r requirements.txt && \
-    PYTORCH_BUILD_VERSION=2.5.1 \
-    PYTORCH_BUILD_NUMBER=1 \
-    MAX_JOBS=16 \
-    BUILD_TEST=0 \
-    USE_FBGEMM=0 \
-    USE_KINETO=0 \
-    USE_NUMPY=1 \
-    TORCH_CUDA_ARCH_LIST="6.0;6.1;7.0;7.5;8.0;8.6;8.9;9.0" \
-    python setup.py bdist_wheel -d /wheels
-
-# =============================================================================
-# Stage 2: Final image (no PyTorch source bloat)
+# Deep Learning GPU Development Container
+# Pre-built PyTorch wheel with wide GPU support (Pascal through Hopper, sm_60-sm_90)
 # =============================================================================
 # Use NVIDIA's official TensorFlow 24.08 image with GPU support
 # See here: https://docs.nvidia.com/deeplearning/frameworks/tensorflow-release-notes/rel-24-08.html
@@ -61,11 +37,11 @@ COPY requirements.txt .
 RUN pip install --no-cache-dir --root-user-action=ignore --upgrade pip && \
     pip install --no-cache-dir --root-user-action=ignore -r requirements.txt
 
-# Copy and install custom PyTorch wheel from builder stage AFTER requirements
-# This overwrites any torch pulled in by dependencies with our Pascal-compatible build
-COPY --from=builder /wheels/*.whl /tmp/
-RUN pip install --no-cache-dir --root-user-action=ignore --force-reinstall /tmp/*.whl && \
-    rm -rf /tmp/*.whl
+# Install custom PyTorch wheel with Pascal+ support from GitHub release
+# Note: This image uses Python 3.10 (from TensorFlow base) - wheel must be cp310
+# --force-reinstall ensures our wheel overwrites any torch pulled by dependencies
+ARG WHEEL_URL=https://github.com/gperdrizet/docker-images/releases/download/pytorch-2.5.1-cu124-cp310/torch-2.5.1-cp310-cp310-linux_x86_64.whl
+RUN pip install --no-cache-dir --root-user-action=ignore --force-reinstall ${WHEEL_URL}
 
 # docker build -t gperdrizet/deeplearning-gpu:latest .
 # docker push gperdrizet/deeplearning-gpu:latest

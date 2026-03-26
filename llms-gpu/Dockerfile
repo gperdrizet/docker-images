@@ -1,53 +1,5 @@
-# =============================================================================
-# Stage 1: Build PyTorch from source
-# =============================================================================
-FROM nvcr.io/nvidia/cuda:12.6.3-cudnn-devel-ubuntu22.04 AS builder
-
-ENV DEBIAN_FRONTEND=noninteractive
-
-# Install minimal build dependencies
-RUN rm -rf /var/lib/apt/lists/* && \
-    apt-get update && \
-    apt-get install -y --no-install-recommends \
-        software-properties-common && \
-    add-apt-repository -y ppa:deadsnakes/ppa && \
-    apt-get update && \
-    apt-get install -y --no-install-recommends \
-        python3.11 \
-        python3.11-venv \
-        python3.11-dev \
-        python3-pip \
-        git \
-        ninja-build \
-        cmake && \
-    update-alternatives --install /usr/bin/python python /usr/bin/python3.11 1 && \
-    update-alternatives --install /usr/bin/python3 python3 /usr/bin/python3.11 1 && \
-    apt-get clean && \
-    rm -rf /var/lib/apt/lists/*
-
-RUN python -m pip install --no-cache-dir --upgrade pip setuptools wheel
-
-# Build PyTorch wheel for wide GPU compatibility (Pascal through Ada Lovelace)
-# Use stable release tag to avoid bleeding-edge NCCL/CUDA incompatibilities
-# Set explicit version to match tag (shallow clone breaks git-derived versioning)
-RUN mkdir -p /wheels && \
-    git clone --depth 1 --branch v2.5.1 https://github.com/pytorch/pytorch /opt/pytorch && \
-    cd /opt/pytorch && \
-    git submodule sync && \
-    git submodule update --init --recursive --depth 1 && \
-    pip install --root-user-action=ignore -r requirements.txt && \
-    PYTORCH_BUILD_VERSION=2.5.1 \
-    PYTORCH_BUILD_NUMBER=1 \
-    MAX_JOBS=16 \
-    BUILD_TEST=0 \
-    USE_FBGEMM=0 \
-    USE_KINETO=0 \
-    USE_NUMPY=1 \
-    TORCH_CUDA_ARCH_LIST="6.0;6.1;7.0;7.5;8.0;8.6;8.9;9.0" \
-    python setup.py bdist_wheel -d /wheels
-
-# =============================================================================
-# Stage 2: Final image (no PyTorch source bloat)
+# LLM GPU Development Container
+# Pre-built PyTorch wheel with wide GPU support (Pascal through Hopper, sm_60-sm_90)
 # =============================================================================
 FROM nvcr.io/nvidia/cuda:12.6.3-cudnn-devel-ubuntu22.04
 
@@ -106,11 +58,10 @@ COPY requirements.txt .
 RUN pip install --no-cache-dir --root-user-action=ignore -r requirements.txt && \
     pip uninstall -y torchvision torchaudio 2>/dev/null || true
 
-# Copy and install custom PyTorch wheel from builder stage AFTER requirements
-# This overwrites any torch pulled in by vllm/transformers with our Pascal-compatible build
-COPY --from=builder /wheels/*.whl /tmp/
-RUN pip install --no-cache-dir --root-user-action=ignore --force-reinstall /tmp/*.whl && \
-    rm -rf /tmp/*.whl
+# Install custom PyTorch wheel with Pascal+ support from GitHub release
+# --force-reinstall ensures our wheel overwrites any torch pulled by dependencies
+ARG WHEEL_URL=https://github.com/gperdrizet/docker-images/releases/download/pytorch-2.5.1-cu126/torch-2.5.1-cp311-cp311-linux_x86_64.whl
+RUN pip install --no-cache-dir --force-reinstall ${WHEEL_URL}
 
 # docker build -t gperdrizet/llms-gpu:latest .
 # docker push gperdrizet/llms-gpu:latest

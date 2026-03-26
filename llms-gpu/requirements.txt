@@ -7,8 +7,7 @@ llama-index
 transformers
 smolagents
 
-# Inference/serving
-vllm
+# Inference/serving (llama.cpp compiled per-user for hardware compatibility)
 ollama
 
 # API clients

@@ -19,6 +19,7 @@ langchain-ollama
 langchain-google-genai
 langchain-mistralai
 
+
 # Vector store
 chromadb
 langchain-chroma
@@ -26,6 +27,8 @@ psycopg2-binary
 psycopg[binary]
 pgvector
 langchain-postgres
+langchain-text-splitters
+pypdf
 
 # UI
 gradio

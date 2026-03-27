@@ -5,6 +5,8 @@
 # See here: https://docs.nvidia.com/deeplearning/frameworks/tensorflow-release-notes/rel-24-08.html
 FROM nvcr.io/nvidia/tensorflow:24.08-tf2-py3
 
+ARG IMAGE_VERSION=dev
+
 RUN apt-get update && \
     apt-get install -y --no-install-recommends \
         screen \
@@ -28,6 +30,7 @@ RUN apt-get update && \
 COPY motd.sh /usr/local/bin/motd.sh
 RUN chmod +x /usr/local/bin/motd.sh && \
     echo 'source /usr/local/bin/motd.sh' >> /etc/bash.bashrc && \
+    echo "${IMAGE_VERSION}" > /etc/image-version && \
     mv /workspace/README.md /workspace/NVIDIA_README.md 2>/dev/null || true
 
 COPY README.md /workspace/README.md

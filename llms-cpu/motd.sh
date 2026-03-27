@@ -14,6 +14,7 @@ echo " |____/_/ \_\_|\_|\___|\___|/_/ \_\___|___| |_|  |_|\___/|___/|___|____|__
 echo ""
 echo "──────────────────────────────────────────────────────────────────────"
 echo ""
+echo "  Image:       llms-cpu:$(cat /etc/image-version 2>/dev/null || echo 'unknown')"
 echo "  CPU:         $(lscpu | grep 'Model name' | cut -d':' -f2 | xargs)"
 echo "  Memory:      $(free -h | awk '/^Mem:/ {print $2}') total"
 echo "  Python:      $(python --version 2>&1 | cut -d' ' -f2)"

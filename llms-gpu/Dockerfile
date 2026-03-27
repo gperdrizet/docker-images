@@ -3,6 +3,7 @@
 # =============================================================================
 FROM nvcr.io/nvidia/cuda:12.6.3-cudnn-devel-ubuntu22.04
 
+ARG IMAGE_VERSION=dev
 ENV DEBIAN_FRONTEND=noninteractive
 
 # Install runtime packages (keeping build tools for llama.cpp etc.)
@@ -48,7 +49,8 @@ RUN curl -fsSL https://ollama.com/install.sh | sh
 # Copy and configure startup script
 COPY motd.sh /usr/local/bin/motd.sh
 RUN chmod +x /usr/local/bin/motd.sh && \
-    echo 'source /usr/local/bin/motd.sh' >> /etc/bash.bashrc
+    echo 'source /usr/local/bin/motd.sh' >> /etc/bash.bashrc && \
+    echo "${IMAGE_VERSION}" > /etc/image-version
 
 # Copy our README to workspace
 COPY README.md /workspace/README.md

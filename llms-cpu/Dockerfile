@@ -1,6 +1,8 @@
 # Use Python 3.11 slim image for lightweight CPU-only LLM development
 FROM python:3.11-slim
 
+ARG IMAGE_VERSION=dev
+
 # Install system packages in a single layer
 RUN apt-get update && \
     apt-get install -y --no-install-recommends \
@@ -36,7 +38,8 @@ RUN pip install --no-cache-dir --upgrade pip
 # Copy and configure startup script and custom bash.bashrc
 COPY motd.sh /usr/local/bin/motd.sh
 COPY bash.bashrc /etc/bash.bashrc
-RUN chmod +x /usr/local/bin/motd.sh
+RUN chmod +x /usr/local/bin/motd.sh && \
+    echo "${IMAGE_VERSION}" > /etc/image-version
 
 # Copy requirements and install Python dependencies
 COPY requirements.txt .

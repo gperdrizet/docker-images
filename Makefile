@@ -12,7 +12,7 @@
         extract-wheel-llms-gpu extract-wheel-deeplearning-gpu
 
 # Version - update this when releasing a new version
-VERSION ?= 3.2.0
+VERSION ?= 3.3.0
 
 # DockerHub credentials (set via environment variables or .env file)
 DOCKERHUB_USERNAME ?= gperdrizet
@@ -28,10 +28,10 @@ LLMS_CPU_IMAGE := gperdrizet/llms-cpu
 
 # Build targets - deeplearning
 build-deeplearning-gpu:
-	DOCKER_BUILDKIT=1 docker build --shm-size=16g -t $(DEEPLEARNING_GPU_IMAGE):$(VERSION) -t $(DEEPLEARNING_GPU_IMAGE):latest ./deeplearning-gpu
+	DOCKER_BUILDKIT=1 docker build --build-arg IMAGE_VERSION=$(VERSION) --shm-size=16g -t $(DEEPLEARNING_GPU_IMAGE):$(VERSION) -t $(DEEPLEARNING_GPU_IMAGE):latest ./deeplearning-gpu
 
 build-deeplearning-cpu:
-	docker build -t $(DEEPLEARNING_CPU_IMAGE):$(VERSION) -t $(DEEPLEARNING_CPU_IMAGE):latest ./deeplearning-cpu
+	docker build --build-arg IMAGE_VERSION=$(VERSION) -t $(DEEPLEARNING_CPU_IMAGE):$(VERSION) -t $(DEEPLEARNING_CPU_IMAGE):latest ./deeplearning-cpu
 
 build-deeplearning: build-deeplearning-gpu build-deeplearning-cpu
 
@@ -46,10 +46,10 @@ build-tensorflow: build-tensorflow-gpu build-tensorflow-cpu
 
 # Build targets - llms
 build-llms-gpu:
-	DOCKER_BUILDKIT=1 docker build --shm-size=16g -t $(LLMS_GPU_IMAGE):$(VERSION) -t $(LLMS_GPU_IMAGE):latest ./llms-gpu
+	DOCKER_BUILDKIT=1 docker build --build-arg IMAGE_VERSION=$(VERSION) --shm-size=16g -t $(LLMS_GPU_IMAGE):$(VERSION) -t $(LLMS_GPU_IMAGE):latest ./llms-gpu
 
 build-llms-cpu:
-	docker build -t $(LLMS_CPU_IMAGE):$(VERSION) -t $(LLMS_CPU_IMAGE):latest ./llms-cpu
+	docker build --build-arg IMAGE_VERSION=$(VERSION) -t $(LLMS_CPU_IMAGE):$(VERSION) -t $(LLMS_CPU_IMAGE):latest ./llms-cpu
 
 build-llms: build-llms-gpu build-llms-cpu
 

@@ -2,6 +2,8 @@
 # See here: https://hub.docker.com/r/tensorflow/tensorflow/tags?name=2.16.1
 FROM tensorflow/tensorflow:2.16.1-jupyter
 
+ARG IMAGE_VERSION=dev
+
 # Install all OS packages in a single layer, clean up apt cache to reduce image size
 # This layer changes infrequently and should be cached
 RUN apt-get update && apt-get upgrade -y && \
@@ -32,7 +34,8 @@ RUN pip3 install --no-cache-dir --upgrade pip
 # Copy and configure startup script and custom bash.bashrc (removes Google MOTD)
 COPY motd.sh /usr/local/bin/motd.sh
 COPY bash.bashrc /etc/bash.bashrc
-RUN chmod +x /usr/local/bin/motd.sh
+RUN chmod +x /usr/local/bin/motd.sh && \
+    echo "${IMAGE_VERSION}" > /etc/image-version
 
 # Copy requirements last - this file changes most frequently
 COPY requirements.txt .

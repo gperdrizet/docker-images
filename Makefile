@@ -8,11 +8,11 @@
         update-readme-tensorflow-gpu update-readme-tensorflow-cpu \
         update-readme-llms-gpu update-readme-llms-cpu \
         update-readme-all \
-        wheel-llms-gpu wheel-deeplearning-gpu \
-        extract-wheel-llms-gpu extract-wheel-deeplearning-gpu
+        wheel-deeplearning-gpu \
+        extract-wheel-deeplearning-gpu
 
 # Version - update this when releasing a new version
-VERSION ?= 3.3.0
+VERSION ?= 4.0.0
 
 # DockerHub credentials (set via environment variables or .env file)
 DOCKERHUB_USERNAME ?= gperdrizet
@@ -28,10 +28,10 @@ LLMS_CPU_IMAGE := gperdrizet/llms-cpu
 
 # Build targets - deeplearning
 build-deeplearning-gpu:
-	DOCKER_BUILDKIT=1 docker build --build-arg IMAGE_VERSION=$(VERSION) --shm-size=16g -t $(DEEPLEARNING_GPU_IMAGE):$(VERSION) -t $(DEEPLEARNING_GPU_IMAGE):latest ./deeplearning-gpu
+	DOCKER_BUILDKIT=1 docker build --network=host --build-arg IMAGE_VERSION=$(VERSION) --shm-size=16g -t $(DEEPLEARNING_GPU_IMAGE):$(VERSION) -t $(DEEPLEARNING_GPU_IMAGE):latest ./deeplearning-gpu
 
 build-deeplearning-cpu:
-	docker build --build-arg IMAGE_VERSION=$(VERSION) -t $(DEEPLEARNING_CPU_IMAGE):$(VERSION) -t $(DEEPLEARNING_CPU_IMAGE):latest ./deeplearning-cpu
+	DOCKER_BUILDKIT=1 docker build --network=host --build-arg IMAGE_VERSION=$(VERSION) -t $(DEEPLEARNING_CPU_IMAGE):$(VERSION) -t $(DEEPLEARNING_CPU_IMAGE):latest ./deeplearning-cpu
 
 build-deeplearning: build-deeplearning-gpu build-deeplearning-cpu
 
@@ -46,10 +46,10 @@ build-tensorflow: build-tensorflow-gpu build-tensorflow-cpu
 
 # Build targets - llms
 build-llms-gpu:
-	DOCKER_BUILDKIT=1 docker build --build-arg IMAGE_VERSION=$(VERSION) --shm-size=16g -t $(LLMS_GPU_IMAGE):$(VERSION) -t $(LLMS_GPU_IMAGE):latest ./llms-gpu
+	DOCKER_BUILDKIT=1 docker build --network=host --build-arg IMAGE_VERSION=$(VERSION) --shm-size=16g -t $(LLMS_GPU_IMAGE):$(VERSION) -t $(LLMS_GPU_IMAGE):latest ./llms-gpu
 
 build-llms-cpu:
-	docker build --build-arg IMAGE_VERSION=$(VERSION) -t $(LLMS_CPU_IMAGE):$(VERSION) -t $(LLMS_CPU_IMAGE):latest ./llms-cpu
+	DOCKER_BUILDKIT=1 docker build --network=host --build-arg IMAGE_VERSION=$(VERSION) -t $(LLMS_CPU_IMAGE):$(VERSION) -t $(LLMS_CPU_IMAGE):latest ./llms-cpu
 
 build-llms: build-llms-gpu build-llms-cpu
 
@@ -172,30 +172,18 @@ update-readme-llms-cpu:
 update-readme-all: update-readme-deeplearning-gpu update-readme-deeplearning-cpu update-readme-llms-gpu update-readme-llms-cpu
 
 # PyTorch wheel build configuration
-PYTORCH_VERSION ?= 2.5.1
-CUDA_ARCH_LIST ?= 6.0;6.1;7.0;7.5;8.0;8.6;8.9;9.0
+PYTORCH_VERSION ?= 2.11.0
+CUDA_ARCH_LIST ?= 6.0;6.1;7.0;7.5;8.0;8.6;8.9;9.0;10.0
 MAX_JOBS ?= 16
 
 # PyTorch wheel build targets
-# These build PyTorch from source with wide GPU architecture support (Pascal through Hopper)
+# deeplearning-gpu only - llms-gpu uses the NVIDIA PyTorch NGC base image
 # Build takes 3-4 hours. Wheels should be uploaded to GitHub Releases after building.
-
-wheel-llms-gpu:
-	@echo "Building PyTorch wheel for llms-gpu (Python 3.11, CUDA 12.6)..."
-	@echo "This will take 3-4 hours. Grab some coffee."
-	DOCKER_BUILDKIT=1 docker build \
-		--build-arg PYTORCH_VERSION=$(PYTORCH_VERSION) \
-		--build-arg CUDA_ARCH_LIST="$(CUDA_ARCH_LIST)" \
-		--build-arg MAX_JOBS=$(MAX_JOBS) \
-		--shm-size=16g \
-		-t pytorch-builder-llms-gpu:$(PYTORCH_VERSION) \
-		-f ./llms-gpu/Dockerfile.build-pytorch \
-		./llms-gpu
-
 wheel-deeplearning-gpu:
-	@echo "Building PyTorch wheel for deeplearning-gpu (Python 3.10, CUDA 12.4)..."
+	@echo "Building PyTorch wheel for deeplearning-gpu (Python 3.12, CUDA 12.8)..."
 	@echo "This will take 3-4 hours. Grab some coffee."
 	DOCKER_BUILDKIT=1 docker build \
+		--network=host \
 		--build-arg PYTORCH_VERSION=$(PYTORCH_VERSION) \
 		--build-arg CUDA_ARCH_LIST="$(CUDA_ARCH_LIST)" \
 		--build-arg MAX_JOBS=$(MAX_JOBS) \
@@ -205,14 +193,6 @@ wheel-deeplearning-gpu:
 		./deeplearning-gpu
 
 # Extract wheels from builder containers
-extract-wheel-llms-gpu:
-	@echo "Extracting wheel from pytorch-builder-llms-gpu..."
-	@mkdir -p ./wheels
-	docker create --name wheel-extract-llms pytorch-builder-llms-gpu:$(PYTORCH_VERSION)
-	docker cp wheel-extract-llms:/wheels/. ./wheels/
-	docker rm wheel-extract-llms
-	@echo "Wheel saved to ./wheels/"
-
 extract-wheel-deeplearning-gpu:
 	@echo "Extracting wheel from pytorch-builder-deeplearning-gpu..."
 	@mkdir -p ./wheels

@@ -5,9 +5,9 @@
 # The wheel is then uploaded to GitHub Releases and used by the main Dockerfile.
 #
 # NOTE: This uses the NVIDIA TensorFlow base image which has:
-#   - Python 3.10 (produces cp310 wheel)
-#   - CUDA 12.4 (produces cu124 wheel)
-# This is different from llms-gpu which uses Python 3.11 + CUDA 12.6!
+#   - Python 3.12 (produces cp312 wheel)
+#   - CUDA 12.8 (produces cu128 wheel)
+# Note: TF 25.02 is the final NVIDIA TF NGC container.
 #
 # Build:
 #   docker build -f Dockerfile.build-pytorch -t pytorch-builder-dl .
@@ -19,15 +19,15 @@
 #   docker rm extract
 #
 # Upload to GitHub:
-#   gh release create pytorch-2.5.1-cu124-cp310 ./wheels/*.whl \
-#     --title "PyTorch 2.5.1 CUDA 12.4 Python 3.10 (Pascal-Hopper)"
+#   gh release create pytorch-2.11.0-cu128-cp312 ./wheels/*.whl \
+#     --title "PyTorch 2.11.0 CUDA 12.8 Python 3.12 (Pascal-Blackwell)"
 #
 # =============================================================================
-FROM nvcr.io/nvidia/tensorflow:24.08-tf2-py3
+FROM nvcr.io/nvidia/tensorflow:25.02-tf2-py3
 
 # Build configuration
-ARG PYTORCH_VERSION=2.5.1
-ARG CUDA_ARCH_LIST="6.0;6.1;7.0;7.5;8.0;8.6;8.9;9.0"
+ARG PYTORCH_VERSION=2.11.0
+ARG CUDA_ARCH_LIST="6.0;6.1;7.0;7.5;8.0;8.6;8.9;9.0;10.0"
 ARG MAX_JOBS=16
 
 # Install build dependencies (git already in base image)
@@ -42,11 +42,12 @@ RUN pip install --no-cache-dir --upgrade pip setuptools wheel
 
 # Build PyTorch wheel
 # - Pascal (6.0, 6.1): GTX 1060/1070/1080, P100
-# - Volta (7.0): V100
+# - Volta (7.0): V100 (note: CuDNN 9.15+ ops may fail on Volta)
 # - Turing (7.5): RTX 2060/2070/2080, T4
 # - Ampere (8.0, 8.6): A100, RTX 3060/3070/3080/3090
 # - Ada Lovelace (8.9): RTX 4060/4070/4080/4090
 # - Hopper (9.0): H100
+# - Blackwell (10.0): RTX 5070/5080/5090, B100/B200
 RUN mkdir -p /wheels && \
     git clone --depth 1 --branch v${PYTORCH_VERSION} https://github.com/pytorch/pytorch /opt/pytorch && \
     cd /opt/pytorch && \

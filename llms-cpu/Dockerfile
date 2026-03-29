@@ -1,5 +1,5 @@
-# Use Python 3.11 slim image for lightweight CPU-only LLM development
-FROM python:3.11-slim
+# Use Python 3.12 slim image for lightweight CPU-only LLM development
+FROM python:3.12-slim
 
 ARG IMAGE_VERSION=dev
 
@@ -13,6 +13,7 @@ RUN apt-get update && \
         git \
         build-essential \
         openssh-client \
+        bmon \
         zstd && \
     # Create screen run directory with proper permissions
     mkdir -p /run/screen && chmod 777 /run/screen && \
@@ -25,21 +26,26 @@ RUN apt-get update && \
     echo 'export PATH="/home/vscode/.local/bin:$PATH"' >> /home/vscode/.bashrc && \
     # Set Hugging Face cache directory
     echo 'export HF_HOME="/home/vscode/.cache/huggingface"' >> /home/vscode/.bashrc && \
+    mkdir -p /workspace && \
     # Clean up apt cache to reduce image size
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
 
-# Install Ollama server binary
-RUN curl -fsSL https://ollama.com/install.sh | sh
+# Install Ollama server binary directly from latest release
+RUN curl -fsSL https://github.com/ollama/ollama/releases/latest/download/ollama-linux-amd64.tar.zst \
+        | tar -x --zstd -C /usr/local
 
 # Upgrade pip
-RUN pip install --no-cache-dir --upgrade pip
+RUN pip install --no-cache-dir --upgrade pip setuptools wheel
 
 # Copy and configure startup script and custom bash.bashrc
 COPY motd.sh /usr/local/bin/motd.sh
 COPY bash.bashrc /etc/bash.bashrc
 RUN chmod +x /usr/local/bin/motd.sh && \
     echo "${IMAGE_VERSION}" > /etc/image-version
+
+# Copy our README to workspace
+COPY README.md /workspace/README.md
 
 # Copy requirements and install Python dependencies
 COPY requirements.txt .

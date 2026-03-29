@@ -1,6 +1,8 @@
 # Docker Images
 
-A collection of ready-to-use deep learning Docker images for VS Code Dev Containers, designed for AI/ML bootcamp students. GPU images are built with wide hardware compatibility (NVIDIA Pascal through Hopper, sm_60-sm_90) so they work across diverse student hardware. All images include a pre-configured `vscode` user (UID 1000) with sudo access for seamless devcontainer integration.
+A collection of ready-to-use deep learning Docker images for VS Code Dev Containers, designed for AI/ML bootcamp students. GPU images are built with wide hardware compatibility (NVIDIA Pascal through Blackwell, sm_60-sm_100) so they work across diverse student hardware. All images include a pre-configured `vscode` user (UID 1000) with sudo access for seamless devcontainer integration.
+
+> **CUDA version note:** GPU images use CUDA 12.8, supporting Pascal (GTX 10xx) through Blackwell (RTX 50xx/B100/B200). CUDA 12.x is the last series to support Pascal — [CUDA 13.0 removed Pascal, Maxwell, and Volta support entirely](https://docs.nvidia.com/cuda/cuda-toolkit-release-notes/index.html). CUDA 12.8 requires host driver ≥ 570.x on Linux.
 
 ## Quick Start
 
@@ -73,9 +75,7 @@ Create your DockerHub Personal Access Token at https://hub.docker.com/settings/s
 
 | Command | Description |
 |---------|-------------|
-| `make wheel-llms-gpu` | Build PyTorch wheel for llms-gpu |
 | `make wheel-deeplearning-gpu` | Build PyTorch wheel for deeplearning-gpu |
-| `make extract-wheel-llms-gpu` | Extract wheel from llms-gpu builder |
 | `make extract-wheel-deeplearning-gpu` | Extract wheel from deeplearning-gpu builder |
 
 ### README Update Commands

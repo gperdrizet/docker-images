@@ -10,6 +10,7 @@
         "dotenv",
         "FBGEMM",
         "genai",
+        "getent",
         "KINETO",
         "langchain",
         "NCCL",
@@ -22,6 +23,7 @@
         "tmpfs",
         "torchaudio",
         "torchvision",
+        "userdel",
         "zstd"
     ]
 }

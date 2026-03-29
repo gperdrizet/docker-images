@@ -1,55 +1,47 @@
-# Use Google's official TensorFlow 2.16.1 image with GPU support
-# See here: https://hub.docker.com/r/tensorflow/tensorflow/tags?name=2.16.1
-FROM tensorflow/tensorflow:2.16.1-jupyter
+# Deep Learning CPU Development Container
+# Based on official TensorFlow image - CPU only, compatible with any machine.
+# TensorFlow 2.17.0, Python 3.12, Ubuntu 22.04
+FROM tensorflow/tensorflow:2.17.0
 
 ARG IMAGE_VERSION=dev
+ENV DEBIAN_FRONTEND=noninteractive
 
-# Install all OS packages in a single layer, clean up apt cache to reduce image size
-# This layer changes infrequently and should be cached
-RUN apt-get update && apt-get upgrade -y && \
+RUN apt-get update && \
     apt-get install -y --no-install-recommends \
-        openssh-client \
-        wget \
         screen \
-        python3-pip \
-        sudo && \
-    rm -rf /var/lib/apt/lists/*
-
-# Create vscode group and user for devcontainer (system configuration, changes rarely)
-RUN groupadd --gid 1000 vscode && \
+        sudo \
+        htop \
+        bmon \
+        curl \
+        openssh-client \
+        git && \
+    mkdir -p /run/screen && chmod 777 /run/screen && \
+    userdel $(getent passwd 1000 | cut -d: -f1) 2>/dev/null || true && \
+    groupdel $(getent group 1000 | cut -d: -f1) 2>/dev/null || true && \
+    groupadd --gid 1000 vscode && \
     useradd --uid 1000 --gid 1000 --shell /bin/bash --create-home vscode && \
     echo "vscode ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers.d/vscode && \
     chmod 0440 /etc/sudoers.d/vscode && \
-    # Add .local/bin to vscode user's PATH
-    echo 'export PATH="/home/vscode/.local/bin:$PATH"' >> /home/vscode/.bashrc
+    echo 'export PATH="/home/vscode/.local/bin:$PATH"' >> /home/vscode/.bashrc && \
+    mkdir -p /workspace && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/*
 
-# Create symlinks for python and pip (system configuration, changes rarely)
-RUN ln -sf /usr/bin/python3 /usr/bin/python && \
-    ln -sf /usr/local/bin/pip3 /usr/local/bin/pip
-
-# Upgrade pip (changes infrequently)
-# Note: First upgrade without --root-user-action since base image pip may not support it
-RUN pip3 install --no-cache-dir --upgrade pip
-
-# Copy and configure startup script and custom bash.bashrc (removes Google MOTD)
+# Copy and configure startup script and custom bash.bashrc
 COPY motd.sh /usr/local/bin/motd.sh
 COPY bash.bashrc /etc/bash.bashrc
 RUN chmod +x /usr/local/bin/motd.sh && \
     echo "${IMAGE_VERSION}" > /etc/image-version
 
-# Copy requirements last - this file changes most frequently
+COPY README.md /workspace/README.md
+
+# Upgrade pip and install requirements
 COPY requirements.txt .
+RUN pip install --no-cache-dir --root-user-action=ignore --upgrade pip && \
+    pip install --no-cache-dir --root-user-action=ignore -r requirements.txt
 
-# Install Python dependencies in a single layer
-# Install tornado and notebook first - jupyter_tensorboard requires them during build
-# Use notebook<7 because jupyter_tensorboard requires notebook.base (removed in v7)
-# Use --no-build-isolation for jupyter_tensorboard so it can find these dependencies
-# (pip's build isolation creates a clean env that excludes installed packages)
-RUN pip3 install --no-cache-dir --root-user-action=ignore tornado "notebook<7" && \
-    pip3 install --no-cache-dir --root-user-action=ignore --no-build-isolation jupyter_tensorboard && \
-    pip3 install --no-cache-dir --root-user-action=ignore -r requirements.txt
+# Install PyTorch CPU version
+RUN pip install --no-cache-dir --root-user-action=ignore torch torchvision --index-url https://download.pytorch.org/whl/cpu
 
-RUN pip3 install --no-cache-dir --root-user-action=ignore torch torchvision --index-url https://download.pytorch.org/whl/cpu
-
-# docker build -t gperdrizet/deeplearning-cpu:latest . 
+# docker build -t gperdrizet/deeplearning-cpu:latest .
 # docker push gperdrizet/deeplearning-cpu:latest

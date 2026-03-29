@@ -6,32 +6,26 @@ A ready-to-use deep learning environment for VS Code. Includes both **PyTorch** 
 
 ## Features
 
-- **Dual Framework Support** – Both TensorFlow 2.16 and PyTorch 2.10 pre-installed
+- **Dual Framework Support** – Both TensorFlow 2.17 and PyTorch (CPU) pre-installed
 - **Lightweight & Portable** – No GPU or CUDA dependencies required
 - **VS Code Dev Container Ready** – Pre-configured `vscode` user for seamless devcontainer integration
-- **Data Science Tools** – Includes common data science and ML libraries like Pandas & Scikit-learn
 
 ## Included software
 
 | Component | Version |
 |-----------|---------|
-| Base Image | `python:3.10-slim` |
-| TensorFlow | 2.16 (CPU) |
-| Keras | 3.3 |
-| PyTorch | 2.10 (CPU) |
-| Python | 3.10 |
+| Base Image | `tensorflow/tensorflow:2.17.0` |
+| TensorFlow | 2.17 (CPU) |
+| Keras | 3.x |
+| PyTorch | Latest (CPU) |
+| Python | 3.12 |
 
 ### Additional Python packages
-- `numpy` - Numerical computation
-- `pandas` - Data manipulation
-- `scikit-learn` - Classical machine learning
-- `scipy` - Scientific and statistical computing
 - `matplotlib` - Data visualization
 - `seaborn` - Statistical data visualization
-- `tensorboard` - Machine learning experiment visualization toolkit
 - `keras_tuner` - Hyperparameter tuning for Keras
 - `optuna` - General purpose hyperparameter optimization framework
-- `jupyterlab` - Interactive notebook development environment
+- `ipywidgets` - Interactive widgets for Jupyter
 
 ## Usage with VS Code dev containers
 

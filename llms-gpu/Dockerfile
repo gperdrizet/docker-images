@@ -1,36 +1,26 @@
 # LLM GPU Development Container
-# Pre-built PyTorch wheel with wide GPU support (Pascal through Hopper, sm_60-sm_90)
+# Based on NVIDIA PyTorch NGC container - no custom wheel build needed.
+# PyTorch 2.7.0a0, CUDA 12.8.1, Python 3.12, Ubuntu 24.04, Blackwell-optimized.
+# Requires host driver >= 570.x
 # =============================================================================
-FROM nvcr.io/nvidia/cuda:12.6.3-cudnn-devel-ubuntu22.04
+FROM nvcr.io/nvidia/pytorch:25.03-py3
 
 ARG IMAGE_VERSION=dev
 ENV DEBIAN_FRONTEND=noninteractive
 
-# Install runtime packages (keeping build tools for llama.cpp etc.)
+# Install additional runtime packages not in the NGC base
 RUN rm -rf /var/lib/apt/lists/* && \
     apt-get update && \
     apt-get install -y --no-install-recommends \
-        software-properties-common && \
-    add-apt-repository -y ppa:deadsnakes/ppa && \
-    apt-get update && \
-    apt-get install -y --no-install-recommends \
-        python3.11 \
-        python3.11-venv \
-        python3.11-dev \
-        python3-pip \
         screen \
         sudo \
         htop \
         bmon \
-        curl \
-        git \
         zstd \
-        ninja-build \
-        openssh-client \
-        cmake && \
-    update-alternatives --install /usr/bin/python python /usr/bin/python3.11 1 && \
-    update-alternatives --install /usr/bin/python3 python3 /usr/bin/python3.11 1 && \
+        openssh-client && \
     mkdir -p /run/screen && chmod 777 /run/screen && \
+    userdel $(getent passwd 1000 | cut -d: -f1) 2>/dev/null || true && \
+    groupdel $(getent group 1000 | cut -d: -f1) 2>/dev/null || true && \
     groupadd --gid 1000 vscode && \
     useradd --uid 1000 --gid 1000 --shell /bin/bash --create-home vscode && \
     echo "vscode ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers.d/vscode && \
@@ -41,10 +31,11 @@ RUN rm -rf /var/lib/apt/lists/* && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
 
-RUN python -m pip install --no-cache-dir --upgrade pip setuptools wheel
+RUN pip install --no-cache-dir --upgrade pip setuptools wheel
 
-# Install Ollama server binary
-RUN curl -fsSL https://ollama.com/install.sh | sh
+# Install Ollama server binary directly from latest release
+RUN curl -fsSL https://github.com/ollama/ollama/releases/latest/download/ollama-linux-amd64.tar.zst \
+        | tar -x --zstd -C /usr/local
 
 # Copy and configure startup script
 COPY motd.sh /usr/local/bin/motd.sh
@@ -56,14 +47,9 @@ RUN chmod +x /usr/local/bin/motd.sh && \
 COPY README.md /workspace/README.md
 
 # Copy requirements and install LLM Python dependencies
+# PyTorch is already pre-installed in the NGC base image
 COPY requirements.txt .
-RUN pip install --no-cache-dir --root-user-action=ignore -r requirements.txt && \
-    pip uninstall -y torchvision torchaudio 2>/dev/null || true
-
-# Install custom PyTorch wheel with Pascal+ support from GitHub release
-# --force-reinstall ensures our wheel overwrites any torch pulled by dependencies
-ARG WHEEL_URL=https://github.com/gperdrizet/docker-images/releases/download/pytorch-2.5.1-cu126/torch-2.5.1-cp311-cp311-linux_x86_64.whl
-RUN pip install --no-cache-dir --force-reinstall ${WHEEL_URL}
+RUN pip install --no-cache-dir --root-user-action=ignore -r requirements.txt
 
 # docker build -t gperdrizet/llms-gpu:latest .
 # docker push gperdrizet/llms-gpu:latest

@@ -17,9 +17,9 @@ A ready-to-use LLM application development environment for VS Code. Includes **L
 
 | Component | Version |
 |-----------|---------|
-| Base Image | `python:3.11-slim` |
+| Base Image | `python:3.12-slim` |
 | PyTorch | Latest (CPU) |
-| Python | 3.11 |
+| Python | 3.12 |
 
 ### LLM Frameworks
 - `langchain` - LLM application framework

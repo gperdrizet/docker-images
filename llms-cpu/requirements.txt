@@ -26,6 +26,8 @@ psycopg2-binary
 psycopg[binary]
 pgvector
 langchain-postgres
+langchain-text-splitters
+pypdf
 
 # UI
 gradio

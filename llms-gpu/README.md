@@ -4,7 +4,7 @@ A ready-to-use LLM application development environment with NVIDIA GPU support f
 
 > **Note:** This container is designed to be used as part of a VS Code Dev Container environment, not run directly. See the [full environment setup on GitHub](https://github.com/gperdrizet/llms-devcontainer) for devcontainer configuration and usage instructions.
 
-> **CUDA version note:** This image is based on the NVIDIA PyTorch NGC 25.03 container with CUDA 12.8.1, supporting GPU architectures from Pascal (GTX 10xx) through Blackwell (RTX 50xx/B100/B200). CUDA 12.x is the last series to support Pascal — [CUDA 13.0 removed Pascal, Maxwell, and Volta support entirely](https://docs.nvidia.com/cuda/cuda-toolkit-release-notes/index.html). Requires host driver ≥ 570.x on Linux.
+> **CUDA version note:** This image uses a custom PyTorch 2.11.0 wheel built for CUDA 12.8.1, supporting GPU architectures from Pascal (GTX 10xx) through Blackwell (RTX 50xx/B100/B200). CUDA 12.x is the last series to support Pascal — [CUDA 13.0 removed Pascal, Maxwell, and Volta support entirely](https://docs.nvidia.com/cuda/cuda-toolkit-release-notes/index.html). Requires host driver ≥ 560.x on Linux.
 
 ## Features
 
@@ -20,8 +20,8 @@ A ready-to-use LLM application development environment with NVIDIA GPU support f
 
 | Component | Version |
 |-----------|--------|
-| Base Image | `nvcr.io/nvidia/pytorch:25.03-py3` |
-| PyTorch | 2.7.0 (NGC build) |
+| Base Image | `nvidia/cuda:12.8.1-cudnn-runtime-ubuntu24.04` |
+| PyTorch | 2.11.0 (custom build, Pascal-Blackwell) |
 | Python | 3.12 |
 | CUDA | 12.8.1 |
 | GPU Support | Pascal through Blackwell (sm_60 - sm_100) |

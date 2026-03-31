@@ -1,24 +1,31 @@
 # LLM GPU Development Container
-# Based on NVIDIA PyTorch NGC container - no custom wheel build needed.
-# PyTorch 2.7.0a0, CUDA 12.8.1, Python 3.12, Ubuntu 24.04, Blackwell-optimized.
-# Requires host driver >= 570.x
+# Based on nvidia/cuda runtime + custom PyTorch wheel for wide GPU compatibility.
+# PyTorch 2.11.0 (custom build), CUDA 12.8.1, Python 3.12, Ubuntu 24.04.
+# Supports Pascal (GTX 10xx) through Blackwell (RTX 50xx/B100/B200), sm_60-sm_100.
+# Requires host driver >= 560.x on Linux.
 # =============================================================================
-FROM nvcr.io/nvidia/pytorch:25.03-py3
+FROM nvidia/cuda:12.8.1-cudnn-runtime-ubuntu24.04
 
 ARG IMAGE_VERSION=dev
+ARG WHEEL_URL=https://github.com/gperdrizet/docker-images/releases/download/pytorch-2.11.0-cu128-cp312/torch-2.11.0-cp312-cp312-linux_x86_64.whl
 ENV DEBIAN_FRONTEND=noninteractive
 
-# Install additional runtime packages not in the NGC base
-RUN rm -rf /var/lib/apt/lists/* && \
-    apt-get update && \
+RUN apt-get update && \
     apt-get install -y --no-install-recommends \
+        python3.12 \
+        python3.12-dev \
+        python3-pip \
         screen \
         sudo \
         htop \
         bmon \
+        curl \
         zstd \
+        git \
         openssh-client && \
     mkdir -p /run/screen && chmod 777 /run/screen && \
+    ln -sf /usr/bin/python3.12 /usr/bin/python && \
+    ln -sf /usr/bin/python3.12 /usr/bin/python3 && \
     userdel $(getent passwd 1000 | cut -d: -f1) 2>/dev/null || true && \
     groupdel $(getent group 1000 | cut -d: -f1) 2>/dev/null || true && \
     groupadd --gid 1000 vscode && \
@@ -31,7 +38,8 @@ RUN rm -rf /var/lib/apt/lists/* && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
 
-RUN pip install --no-cache-dir --upgrade pip setuptools wheel
+# Install custom PyTorch wheel (Pascal through Blackwell, sm_60-sm_100)
+RUN pip install --no-cache-dir --break-system-packages --root-user-action=ignore ${WHEEL_URL}
 
 # Install Ollama server binary directly from latest release
 RUN curl -fsSL https://github.com/ollama/ollama/releases/latest/download/ollama-linux-amd64.tar.zst \
@@ -47,9 +55,8 @@ RUN chmod +x /usr/local/bin/motd.sh && \
 COPY README.md /workspace/README.md
 
 # Copy requirements and install LLM Python dependencies
-# PyTorch is already pre-installed in the NGC base image
 COPY requirements.txt .
-RUN pip install --no-cache-dir --root-user-action=ignore -r requirements.txt
+RUN pip install --no-cache-dir --break-system-packages --root-user-action=ignore -r requirements.txt
 
 # docker build -t gperdrizet/llms-gpu:latest .
 # docker push gperdrizet/llms-gpu:latest

@@ -46,9 +46,10 @@ RUN pip install --no-cache-dir --root-user-action=ignore --upgrade pip && \
 
 # Install custom PyTorch wheel with Pascal+ support from GitHub release
 # Note: This image uses Python 3.12 (from TensorFlow 25.02 base) - wheel must be cp312
-# --force-reinstall ensures our wheel overwrites any torch pulled by dependencies
+# --force-reinstall: overwrite any torch pulled by dependencies
+# --no-deps: leave existing nvidia-*-cu12 CUDA pip packages in place
     ARG WHEEL_URL=https://github.com/gperdrizet/docker-images/releases/download/pytorch-2.11.0-cu128-cp312/torch-2.11.0-cp312-cp312-linux_x86_64.whl
-RUN pip install --no-cache-dir --root-user-action=ignore --force-reinstall ${WHEEL_URL}
+RUN pip install --no-cache-dir --root-user-action=ignore --force-reinstall --no-deps ${WHEEL_URL}
 
 # docker build -t gperdrizet/deeplearning-gpu:latest .
 # docker push gperdrizet/deeplearning-gpu:latest

@@ -27,7 +27,7 @@ The pipeline runs automatically:
 2. **Test:** CPU and GPU image tests run in parallel
 3. **Approve:** pipeline pauses; a notification is sent for manual approval
 4. **Push:** on approval, images are pushed to DockerHub and DockerHub READMEs are updated
-5. **Tag:** a git tag (`v4.1.0`) and GitHub release are created automatically
+5. **Tag:** a git tag (`vx.x.x`) and GitHub release are created automatically
 6. **Sync:** a dispatch event is sent to `deeplearning-devcontainer` and `llms-devcontainer`, which each create a matching version tag and GitHub release
 
 Git tags are only created after a successful, approved push, so a tag always corresponds to a verified image on DockerHub.

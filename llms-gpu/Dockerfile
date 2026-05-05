@@ -22,7 +22,12 @@ RUN apt-get update && \
         curl \
         zstd \
         git \
-        openssh-client && \
+        openssh-client \
+        libcublas-12-8 \
+        libcufft-12-8 \
+        libcurand-12-8 \
+        libcusolver-12-8 \
+        libcusparse-12-8 && \
     mkdir -p /run/screen && chmod 777 /run/screen && \
     ln -sf /usr/bin/python3.12 /usr/bin/python && \
     ln -sf /usr/bin/python3.12 /usr/bin/python3 && \
@@ -53,13 +58,16 @@ RUN chmod +x /usr/local/bin/motd.sh && \
 COPY README.md /workspace/README.md
 
 # Copy requirements and install LLM Python dependencies
-# (installed before torch wheel so pip doesn't overwrite the custom wheel)
+# pip will pull in torch from PyPI (with nvidia-*-cu12 pip packages) as a transitive dep.
+# We then strip those pip CUDA packages and replace torch with our custom wheel,
+# which links against system CUDA (installed via apt above).
 COPY requirements.txt .
-RUN pip install --no-cache-dir --break-system-packages --root-user-action=ignore -r requirements.txt
+RUN pip install --no-cache-dir --break-system-packages --root-user-action=ignore -r requirements.txt && \
+    pip freeze | grep '^nvidia-' | xargs pip uninstall -y 2>/dev/null || true
 
 # Install custom PyTorch wheel (Pascal through Blackwell, sm_60-sm_100)
-# --force-reinstall: overwrite the CPU torch installed as a dep of requirements above
-# --no-deps: leave the nvidia-*-cu12 CUDA pip packages alone (already correct from step above)
+# --force-reinstall: overwrite the PyPI torch installed above
+# --no-deps: don't re-add nvidia-*-cu12 pip packages; use system CUDA libs instead
 RUN pip install --no-cache-dir --break-system-packages --root-user-action=ignore --force-reinstall --no-deps ${WHEEL_URL}
 
 # docker build -t gperdrizet/llms-gpu:latest .

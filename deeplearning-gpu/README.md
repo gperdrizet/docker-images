@@ -6,7 +6,7 @@ A ready-to-use deep learning environment with NVIDIA GPU support for VS Code. In
 
 > **Note:** This container is designed to be used as part of a VS Code Dev Container environment, not run directly. See the [full environment setup on GitHub](https://github.com/gperdrizet/deeplearning-devcontainer) for devcontainer configuration and usage instructions.
 
-> **CUDA version note:** This image uses CUDA 12.8, which supports GPU architectures from Pascal (GTX 10xx) through Blackwell (RTX 50xx/B100/B200). CUDA 12.x is the last series to support Pascal — [CUDA 13.0 removed Pascal, Maxwell, and Volta support entirely](https://docs.nvidia.com/cuda/cuda-toolkit-release-notes/index.html). CUDA 12.8 requires host driver ≥ 570.x on Linux. Note: 25.02 is the final NVIDIA TensorFlow NGC container release.
+> **CUDA version note:** This image uses CUDA 12.8, which supports GPU architectures from Pascal (GTX 10xx) through Blackwell (RTX 50xx/B100/B200). CUDA 12.x is the last series to support Pascal; [CUDA 13.0 removed Pascal, Maxwell, and Volta support entirely](https://docs.nvidia.com/cuda/cuda-toolkit-release-notes/index.html). CUDA 12.8 requires host driver ≥ 570.x on Linux. Note: 25.02 is the final NVIDIA TensorFlow NGC container release.
 
 ## Features
 

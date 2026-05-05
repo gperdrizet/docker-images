@@ -23,7 +23,8 @@ RUN apt-get update && \
         zstd \
         git \
         openssh-client \
-        libopenmpi3t64 && \
+        libopenmpi3t64 \
+        libcusparselt0 && \
     mkdir -p /run/screen && chmod 777 /run/screen && \
     ln -sf /usr/bin/python3.12 /usr/bin/python && \
     ln -sf /usr/bin/python3.12 /usr/bin/python3 && \

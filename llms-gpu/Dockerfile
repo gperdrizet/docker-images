@@ -22,12 +22,7 @@ RUN apt-get update && \
         curl \
         zstd \
         git \
-        openssh-client \
-        libcublas-12-8 \
-        libcufft-12-8 \
-        libcurand-12-8 \
-        libcusolver-12-8 \
-        libcusparse-12-8 && \
+        openssh-client && \
     mkdir -p /run/screen && chmod 777 /run/screen && \
     ln -sf /usr/bin/python3.12 /usr/bin/python && \
     ln -sf /usr/bin/python3.12 /usr/bin/python3 && \

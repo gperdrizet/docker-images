@@ -74,15 +74,14 @@ jobs:
         run: |
           VER="${{ inputs.version }}"
 
-          cat > /tmp/get_versions.py << 'EOF'
-import importlib.metadata as m, platform, sys
-print(f"| Python | {platform.python_version()} |")
-for p in sys.argv[1:]:
-    try:
-        print(f"| {p} | {m.version(p)} |")
-    except Exception:
-        print(f"| {p} | - |")
-EOF
+          printf '%s\n' \
+            'import importlib.metadata as m, platform, sys' \
+            'print(f"| Python | {platform.python_version()} |")' \
+            'pkgs = sys.argv[1:]' \
+            'for p in pkgs:' \
+            '    try: print(f"| {p} | {m.version(p)} |")' \
+            '    except Exception: print(f"| {p} | - |")' \
+            > /tmp/get_versions.py
 
           DL_PKGS="torch tensorflow numpy pandas scikit-learn scipy matplotlib seaborn jupyterlab keras-tuner optuna tensorboard"
           LLM_PKGS="torch transformers langchain langchain-community smolagents chromadb sentence-transformers gradio accelerate datasets tiktoken"

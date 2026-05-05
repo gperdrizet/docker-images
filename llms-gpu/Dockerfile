@@ -39,9 +39,6 @@ RUN apt-get update && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
 
-# Install custom PyTorch wheel (Pascal through Blackwell, sm_60-sm_100)
-RUN pip install --no-cache-dir --break-system-packages --root-user-action=ignore ${WHEEL_URL}
-
 # Install Ollama server binary directly from latest release
 RUN curl -fsSL https://github.com/ollama/ollama/releases/latest/download/ollama-linux-amd64.tar.zst \
         | tar -x --zstd -C /usr/local
@@ -56,8 +53,13 @@ RUN chmod +x /usr/local/bin/motd.sh && \
 COPY README.md /workspace/README.md
 
 # Copy requirements and install LLM Python dependencies
+# (installed before torch wheel so pip doesn't overwrite the custom wheel)
 COPY requirements.txt .
 RUN pip install --no-cache-dir --break-system-packages --root-user-action=ignore -r requirements.txt
+
+# Install custom PyTorch wheel (Pascal through Blackwell, sm_60-sm_100)
+# --force-reinstall ensures our CUDA wheel overwrites any torch pulled in by dependencies above
+RUN pip install --no-cache-dir --break-system-packages --root-user-action=ignore --force-reinstall ${WHEEL_URL}
 
 # docker build -t gperdrizet/llms-gpu:latest .
 # docker push gperdrizet/llms-gpu:latest

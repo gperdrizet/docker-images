@@ -1,9 +1,12 @@
 name: CI
 
 on:
-  push:
-    tags:
-      - 'v*.*.*'
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Version to release (e.g. 4.1.0)'
+        required: true
+        type: string
 
 jobs:
   build:
@@ -16,7 +19,7 @@ jobs:
           fetch-depth: 0
 
       - name: Build all images
-        run: make build-all
+        run: make build-all VERSION=${{ inputs.version }}
 
   test-cpu:
     name: Test CPU images
@@ -29,7 +32,7 @@ jobs:
           fetch-depth: 0
 
       - name: Test CPU images
-        run: make test-cpu
+        run: make test-cpu VERSION=${{ inputs.version }}
 
   test-gpu:
     name: Test GPU images
@@ -42,7 +45,7 @@ jobs:
           fetch-depth: 0
 
       - name: Test GPU images
-        run: make test-gpu
+        run: make test-gpu VERSION=${{ inputs.version }}
 
   push:
     name: Push to DockerHub
@@ -62,7 +65,7 @@ jobs:
         run: printf 'DOCKERHUB_USERNAME=%s\nDOCKERHUB_TOKEN=%s\n' "${{ secrets.DOCKERHUB_USERNAME }}" "${{ secrets.DOCKERHUB_TOKEN }}" > .env
 
       - name: Push all images
-        run: make push-all
+        run: make push-all VERSION=${{ inputs.version }}
 
       - name: Update DockerHub READMEs
         run: make update-readme-all
@@ -71,16 +74,34 @@ jobs:
         if: always()
         run: docker logout
 
+      - name: Create git tag and GitHub release
+        env:
+          GH_DISPATCH_TOKEN: ${{ secrets.GH_DISPATCH_TOKEN }}
+          VERSION: ${{ inputs.version }}
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git remote set-url origin "https://x-access-token:${GH_DISPATCH_TOKEN}@github.com/gperdrizet/docker-images.git"
+          git tag "v${VERSION}"
+          git push origin "v${VERSION}"
+          curl -s -X POST \
+            -H "Authorization: Bearer $GH_DISPATCH_TOKEN" \
+            -H "Accept: application/vnd.github+json" \
+            "https://api.github.com/repos/gperdrizet/docker-images/releases" \
+            -d "{\"tag_name\": \"v${VERSION}\", \"name\": \"v${VERSION}\", \"generate_release_notes\": true}"
+          echo "Created release v${VERSION}"
+
       - name: Dispatch version sync to devcontainer repos
         env:
           GH_DISPATCH_TOKEN: ${{ secrets.GH_DISPATCH_TOKEN }}
-          VERSION: ${{ github.ref_name }}
+          VERSION: ${{ inputs.version }}
         run: |
           for repo in deeplearning-devcontainer llms-devcontainer; do
             curl -s -X POST \
               -H "Authorization: Bearer $GH_DISPATCH_TOKEN" \
               -H "Accept: application/vnd.github+json" \
               "https://api.github.com/repos/gperdrizet/${repo}/dispatches" \
-              -d "{\"event_type\": \"docker-images-release\", \"client_payload\": {\"version\": \"${VERSION#v}\"}}"
+              -d "{\"event_type\": \"docker-images-release\", \"client_payload\": {\"version\": \"${VERSION}\"}}"
             echo "Dispatched sync to $repo"
           done
+

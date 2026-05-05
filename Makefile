@@ -12,8 +12,10 @@
         wheel-deeplearning-gpu \
         extract-wheel-deeplearning-gpu
 
-# Version - derived from the most recent git tag (e.g. v4.1.0 -> 4.1.0).
-# Override with: make build-all VERSION=4.1.0
+# Version - for local builds, defaults to the most recent git tag (e.g. v4.1.0 -> 4.1.0).
+# CI passes VERSION explicitly via workflow_dispatch input; tags are created by CI after a
+# successful push, so the tag always reflects a verified release.
+# Override locally with: make build-all VERSION=4.1.0
 VERSION ?= $(shell git describe --tags --abbrev=0 2>/dev/null | sed 's/^v//' | grep . || echo dev)
 
 # DockerHub credentials (set via environment variables or .env file)

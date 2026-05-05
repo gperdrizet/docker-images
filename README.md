@@ -42,33 +42,33 @@ Releases are automated via GitHub Actions using a self-hosted runner (required f
 
 ### Release workflow
 
-```
-git tag v4.1.0 && git push --tags
-```
+1. Make changes, commit, and push to `main` as normal
+2. When ready to release, go to **GitHub → Actions → CI → Run workflow**, enter the version number (e.g. `4.1.0`), and click **Run workflow**
 
-Pushing a version tag triggers the pipeline:
+The pipeline then runs automatically:
 
-1. **Build** — all four images are built via `make build-all`
-2. **Test** — CPU and GPU image tests run in parallel via `make test-cpu` and `make test-gpu`
+1. **Build** — all four images are built with the specified version
+2. **Test** — CPU and GPU image tests run in parallel
 3. **Approve** — pipeline pauses; a notification is sent for manual approval
 4. **Push** — on approval, images are pushed to DockerHub and DockerHub READMEs are updated
-5. **Sync** — a dispatch event is sent to `deeplearning-devcontainer` and `llms-devcontainer`, which each create a matching version tag and GitHub release
+5. **Tag** — a git tag (`v4.1.0`) and GitHub release are created automatically
+6. **Sync** — a dispatch event is sent to `deeplearning-devcontainer` and `llms-devcontainer`, which each create a matching version tag and GitHub release
 
-Workday commits to `main` do not trigger the pipeline — only version tags do.
+Git tags are only created after a successful, approved push — orphaned tags that point to broken or unpushed images are not possible.
 
 ### Running tests locally
 
 ```bash
-make test-all        # all four images
-make test-cpu        # deeplearning-cpu + llms-cpu
-make test-gpu        # deeplearning-gpu + llms-gpu
-make test-llms-cpu   # individual image
+make test-all                           # all four images (uses last git tag as version)
+make test-cpu                           # deeplearning-cpu + llms-cpu
+make test-gpu                           # deeplearning-gpu + llms-gpu
+make test-llms-cpu VERSION=4.1.0        # individual image with explicit version
 ```
 
 Test scripts are in `tests/` and can also be run directly:
 
 ```bash
-bash tests/test-deeplearning-cpu.sh gperdrizet/deeplearning-cpu:4.0.0
+bash tests/test-deeplearning-cpu.sh gperdrizet/deeplearning-cpu:4.1.0
 ```
 
 ### Required secrets
@@ -79,7 +79,7 @@ Set in GitHub → repo Settings → Secrets → Actions:
 |--------|----------|
 | `DOCKERHUB_USERNAME` | DockerHub login |
 | `DOCKERHUB_TOKEN` | DockerHub PAT (Read, Write & Delete) |
-| `GH_DISPATCH_TOKEN` | GitHub fine-grained PAT to trigger devcontainer repo syncs (Contents: read/write on both devcontainer repos) |
+| `GH_DISPATCH_TOKEN` | GitHub fine-grained PAT to push tags to this repo and trigger devcontainer repo syncs. Requires **Contents: read/write** on `docker-images`, `deeplearning-devcontainer`, and `llms-devcontainer`. |
 
 ### Self-hosted runner
 

@@ -4,14 +4,17 @@
         push-deeplearning-gpu push-deeplearning-cpu \
         push-llms-gpu push-llms-cpu \
         push-deeplearning push-llms push-all all \
+        test-deeplearning-cpu test-deeplearning-gpu test-llms-cpu test-llms-gpu \
+        test-cpu test-gpu test-all \
         update-readme-deeplearning-gpu update-readme-deeplearning-cpu \
         update-readme-llms-gpu update-readme-llms-cpu \
         update-readme-all \
         wheel-deeplearning-gpu \
         extract-wheel-deeplearning-gpu
 
-# Version - update this when releasing a new version
-VERSION ?= 4.0.0
+# Version - derived from the most recent git tag (e.g. v4.1.0 -> 4.1.0).
+# Override with: make build-all VERSION=4.1.0
+VERSION ?= $(shell git describe --tags --abbrev=0 2>/dev/null | sed 's/^v//' | grep . || echo dev)
 
 # DockerHub credentials (set via environment variables or .env file)
 DOCKERHUB_USERNAME ?= gperdrizet
@@ -42,6 +45,25 @@ build-llms-cpu:
 build-llms: build-llms-gpu build-llms-cpu
 
 build-all: build-deeplearning build-llms
+
+# Test targets
+test-deeplearning-cpu:
+	@bash ./tests/test-deeplearning-cpu.sh $(DEEPLEARNING_CPU_IMAGE):$(VERSION)
+
+test-deeplearning-gpu:
+	@bash ./tests/test-deeplearning-gpu.sh $(DEEPLEARNING_GPU_IMAGE):$(VERSION)
+
+test-llms-cpu:
+	@bash ./tests/test-llms-cpu.sh $(LLMS_CPU_IMAGE):$(VERSION)
+
+test-llms-gpu:
+	@bash ./tests/test-llms-gpu.sh $(LLMS_GPU_IMAGE):$(VERSION)
+
+test-cpu: test-deeplearning-cpu test-llms-cpu
+
+test-gpu: test-deeplearning-gpu test-llms-gpu
+
+test-all: test-cpu test-gpu
 
 # Push targets - deeplearning
 push-deeplearning-gpu:

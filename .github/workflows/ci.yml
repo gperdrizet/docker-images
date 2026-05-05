@@ -1,0 +1,68 @@
+name: CI
+
+on:
+  push:
+    tags:
+      - 'v*.*.*'
+
+jobs:
+  build:
+    name: Build all images
+    runs-on: self-hosted
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Build all images
+        run: make build-all
+
+  test-cpu:
+    name: Test CPU images
+    runs-on: self-hosted
+    needs: build
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Test CPU images
+        run: make test-cpu
+
+  test-gpu:
+    name: Test GPU images
+    runs-on: self-hosted
+    needs: build
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Test GPU images
+        run: make test-gpu
+
+  push:
+    name: Push to DockerHub
+    runs-on: self-hosted
+    needs: [test-cpu, test-gpu]
+    environment: production
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Log in to DockerHub
+        run: echo "${{ secrets.DOCKERHUB_TOKEN }}" | docker login -u "${{ secrets.DOCKERHUB_USERNAME }}" --password-stdin
+
+      - name: Create .env for README updates
+        run: printf 'DOCKERHUB_USERNAME=%s\nDOCKERHUB_TOKEN=%s\n' "${{ secrets.DOCKERHUB_USERNAME }}" "${{ secrets.DOCKERHUB_TOKEN }}" > .env
+
+      - name: Push all images
+        run: make push-all
+
+      - name: Update DockerHub READMEs
+        run: make update-readme-all
+
+      - name: Docker logout
+        if: always()
+        run: docker logout

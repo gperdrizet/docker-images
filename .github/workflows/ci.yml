@@ -9,6 +9,7 @@ jobs:
   build:
     name: Build all images
     runs-on: self-hosted
+    if: github.repository_owner == 'gperdrizet'
     steps:
       - uses: actions/checkout@v4
         with:
@@ -20,6 +21,7 @@ jobs:
   test-cpu:
     name: Test CPU images
     runs-on: self-hosted
+    if: github.repository_owner == 'gperdrizet'
     needs: build
     steps:
       - uses: actions/checkout@v4
@@ -32,6 +34,7 @@ jobs:
   test-gpu:
     name: Test GPU images
     runs-on: self-hosted
+    if: github.repository_owner == 'gperdrizet'
     needs: build
     steps:
       - uses: actions/checkout@v4
@@ -44,6 +47,7 @@ jobs:
   push:
     name: Push to DockerHub
     runs-on: self-hosted
+    if: github.repository_owner == 'gperdrizet'
     needs: [test-cpu, test-gpu]
     environment: production
     steps:
@@ -66,3 +70,17 @@ jobs:
       - name: Docker logout
         if: always()
         run: docker logout
+
+      - name: Dispatch version sync to devcontainer repos
+        env:
+          GH_DISPATCH_TOKEN: ${{ secrets.GH_DISPATCH_TOKEN }}
+          VERSION: ${{ github.ref_name }}
+        run: |
+          for repo in deeplearning-devcontainer llms-devcontainer; do
+            curl -s -X POST \
+              -H "Authorization: Bearer $GH_DISPATCH_TOKEN" \
+              -H "Accept: application/vnd.github+json" \
+              "https://api.github.com/repos/gperdrizet/${repo}/dispatches" \
+              -d "{\"event_type\": \"docker-images-release\", \"client_payload\": {\"version\": \"${VERSION#v}\"}}"
+            echo "Dispatched sync to $repo"
+          done

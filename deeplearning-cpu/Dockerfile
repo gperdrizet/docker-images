@@ -1,7 +1,7 @@
 # Deep Learning CPU Development Container
-# Based on official TensorFlow image - CPU only, compatible with any machine.
-# TensorFlow 2.17.0, Python 3.12, Ubuntu 22.04
-FROM tensorflow/tensorflow:2.17.0
+# Based on python:3.12-slim — TensorFlow and PyTorch installed via pip.
+# Python 3.12, CPU only, compatible with any machine.
+FROM python:3.12-slim
 
 ARG IMAGE_VERSION=dev
 ENV DEBIAN_FRONTEND=noninteractive
@@ -23,6 +23,7 @@ RUN apt-get update && \
     echo "vscode ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers.d/vscode && \
     chmod 0440 /etc/sudoers.d/vscode && \
     echo 'export PATH="/home/vscode/.local/bin:$PATH"' >> /home/vscode/.bashrc && \
+    echo 'export HF_HOME="/home/vscode/.cache/huggingface"' >> /home/vscode/.bashrc && \
     mkdir -p /workspace && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*

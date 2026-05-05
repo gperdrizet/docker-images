@@ -1,3 +1,5 @@
+ipykernel
+jupyterlab
 ipywidgets
 keras_tuner
 matplotlib
@@ -5,3 +7,4 @@ optuna
 optuna-dashboard
 psycopg2-binary
 seaborn
+tensorflow

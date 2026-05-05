@@ -35,6 +35,7 @@ RUN apt-get update && \
     echo 'export PATH="/home/vscode/.local/bin:$PATH"' >> /home/vscode/.bashrc && \
     echo 'export HF_HOME="/home/vscode/.cache/huggingface"' >> /home/vscode/.bashrc && \
     mkdir -p /workspace && \
+    rm -f /usr/lib/python3.12/EXTERNALLY-MANAGED && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
 

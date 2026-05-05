@@ -14,8 +14,8 @@ A ready-to-use deep learning environment for VS Code. Includes both **PyTorch** 
 
 | Component | Version |
 |-----------|---------|
-| Base Image | `tensorflow/tensorflow:2.17.0` |
-| TensorFlow | 2.17 (CPU) |
+| Base Image | `python:3.12-slim` |
+| TensorFlow | Latest (CPU) |
 | Keras | 3.x |
 | PyTorch | Latest (CPU) |
 | Python | 3.12 |

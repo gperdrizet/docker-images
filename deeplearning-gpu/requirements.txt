@@ -1,3 +1,5 @@
+ipykernel
+jupyterlab
 ipywidgets
 keras_tuner
 matplotlib

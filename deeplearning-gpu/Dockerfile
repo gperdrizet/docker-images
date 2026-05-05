@@ -25,6 +25,7 @@ RUN apt-get update && \
     echo "vscode ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers.d/vscode && \
     chmod 0440 /etc/sudoers.d/vscode && \
     echo 'export PATH="/home/vscode/.local/bin:$PATH"' >> /home/vscode/.bashrc && \
+    echo 'export HF_HOME="/home/vscode/.cache/huggingface"' >> /home/vscode/.bashrc && \
     rm -rf /workspace/docker-examples /workspace/nvidia-examples && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*

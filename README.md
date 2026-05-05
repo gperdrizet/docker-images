@@ -42,9 +42,6 @@ Create your DockerHub Personal Access Token at https://hub.docker.com/settings/s
 | `make build-deeplearning-gpu` | Build deeplearning GPU image |
 | `make build-deeplearning-cpu` | Build deeplearning CPU image |
 | `make build-deeplearning` | Build both deeplearning images |
-| `make build-tensorflow-gpu` | Build tensorflow GPU image |
-| `make build-tensorflow-cpu` | Build tensorflow CPU image |
-| `make build-tensorflow` | Build both tensorflow images |
 | `make build-llms-gpu` | Build llms GPU image |
 | `make build-llms-cpu` | Build llms CPU image |
 | `make build-llms` | Build both llms images |
@@ -57,9 +54,6 @@ Create your DockerHub Personal Access Token at https://hub.docker.com/settings/s
 | `make push-deeplearning-gpu` | Push deeplearning GPU image |
 | `make push-deeplearning-cpu` | Push deeplearning CPU image |
 | `make push-deeplearning` | Push both deeplearning images |
-| `make push-tensorflow-gpu` | Push tensorflow GPU image |
-| `make push-tensorflow-cpu` | Push tensorflow CPU image |
-| `make push-tensorflow` | Push both tensorflow images |
 | `make push-llms-gpu` | Push llms GPU image |
 | `make push-llms-cpu` | Push llms CPU image |
 | `make push-llms` | Push both llms images |
@@ -84,8 +78,6 @@ Create your DockerHub Personal Access Token at https://hub.docker.com/settings/s
 |---------|-------------|
 | `make update-readme-deeplearning-gpu` | Update deeplearning-gpu DockerHub README |
 | `make update-readme-deeplearning-cpu` | Update deeplearning-cpu DockerHub README |
-| `make update-readme-tensorflow-gpu` | Update tensorflow-gpu DockerHub README |
-| `make update-readme-tensorflow-cpu` | Update tensorflow-cpu DockerHub README |
 | `make update-readme-llms-gpu` | Update llms-gpu DockerHub README |
 | `make update-readme-llms-cpu` | Update llms-cpu DockerHub README |
 | `make update-readme-all` | Update all DockerHub READMEs |
@@ -96,8 +88,6 @@ Create your DockerHub Personal Access Token at https://hub.docker.com/settings/s
 2. deeplearning-cpu
 3. llms-gpu
 4. llms-cpu
-5. tensorflow-gpu *(archived)*
-6. tensorflow-cpu *(archived)*
 
 ### 1. deeplearning-gpu
 
@@ -188,49 +178,6 @@ Lightweight LLM application development environment for CPU-only systems.
 **DockerHub:** [`gperdrizet/llms-cpu:latest`](https://hub.docker.com/repository/docker/gperdrizet/llms-cpu/general)
 
 **Devcontainer repository:** [`github.com/gperdrizet/llms-devcontainer`](https://github.com/gperdrizet/llms-devcontainer)
-
----
-
-## Archived Containers
-
-The following containers are no longer actively maintained.
-
-### 5. tensorflow-gpu *(archived)*
-
-TensorFlow-focused environment with NVIDIA GPU support (no PyTorch).
-
-| Component | Version |
-|-----------|---------|
-| Base Image | `nvcr.io/nvidia/tensorflow:24.06-tf2-py3` |
-| TensorFlow | 2.16 |
-| Keras | 3.3 |
-| Python | 3.10 |
-| CUDA | 12.6 |
-
-**Other packages:** numpy, pandas, scikit-learn, scipy, matplotlib, seaborn, jupyterlab, keras_tuner, optuna, tensorboard
-
-**DockerHub:** [`gperdrizet/tensorflow-gpu:latest`](https://hub.docker.com/repository/docker/gperdrizet/tensorflow-gpu/general)
-
-**Devcontainer repository:** [`github.com/gperdrizet/tensorflow-gpu`](https://github.com/gperdrizet/tensorflow-gpu)
-
----
-
-### 6. tensorflow-cpu *(archived)*
-
-Lightweight TensorFlow environment for CPU-only systems (no PyTorch).
-
-| Component | Version |
-|-----------|---------|
-| Base Image | `tensorflow/tensorflow:2.16.1-jupyter` |
-| TensorFlow | 2.16 |
-| Keras | 3.3 |
-| Python | 3.10 |
-
-**Other packages:** numpy, pandas, scikit-learn, scipy, matplotlib, seaborn, jupyterlab, keras_tuner, optuna, tensorboard
-
-**DockerHub:** [`gperdrizet/tensorflow-cpu:latest`](https://hub.docker.com/repository/docker/gperdrizet/tensorflow-cpu/general)
-
-**Devcontainer repository:** [`github.com/gperdrizet/tensorflow-cpu`](https://github.com/gperdrizet/tensorflow-cpu)
 
 ---
 

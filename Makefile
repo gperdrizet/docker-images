@@ -1,11 +1,10 @@
-.PHONY: build-deeplearning-gpu build-deeplearning-cpu build-tensorflow-gpu build-tensorflow-cpu \
+.PHONY: build-deeplearning-gpu build-deeplearning-cpu \
         build-llms-gpu build-llms-cpu \
-        build-deeplearning build-tensorflow build-llms build-all \
-        push-deeplearning-gpu push-deeplearning-cpu push-tensorflow-gpu push-tensorflow-cpu \
+        build-deeplearning build-llms build-all \
+        push-deeplearning-gpu push-deeplearning-cpu \
         push-llms-gpu push-llms-cpu \
-        push-deeplearning push-tensorflow push-llms push-all all \
+        push-deeplearning push-llms push-all all \
         update-readme-deeplearning-gpu update-readme-deeplearning-cpu \
-        update-readme-tensorflow-gpu update-readme-tensorflow-cpu \
         update-readme-llms-gpu update-readme-llms-cpu \
         update-readme-all \
         wheel-deeplearning-gpu \
@@ -21,8 +20,6 @@ DOCKERHUB_TOKEN ?=
 # Image names
 DEEPLEARNING_GPU_IMAGE := gperdrizet/deeplearning-gpu
 DEEPLEARNING_CPU_IMAGE := gperdrizet/deeplearning-cpu
-TENSORFLOW_GPU_IMAGE := gperdrizet/tensorflow-gpu
-TENSORFLOW_CPU_IMAGE := gperdrizet/tensorflow-cpu
 LLMS_GPU_IMAGE := gperdrizet/llms-gpu
 LLMS_CPU_IMAGE := gperdrizet/llms-cpu
 
@@ -35,15 +32,6 @@ build-deeplearning-cpu:
 
 build-deeplearning: build-deeplearning-gpu build-deeplearning-cpu
 
-# Build targets - tensorflow
-build-tensorflow-gpu:
-	docker build -t $(TENSORFLOW_GPU_IMAGE):$(VERSION) -t $(TENSORFLOW_GPU_IMAGE):latest ./tensorflow-gpu
-
-build-tensorflow-cpu:
-	docker build -t $(TENSORFLOW_CPU_IMAGE):$(VERSION) -t $(TENSORFLOW_CPU_IMAGE):latest ./tensorflow-cpu
-
-build-tensorflow: build-tensorflow-gpu build-tensorflow-cpu
-
 # Build targets - llms
 build-llms-gpu:
 	DOCKER_BUILDKIT=1 docker build --network=host --build-arg IMAGE_VERSION=$(VERSION) --shm-size=16g -t $(LLMS_GPU_IMAGE):$(VERSION) -t $(LLMS_GPU_IMAGE):latest ./llms-gpu
@@ -53,7 +41,6 @@ build-llms-cpu:
 
 build-llms: build-llms-gpu build-llms-cpu
 
-# Build all (tensorflow archived)
 build-all: build-deeplearning build-llms
 
 # Push targets - deeplearning
@@ -67,17 +54,6 @@ push-deeplearning-cpu:
 
 push-deeplearning: push-deeplearning-gpu push-deeplearning-cpu
 
-# Push targets - tensorflow
-push-tensorflow-gpu:
-	docker push $(TENSORFLOW_GPU_IMAGE):$(VERSION)
-	docker push $(TENSORFLOW_GPU_IMAGE):latest
-
-push-tensorflow-cpu:
-	docker push $(TENSORFLOW_CPU_IMAGE):$(VERSION)
-	docker push $(TENSORFLOW_CPU_IMAGE):latest
-
-push-tensorflow: push-tensorflow-gpu push-tensorflow-cpu
-
 # Push targets - llms
 push-llms-gpu:
 	docker push $(LLMS_GPU_IMAGE):$(VERSION)
@@ -89,7 +65,6 @@ push-llms-cpu:
 
 push-llms: push-llms-gpu push-llms-cpu
 
-# Push all (tensorflow archived)
 push-all: push-deeplearning push-llms
 
 # Build, push, and update readmes
@@ -120,30 +95,6 @@ update-readme-deeplearning-cpu:
 		-d "{\"full_description\": $$FULL_DESC}" > /dev/null && \
 	echo "Successfully updated deeplearning-cpu README"
 
-update-readme-tensorflow-gpu:
-	@if [ ! -f .env ]; then echo "Error: .env file not found"; exit 1; fi
-	@echo "Getting DockerHub auth token..."
-	@. ./.env && TOKEN=$$(curl -s -H "Content-Type: application/json" -X POST -d "{\"username\": \"$$DOCKERHUB_USERNAME\", \"password\": \"$$DOCKERHUB_TOKEN\"}" https://hub.docker.com/v2/users/login/ | jq -r .token); \
-	echo "Updating README for tensorflow-gpu..."; \
-	FULL_DESC=$$(jq -Rs . < ./tensorflow-gpu/README.md); \
-	curl -s -X PATCH "https://hub.docker.com/v2/repositories/gperdrizet/tensorflow-gpu/" \
-		-H "Authorization: JWT $$TOKEN" \
-		-H "Content-Type: application/json" \
-		-d "{\"full_description\": $$FULL_DESC}" > /dev/null && \
-	echo "Successfully updated tensorflow-gpu README"
-
-update-readme-tensorflow-cpu:
-	@if [ ! -f .env ]; then echo "Error: .env file not found"; exit 1; fi
-	@echo "Getting DockerHub auth token..."
-	@. ./.env && TOKEN=$$(curl -s -H "Content-Type: application/json" -X POST -d "{\"username\": \"$$DOCKERHUB_USERNAME\", \"password\": \"$$DOCKERHUB_TOKEN\"}" https://hub.docker.com/v2/users/login/ | jq -r .token); \
-	echo "Updating README for tensorflow-cpu..."; \
-	FULL_DESC=$$(jq -Rs . < ./tensorflow-cpu/README.md); \
-	curl -s -X PATCH "https://hub.docker.com/v2/repositories/gperdrizet/tensorflow-cpu/" \
-		-H "Authorization: JWT $$TOKEN" \
-		-H "Content-Type: application/json" \
-		-d "{\"full_description\": $$FULL_DESC}" > /dev/null && \
-	echo "Successfully updated tensorflow-cpu README"
-
 update-readme-llms-gpu:
 	@if [ ! -f .env ]; then echo "Error: .env file not found"; exit 1; fi
 	@echo "Getting DockerHub auth token..."
@@ -168,7 +119,6 @@ update-readme-llms-cpu:
 		-d "{\"full_description\": $$FULL_DESC}" > /dev/null && \
 	echo "Successfully updated llms-cpu README"
 
-# tensorflow archived
 update-readme-all: update-readme-deeplearning-gpu update-readme-deeplearning-cpu update-readme-llms-gpu update-readme-llms-cpu
 
 # PyTorch wheel build configuration

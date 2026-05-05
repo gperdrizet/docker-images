@@ -1,3 +1,6 @@
+# PyTorch - custom build with wide GPU arch support (Pascal through Blackwell, sm_60-sm_100)
+https://github.com/gperdrizet/docker-images/releases/download/pytorch-2.11.0-cu128-cp312/torch-2.11.0-cp312-cp312-linux_x86_64.whl
+
 # LLM Frameworks
 langchain
 langchain-community

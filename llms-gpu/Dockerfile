@@ -22,7 +22,8 @@ RUN apt-get update && \
         curl \
         zstd \
         git \
-        openssh-client && \
+        openssh-client \
+        libopenmpi3t64 && \
     mkdir -p /run/screen && chmod 777 /run/screen && \
     ln -sf /usr/bin/python3.12 /usr/bin/python && \
     ln -sf /usr/bin/python3.12 /usr/bin/python3 && \

@@ -9,6 +9,7 @@ FROM nvidia/cuda:12.8.1-cudnn-runtime-ubuntu24.04
 ARG IMAGE_VERSION=dev
 ARG WHEEL_URL=https://github.com/gperdrizet/docker-images/releases/download/pytorch-2.11.0-cu128-cp312/torch-2.11.0-cp312-cp312-linux_x86_64.whl
 ENV DEBIAN_FRONTEND=noninteractive
+ENV LD_LIBRARY_PATH=/usr/local/cuda/lib64:/usr/lib/x86_64-linux-gnu${LD_LIBRARY_PATH:+:${LD_LIBRARY_PATH}}
 
 RUN apt-get update && \
     apt-get install -y --no-install-recommends \
@@ -52,18 +53,19 @@ RUN chmod +x /usr/local/bin/motd.sh && \
 # Copy our README to workspace
 COPY README.md /workspace/README.md
 
-# Copy requirements and install LLM Python dependencies
-# pip will pull in torch from PyPI (with nvidia-*-cu12 pip packages) as a transitive dep.
-# We then strip those pip CUDA packages and replace torch with our custom wheel,
-# which links against system CUDA (installed via apt above).
-COPY requirements.txt .
-RUN pip install --no-cache-dir --break-system-packages --root-user-action=ignore -r requirements.txt && \
-    pip freeze | grep '^nvidia-' | xargs pip uninstall -y 2>/dev/null || true
+# Install custom PyTorch wheel first, then requirements.
+# Installing wheel first avoids pip's dependency resolver overwriting it.
+# The constraint file pins torch to the installed version so requirements.txt
+# cannot pull a different version from PyPI.
+RUN pip install --no-cache-dir --break-system-packages --root-user-action=ignore ${WHEEL_URL}
 
-# Install custom PyTorch wheel (Pascal through Blackwell, sm_60-sm_100)
-# --force-reinstall: overwrite the PyPI torch installed above
-# --no-deps: don't re-add nvidia-*-cu12 pip packages; use system CUDA libs instead
-RUN pip install --no-cache-dir --break-system-packages --root-user-action=ignore --force-reinstall --no-deps ${WHEEL_URL}
+COPY requirements.txt .
+RUN pip freeze | grep '^torch==' > /tmp/torch-constraint.txt && \
+    pip install --no-cache-dir --break-system-packages --root-user-action=ignore \
+    --constraint /tmp/torch-constraint.txt -r requirements.txt
+
+# Validate torch loads correctly at build time
+RUN python3 -c "import torch; print('torch', torch.__version__, '- CUDA available:', torch.cuda.is_available())"
 
 # docker build -t gperdrizet/llms-gpu:latest .
 # docker push gperdrizet/llms-gpu:latest

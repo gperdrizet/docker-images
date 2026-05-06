@@ -5,5 +5,9 @@ keras_tuner
 matplotlib
 optuna
 optuna-dashboard
+pandas
 psycopg2-binary
+scikit-learn
+scipy
 seaborn
+tensorboard

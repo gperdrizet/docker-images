@@ -31,6 +31,7 @@ A collection of ready-to-use Docker images for VS Code Dev Containers, designed 
   - [5.2. Makefile reference](#52-makefile-reference)
   - [5.3. CI/CD infrastructure](#53-cicd-infrastructure)
   - [5.4. Rebuilding PyTorch wheels](#54-rebuilding-pytorch-wheels)
+- [6. License](#6-license)
 
 ## 1. Related repositories
 
@@ -363,7 +364,7 @@ gh release create pytorch-2.11.0-cu128-cp312 ./wheels/torch-2.11.0-cp312-cp312-l
 | deeplearning-gpu | 3.12 | 12.8 | `torch-X.Y.Z-cp312-cp312-linux_x86_64.whl` |
 | llms-gpu | 3.12 | 12.8 | same wheel (reused from GitHub Releases) |
 
-## License
+## 6. License
 
 The Dockerfiles, scripts, and documentation in this repository are licensed under the [MIT License](LICENSE).
 

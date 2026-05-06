@@ -87,29 +87,28 @@ jobs:
           DL_PKGS="torch tensorflow numpy pandas scikit-learn scipy matplotlib seaborn jupyterlab keras-tuner optuna tensorboard"
           LLM_PKGS="torch transformers langchain langchain-community smolagents chromadb sentence-transformers gradio accelerate datasets tiktoken"
 
+          > /tmp/version_tables.md
+
           for variant in gpu cpu; do
             IMAGE="gperdrizet/deeplearning-${variant}:${VER}"
-            echo ""
-            echo "### deeplearning-${variant}"
-            echo "| Package | Version |"
-            echo "| --- | --- |"
+            printf '\n### deeplearning-%s\n| Package | Version |\n| --- | --- |\n' "$variant" >> /tmp/version_tables.md
             docker run --rm -v /tmp/get_versions.py:/tmp/get_versions.py \
-              "$IMAGE" python /tmp/get_versions.py $DL_PKGS
+              "$IMAGE" python /tmp/get_versions.py $DL_PKGS >> /tmp/version_tables.md
           done
 
           for variant in gpu cpu; do
             IMAGE="gperdrizet/llms-${variant}:${VER}"
-            echo ""
-            echo "### llms-${variant}"
-            echo "| Package | Version |"
-            echo "| --- | --- |"
+            printf '\n### llms-%s\n| Package | Version |\n| --- | --- |\n' "$variant" >> /tmp/version_tables.md
             EXTRA=""
             [[ "$variant" == "gpu" ]] && EXTRA="bitsandbytes"
             docker run --rm -v /tmp/get_versions.py:/tmp/get_versions.py \
-              "$IMAGE" python /tmp/get_versions.py $LLM_PKGS $EXTRA
+              "$IMAGE" python /tmp/get_versions.py $LLM_PKGS $EXTRA >> /tmp/version_tables.md
             OLLAMA=$(docker run --rm "$IMAGE" ollama --version 2>&1 | grep -oP '[\d.]+' | head -1)
-            echo "| ollama | ${OLLAMA} |"
+            echo "| ollama | ${OLLAMA} |" >> /tmp/version_tables.md
           done
+
+          echo "--- Version tables ---"
+          cat /tmp/version_tables.md
 
       - name: Docker logout
         if: always()
@@ -125,11 +124,15 @@ jobs:
           git remote set-url origin "https://x-access-token:${GH_DISPATCH_TOKEN}@github.com/gperdrizet/docker-images.git"
           git tag "v${VERSION}"
           git push origin "v${VERSION}"
+          RELEASE_BODY=$(cat /tmp/version_tables.md)
           curl -s -X POST \
             -H "Authorization: Bearer $GH_DISPATCH_TOKEN" \
             -H "Accept: application/vnd.github+json" \
             "https://api.github.com/repos/gperdrizet/docker-images/releases" \
-            -d "{\"tag_name\": \"v${VERSION}\", \"name\": \"v${VERSION}\", \"generate_release_notes\": true}"
+            -d "$(jq -n \
+              --arg tag "v${VERSION}" \
+              --arg body "$RELEASE_BODY" \
+              '{tag_name: $tag, name: $tag, body: $body, generate_release_notes: true}')"
           echo "Created release v${VERSION}"
 
       - name: Dispatch version sync to devcontainer repos

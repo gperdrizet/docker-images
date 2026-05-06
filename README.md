@@ -52,6 +52,8 @@ This is part of a multi-repo project. The devcontainer repositories consume the 
 
 The images can be used directly with Docker, without VS Code Dev Containers. Two common workflows are described below.
 
+> **Persistent storage:** All examples below include `-v $(pwd):/workspace`, which bind-mounts your current host directory into `/workspace` inside the container. Files written there are saved on your host and survive container removal (`--rm`). Run the `docker run` command from whichever directory you want to work in.
+
 ### 3.1. JupyterLab
 
 All four images include JupyterLab. Start a container with the port exposed, then open the printed URL in a browser.

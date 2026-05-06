@@ -199,7 +199,7 @@ Git tags are only created after a successful, approved push, so a tag always cor
 
 These commands are useful for local development and testing. The CI/CD pipeline calls the same targets automatically during a release.
 
-### 5.3. Build commands
+#### 5.2.1. Build commands
 
 | Command | Description |
 |---------|-------------|
@@ -211,7 +211,7 @@ These commands are useful for local development and testing. The CI/CD pipeline 
 | `make build-llms` | Build both llms images |
 | `make build-all` | Build all images |
 
-### 5.4. Test commands
+#### 5.2.2. Test commands
 
 | Command | Description |
 |---------|-------------|
@@ -229,7 +229,7 @@ Test scripts are in `tests/` and can also be run directly, with an optional imag
 bash tests/test-deeplearning-cpu.sh gperdrizet/deeplearning-cpu:4.1.0
 ```
 
-### 5.5. Push commands
+#### 5.2.3. Push commands
 
 | Command | Description |
 |---------|-------------|
@@ -241,7 +241,7 @@ bash tests/test-deeplearning-cpu.sh gperdrizet/deeplearning-cpu:4.1.0
 | `make push-llms` | Push both llms images |
 | `make push-all` | Push all images |
 
-### 5.6. DockerHub README commands
+#### 5.2.4. DockerHub README commands
 
 Requires a `.env` file in the project root:
 
@@ -258,7 +258,7 @@ DOCKERHUB_TOKEN=your-dockerhub-pat
 | `make update-readme-llms-cpu` | Update llms-cpu DockerHub README |
 | `make update-readme-all` | Update all DockerHub READMEs |
 
-### 5.7. CI/CD infrastructure
+### 5.3. CI/CD infrastructure
 
 #### GitHub Actions secrets
 
@@ -282,7 +282,7 @@ sudo ./svc.sh status
 
 It polls GitHub via long-polling HTTPS; no inbound ports are required. Jobs are rejected unless `github.repository_owner == 'gperdrizet'`.
 
-### 5.8. Rebuilding PyTorch wheels
+### 5.4. Rebuilding PyTorch wheels
 
 The `llms-gpu` and `deeplearning-gpu` images use custom-built PyTorch wheels with wide GPU architecture support (Pascal through Blackwell). Pre-built wheels are hosted on GitHub Releases and downloaded during image build.
 

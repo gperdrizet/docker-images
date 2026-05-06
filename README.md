@@ -14,6 +14,24 @@
 
 A collection of ready-to-use Docker images for VS Code Dev Containers, designed for AI/ML bootcamp students. GPU images are built with wide hardware compatibility (NVIDIA Pascal through Blackwell, sm_60-sm_100) so they work across diverse student hardware. All images include a pre-configured `vscode` user (UID 1000) with sudo access for seamless devcontainer integration. They can also be used standalone, with JupyterLab in a browser or VS Code attached directly to a running container.
 
+## Contents
+
+- [1. Related repositories](#1-related-repositories)
+- [2. Requirements](#2-requirements)
+- [3. Standalone usage](#3-standalone-usage)
+  - [3.1. JupyterLab](#31-jupyterlab)
+  - [3.2. VS Code: Attach to Running Container](#32-vs-code-attach-to-running-container)
+- [4. Container summaries](#4-container-summaries)
+  - [4.1. deeplearning-gpu](#41-deeplearning-gpu)
+  - [4.2. deeplearning-cpu](#42-deeplearning-cpu)
+  - [4.3. llms-gpu](#43-llms-gpu)
+  - [4.4. llms-cpu](#44-llms-cpu)
+- [5. Development](#5-development)
+  - [5.1. Releasing a new version](#51-releasing-a-new-version)
+  - [5.2. Makefile reference](#52-makefile-reference)
+  - [5.3. CI/CD infrastructure](#53-cicd-infrastructure)
+  - [5.4. Rebuilding PyTorch wheels](#54-rebuilding-pytorch-wheels)
+
 ## 1. Related repositories
 
 This is part of a multi-repo project. The devcontainer repositories consume the images built here and provide ready-to-use VS Code Dev Container configurations for students.

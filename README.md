@@ -199,7 +199,7 @@ Git tags are only created after a successful, approved push, so a tag always cor
 
 These commands are useful for local development and testing. The CI/CD pipeline calls the same targets automatically during a release.
 
-#### 5.2.1. Build commands
+#### Build commands
 
 | Command | Description |
 |---------|-------------|
@@ -211,7 +211,7 @@ These commands are useful for local development and testing. The CI/CD pipeline 
 | `make build-llms` | Build both llms images |
 | `make build-all` | Build all images |
 
-#### 5.2.2. Test commands
+#### Test commands
 
 | Command | Description |
 |---------|-------------|
@@ -229,7 +229,7 @@ Test scripts are in `tests/` and can also be run directly, with an optional imag
 bash tests/test-deeplearning-cpu.sh gperdrizet/deeplearning-cpu:4.1.0
 ```
 
-#### 5.2.3. Push commands
+#### Push commands
 
 | Command | Description |
 |---------|-------------|
@@ -241,7 +241,7 @@ bash tests/test-deeplearning-cpu.sh gperdrizet/deeplearning-cpu:4.1.0
 | `make push-llms` | Push both llms images |
 | `make push-all` | Push all images |
 
-#### 5.2.4. DockerHub README commands
+#### DockerHub README commands
 
 Requires a `.env` file in the project root:
 

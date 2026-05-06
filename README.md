@@ -34,7 +34,7 @@ This is part of a multi-repo project. The devcontainer repositories consume the 
 
 The images can be used directly with Docker, without VS Code Dev Containers. Two common workflows are described below.
 
-### JupyterLab
+### 3.1. JupyterLab
 
 All four images include JupyterLab. Start a container with the port exposed, then open the printed URL in a browser.
 
@@ -59,7 +59,7 @@ docker run --rm -it \
 
 Once running, copy the `http://127.0.0.1:8888/lab?token=...` URL from the terminal output and open it in your browser. Replace `llms-cpu` / `llms-gpu` with `deeplearning-cpu` / `deeplearning-gpu` as needed.
 
-### VS Code: Attach to Running Container
+### 3.2. VS Code: Attach to Running Container
 
 This gives a full VS Code experience inside the container with no extra software needed beyond the [Dev Containers extension](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-containers).
 
@@ -89,12 +89,12 @@ VS Code opens a new window connected to the container. Your mounted volume is av
 
 ## 4. Container summaries
 
-1. deeplearning-gpu
-2. deeplearning-cpu
-3. llms-gpu
-4. llms-cpu
+4.1. deeplearning-gpu
+4.2. deeplearning-cpu
+4.3. llms-gpu
+4.4. llms-cpu
 
-### 1. deeplearning-gpu
+### 4.1. deeplearning-gpu
 
 Full-featured deep learning environment with NVIDIA GPU support.
 
@@ -116,7 +116,7 @@ Full-featured deep learning environment with NVIDIA GPU support.
 
 **Devcontainer repository:** [`github.com/gperdrizet/deeplearning-devcontainer`](https://github.com/gperdrizet/deeplearning-devcontainer)
 
-### 2. deeplearning-cpu
+### 4.2. deeplearning-cpu
 
 Full-featured deep learning environment for CPU-only systems.
 
@@ -133,7 +133,7 @@ Full-featured deep learning environment for CPU-only systems.
 
 **Devcontainer repository:** [`github.com/gperdrizet/deeplearning-devcontainer`](https://github.com/gperdrizet/deeplearning-devcontainer)
 
-### 3. llms-gpu
+### 4.3. llms-gpu
 
 LLM application development environment with NVIDIA GPU support. Includes LangChain, LlamaIndex, Hugging Face Transformers, and API clients.
 
@@ -157,7 +157,7 @@ LLM application development environment with NVIDIA GPU support. Includes LangCh
 
 **Devcontainer repository:** [`github.com/gperdrizet/llms-devcontainer`](https://github.com/gperdrizet/llms-devcontainer)
 
-### 4. llms-cpu
+### 4.4. llms-cpu
 
 Lightweight LLM application development environment for CPU-only systems.
 
@@ -179,7 +179,7 @@ Lightweight LLM application development environment for CPU-only systems.
 
 ## 5. Development
 
-### Releasing a new version
+### 5.1. Releasing a new version
 
 1. Make changes, commit, and push to `main` as normal
 2. When ready to release, go to **GitHub Actions -> CI -> Run workflow**, enter the version number (e.g. `4.1.0`), and click **Run workflow**
@@ -195,11 +195,11 @@ The pipeline runs automatically:
 
 Git tags are only created after a successful, approved push, so a tag always corresponds to a verified image on DockerHub.
 
-### Makefile reference
+### 5.2. Makefile reference
 
 These commands are useful for local development and testing. The CI/CD pipeline calls the same targets automatically during a release.
 
-### Build commands
+### 5.3. Build commands
 
 | Command | Description |
 |---------|-------------|
@@ -211,7 +211,7 @@ These commands are useful for local development and testing. The CI/CD pipeline 
 | `make build-llms` | Build both llms images |
 | `make build-all` | Build all images |
 
-### Test commands
+### 5.4. Test commands
 
 | Command | Description |
 |---------|-------------|
@@ -229,7 +229,7 @@ Test scripts are in `tests/` and can also be run directly, with an optional imag
 bash tests/test-deeplearning-cpu.sh gperdrizet/deeplearning-cpu:4.1.0
 ```
 
-### Push commands
+### 5.5. Push commands
 
 | Command | Description |
 |---------|-------------|
@@ -241,7 +241,7 @@ bash tests/test-deeplearning-cpu.sh gperdrizet/deeplearning-cpu:4.1.0
 | `make push-llms` | Push both llms images |
 | `make push-all` | Push all images |
 
-### DockerHub README commands
+### 5.6. DockerHub README commands
 
 Requires a `.env` file in the project root:
 
@@ -258,7 +258,7 @@ DOCKERHUB_TOKEN=your-dockerhub-pat
 | `make update-readme-llms-cpu` | Update llms-cpu DockerHub README |
 | `make update-readme-all` | Update all DockerHub READMEs |
 
-### CI/CD infrastructure
+### 5.7. CI/CD infrastructure
 
 #### GitHub Actions secrets
 
@@ -282,7 +282,7 @@ sudo ./svc.sh status
 
 It polls GitHub via long-polling HTTPS; no inbound ports are required. Jobs are rejected unless `github.repository_owner == 'gperdrizet'`.
 
-### Rebuilding PyTorch wheels
+### 5.8. Rebuilding PyTorch wheels
 
 The `llms-gpu` and `deeplearning-gpu` images use custom-built PyTorch wheels with wide GPU architecture support (Pascal through Blackwell). Pre-built wheels are hosted on GitHub Releases and downloaded during image build.
 

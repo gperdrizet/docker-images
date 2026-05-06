@@ -365,4 +365,12 @@ gh release create pytorch-2.11.0-cu128-cp312 ./wheels/torch-2.11.0-cp312-cp312-l
 
 ## License
 
-See individual container directories for license information.
+The Dockerfiles, scripts, and documentation in this repository are licensed under the [MIT License](LICENSE).
+
+Built images incorporate third-party base images with their own terms. By pulling or running an image you also accept the applicable upstream licenses:
+
+| Base image | License |
+|---|---|
+| `python:3.12-slim` | [Python Software Foundation License](https://docs.python.org/3/license.html) |
+| `nvcr.io/nvidia/tensorflow:25.02-tf2-py3` | [NVIDIA Deep Learning Container License](https://developer.nvidia.com/deep-learning-container-license) |
+| `nvidia/cuda:12.8.1-cudnn-runtime-ubuntu24.04` | [NVIDIA CUDA EULA](https://docs.nvidia.com/cuda/eula/) |

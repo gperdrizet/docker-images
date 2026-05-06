@@ -139,6 +139,63 @@ Lightweight LLM application development environment for CPU-only systems.
 
 ---
 
+## Standalone usage
+
+The images can be used directly with Docker, without VS Code Dev Containers. Two common workflows are described below.
+
+### JupyterLab
+
+All four images include JupyterLab. Start a container with the port exposed, then open the printed URL in a browser.
+
+**CPU images:**
+```bash
+docker run --rm -it \
+  -p 8888:8888 \
+  -v $(pwd):/workspace \
+  gperdrizet/llms-cpu:latest \
+  jupyter lab --ip=0.0.0.0 --no-browser --allow-root
+```
+
+**GPU images** (add `--gpus all`):
+```bash
+docker run --rm -it \
+  --gpus all \
+  -p 8888:8888 \
+  -v $(pwd):/workspace \
+  gperdrizet/llms-gpu:latest \
+  jupyter lab --ip=0.0.0.0 --no-browser --allow-root
+```
+
+Once running, copy the `http://127.0.0.1:8888/lab?token=...` URL from the terminal output and open it in your browser. Replace `llms-cpu` / `llms-gpu` with `deeplearning-cpu` / `deeplearning-gpu` as needed.
+
+### VS Code — Attach to Running Container
+
+This gives a full VS Code experience inside the container with no extra software needed beyond the [Dev Containers extension](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-containers).
+
+**1. Start the container** (keep it running with an interactive shell):
+
+```bash
+# CPU
+docker run --rm -it \
+  -v $(pwd):/workspace \
+  gperdrizet/llms-cpu:latest \
+  /bin/bash
+
+# GPU
+docker run --rm -it \
+  --gpus all \
+  -v $(pwd):/workspace \
+  gperdrizet/llms-gpu:latest \
+  /bin/bash
+```
+
+**2. Attach VS Code** to the running container:
+- Open the Command Palette (`Ctrl+Shift+P`)
+- Run **Dev Containers: Attach to Running Container...**
+- Select the container from the list
+
+VS Code opens a new window connected to the container. Your mounted volume is available at `/workspace`. Any extensions you install are persisted in the container for the duration of the session.
+
 ## Requirements
 
 - **GPU images:** Docker with NVIDIA GPU support and compatible drivers

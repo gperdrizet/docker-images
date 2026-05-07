@@ -3,13 +3,13 @@ jupyterlab
 ipywidgets
 keras_tuner
 matplotlib
-numpy
+numpy==1.26.4
 optuna
 optuna-dashboard
-pandas
+pandas==2.2.3
 psycopg2-binary
 scikit-learn
 scipy
 seaborn
 tensorboard
-tensorflow
+tensorflow==2.17.0

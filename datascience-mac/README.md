@@ -1,24 +1,24 @@
-# Data Science Mac (ARM64) Development Container
+# Data science Mac (ARM64) development container
 
-Native ARM64 data science environment for Apple Silicon (M1/M2/M3) Macs. Runs without Rosetta emulation in Docker Desktop. Covers intro Python, data visualisation, data cleaning, feature engineering, and traditional machine learning.
+Native ARM64 data science environment for Apple Silicon (M1/M2/M3) Macs. Runs without Rosetta emulation in Docker Desktop. Covers intro Python, data visualization, data cleaning, feature engineering, and traditional machine learning.
 
-> **Note:** GPU acceleration is not available inside Docker containers on Apple Silicon — Metal/MPS is a macOS-only framework with no Docker passthrough. This image provides native ARM64 CPU performance only.
+> **Note:** GPU acceleration is not available inside Docker containers on Apple Silicon: Metal/MPS is a macOS-only framework with no Docker passthrough. This image provides native ARM64 CPU performance only.
 
-## Features
+## 1. Features
 
 - Python 3.12
 - JupyterLab
 - scikit-learn, XGBoost, statsmodels
 - pandas, numpy, scipy
 - matplotlib, seaborn, plotly
-- optuna (hyperparameter optimisation)
-- linux/arm64 — native Apple Silicon, no Rosetta
+- optuna (hyperparameter optimization)
+- linux/arm64, native Apple Silicon, no Rosetta
 
-## Usage with VS Code Dev Containers
+## 2. Usage with VS Code Dev Containers
 
 See [`gperdrizet/deeplearning-devcontainer`](https://github.com/gperdrizet/deeplearning-devcontainer).
 
-## Running Directly with Docker
+## 3. Running directly with Docker
 
 ```bash
 docker run --rm -it \
@@ -28,10 +28,10 @@ docker run --rm -it \
   jupyter lab --ip=0.0.0.0 --no-browser --allow-root
 ```
 
-## Requirements
+## 4. Requirements
 
 - Docker Desktop for Mac (Apple Silicon)
 
-## License
+## 5. License
 
-MIT — see [docker-images](https://github.com/gperdrizet/docker-images/blob/main/LICENSE).
+MIT. See [docker-images](https://github.com/gperdrizet/docker-images/blob/main/LICENSE).

@@ -8,13 +8,13 @@ A ready-to-use deep learning environment with NVIDIA GPU support for VS Code. In
 
 > **CUDA version note:** This image uses CUDA 12.8, which supports GPU architectures from Pascal (GTX 10xx) through Blackwell (RTX 50xx/B100/B200). CUDA 12.x is the last series to support Pascal; [CUDA 13.0 removed Pascal, Maxwell, and Volta support entirely](https://docs.nvidia.com/cuda/cuda-toolkit-release-notes/index.html). CUDA 12.8 requires host driver ≥ 570.x on Linux. Note: 25.02 is the final NVIDIA TensorFlow NGC container release.
 
-## Features
+## 1. Features
 
-- **Dual Framework Support** – Both TensorFlow 2.17 and PyTorch 2.11 pre-installed and GPU-ready
-- **NVIDIA GPU Acceleration** – Built on NVIDIA's official TensorFlow container with CUDA 12.8 and Blackwell support
-- **VS Code Dev Container Ready** – Pre-configured `vscode` user for seamless devcontainer integration
+- **Dual framework support:** Both TensorFlow 2.17 and PyTorch 2.11 pre-installed and GPU-ready
+- **NVIDIA GPU acceleration:** Built on NVIDIA's official TensorFlow container with CUDA 12.8 and Blackwell support
+- **VS Code Dev Container ready:** Pre-configured `vscode` user for seamless devcontainer integration
 
-## Included software
+## 2. Included software
 
 | Component | Version |
 |-----------|---------|
@@ -26,23 +26,23 @@ A ready-to-use deep learning environment with NVIDIA GPU support for VS Code. In
 | CUDA | 12.8 |
 | GPU Support | Pascal through Blackwell (sm_60 - sm_100) |
 
-### Additional Python packages
+### 2.1. Additional Python packages
 - `matplotlib` - Data visualization
 - `seaborn` - Statistical data visualization
 - `keras_tuner` - Hyperparameter tuning for Keras
 - `optuna` - General purpose hyperparameter optimization framework
 - `ipywidgets` - Interactive widgets for Jupyter
 
-## Usage with VS Code dev containers
+## 3. Usage with VS Code Dev Containers
 
 This image is optimized for use with VS Code Dev Containers. The `vscode` user (UID 1000) is pre-configured with sudo access for a seamless development experience.
 
-## Running directly with Docker
+## 4. Running directly with Docker
 
 You can also run the container directly with Docker and launch a Jupyter server:
 
 ```bash
-docker run --gpus all -p 8888:8888 -v $(pwd):/workspace gperdrizet/deeplearning-gpu:latest \
+docker run --gpus all -p 8888:8888 -v $(pwd):/workspace gperdrizet/deeplearning-nvidia:latest \
     jupyter notebook --ip=0.0.0.0 --port=8888 --no-browser --allow-root --notebook-dir=/workspace \
     --NotebookApp.token=''
 ```
@@ -57,11 +57,11 @@ This will:
 > **Security Note:** Only disable authentication on trusted networks. For public or untrusted networks, remove `--NotebookApp.token=''` to require token authentication.
 
 
-## Requirements
+## 5. Requirements
 
 - Docker with NVIDIA GPU support
 - NVIDIA GPU with compatible drivers
 
-## License
+## 6. License
 
 See the [GitHub repository](https://github.com/gperdrizet/deeplearning-devcontainer) for license information.

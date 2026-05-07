@@ -97,7 +97,7 @@ docker info | grep "Docker Root Dir"
 
 ## 4. Multi-stage builds to reduce image size
 
-Docker images are made of layers. Each `RUN` command creates a layer, and layers are additive—even if you delete files in a later layer, the space is still consumed in the earlier layer.
+Docker images are made of layers. Each `RUN` command creates a layer, and layers are additive, even if you delete files in a later layer, the space is still consumed in the earlier layer.
 
 ### 4.1. The problem with single-stage builds
 

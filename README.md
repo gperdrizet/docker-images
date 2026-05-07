@@ -21,7 +21,7 @@ A collection of ready-to-use Docker images for VS Code Dev Containers, designed 
 | `llms-gpu` | `nvidia/cuda:12.8.1-cudnn-runtime` | LLM development on NVIDIA GPU |
 | `llms-cpu` | `python:3.12-slim` | LLM development on CPU |
 
-The `deeplearning-gpu` image is based on NVIDIA's official NGC TensorFlow container, which provides a fully validated CUDA + cuDNN + TensorFlow stack without any manual integration work. The `llms-gpu` image uses a minimal `nvidia/cuda` base with a custom-built PyTorch wheel, since the official PyTorch CUDA 12.x wheels dropped Pascal support and we need to cover the full sm_60-sm_100 range. CPU images use `python:3.12-slim`.
+The `deeplearning-gpu` image is based on NVIDIA's official NGC TensorFlow container, which provides a fully validated CUDA + cuDNN + TensorFlow stack that supports Pascal (sm_60) out of the box. PyTorch is then added via a custom-built wheel — necessary because official PyTorch CUDA 12.x wheels dropped Pascal support. The `llms-gpu` image follows the same custom-wheel approach but on a minimal `nvidia/cuda` base, since it doesn't need TensorFlow. This combination ensures all GPU images work on Pascal through Blackwell hardware with no changes to student workflow. CPU images use `python:3.12-slim` with the same Python packages, providing a consistent environment for CPU-only machines.
 
 ## Contents
 

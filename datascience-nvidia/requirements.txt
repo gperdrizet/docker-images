@@ -1,0 +1,26 @@
+# Jupyter
+jupyterlab
+ipykernel
+ipywidgets
+
+# Core data science
+numpy==1.26.4
+pandas==2.2.3
+scipy
+scikit-learn
+statsmodels
+xgboost
+
+# GPU-accelerated extras
+cupy-cuda12x
+
+# Visualisation
+matplotlib
+seaborn
+plotly
+
+# Hyperparameter optimisation
+optuna
+
+# Utilities
+psycopg2-binary

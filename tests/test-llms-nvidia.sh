@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-IMAGE="${1:-gperdrizet/llms-gpu:latest}"
+IMAGE="${1:-gperdrizet/llms-nvidia:latest}"
 FAILS=0
 
 check() {

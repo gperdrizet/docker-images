@@ -51,5 +51,5 @@ RUN pip install --no-cache-dir --root-user-action=ignore --upgrade pip && \
     ARG WHEEL_URL=https://github.com/gperdrizet/docker-images/releases/download/pytorch-2.11.0-cu128-cp312/torch-2.11.0-cp312-cp312-linux_x86_64.whl
 RUN pip install --no-cache-dir --root-user-action=ignore --force-reinstall --no-deps ${WHEEL_URL}
 
-# docker build -t gperdrizet/deeplearning-gpu:latest .
-# docker push gperdrizet/deeplearning-gpu:latest
+# docker build -t gperdrizet/deeplearning-nvidia:latest .
+# docker push gperdrizet/deeplearning-nvidia:latest

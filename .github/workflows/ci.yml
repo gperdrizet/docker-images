@@ -18,6 +18,16 @@ jobs:
         with:
           fetch-depth: 0
 
+      - name: Set up QEMU for ARM64 builds
+        uses: docker/setup-qemu-action@v3
+        with:
+          platforms: arm64
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+        with:
+          driver-opts: network=host
+
       - name: Build all images
         run: make build-all VERSION=${{ inputs.version }}
 
@@ -34,8 +44,8 @@ jobs:
       - name: Test CPU images
         run: make test-cpu VERSION=${{ inputs.version }}
 
-  test-gpu:
-    name: Test GPU images
+  test-nvidia:
+    name: Test NVIDIA GPU images
     runs-on: self-hosted
     if: github.repository_owner == 'gperdrizet'
     needs: build
@@ -44,14 +54,32 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Test GPU images
-        run: make test-gpu VERSION=${{ inputs.version }}
+      - name: Test NVIDIA images
+        run: make test-nvidia VERSION=${{ inputs.version }}
+
+  test-mac:
+    name: Test Mac (ARM64) image
+    runs-on: self-hosted
+    if: github.repository_owner == 'gperdrizet'
+    needs: build
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+
+      - name: Set up QEMU for ARM64 tests
+        uses: docker/setup-qemu-action@v3
+        with:
+          platforms: arm64
+
+      - name: Test Mac image
+        run: make test-mac VERSION=${{ inputs.version }}
 
   push:
     name: Push to DockerHub
     runs-on: self-hosted
     if: github.repository_owner == 'gperdrizet'
-    needs: [test-cpu, test-gpu]
+    needs: [test-cpu, test-nvidia, test-mac]
     environment: production
     steps:
       - uses: actions/checkout@v5
@@ -86,25 +114,35 @@ jobs:
 
           DL_PKGS="torch tensorflow numpy pandas scikit-learn scipy matplotlib seaborn jupyterlab keras-tuner optuna tensorboard"
           LLM_PKGS="torch transformers langchain langchain-community smolagents chromadb sentence-transformers gradio accelerate datasets tiktoken"
+          DS_PKGS="numpy pandas scipy scikit-learn xgboost statsmodels matplotlib seaborn plotly jupyterlab optuna"
 
           > /tmp/version_tables.md
 
-          for variant in gpu cpu; do
+          for variant in nvidia cpu; do
             IMAGE="gperdrizet/deeplearning-${variant}:${VER}"
             printf '\n### deeplearning-%s\n| Package | Version |\n| --- | --- |\n' "$variant" >> /tmp/version_tables.md
             docker run --rm -v /tmp/get_versions.py:/tmp/get_versions.py \
               "$IMAGE" python /tmp/get_versions.py $DL_PKGS >> /tmp/version_tables.md
           done
 
-          for variant in gpu cpu; do
+          for variant in nvidia cpu; do
             IMAGE="gperdrizet/llms-${variant}:${VER}"
             printf '\n### llms-%s\n| Package | Version |\n| --- | --- |\n' "$variant" >> /tmp/version_tables.md
             EXTRA=""
-            [[ "$variant" == "gpu" ]] && EXTRA="bitsandbytes"
+            [[ "$variant" == "nvidia" ]] && EXTRA="bitsandbytes"
             docker run --rm -v /tmp/get_versions.py:/tmp/get_versions.py \
               "$IMAGE" python /tmp/get_versions.py $LLM_PKGS $EXTRA >> /tmp/version_tables.md
             OLLAMA=$(docker run --rm "$IMAGE" ollama --version 2>&1 | grep -oP '[\d.]+' | head -1)
             echo "| ollama | ${OLLAMA} |" >> /tmp/version_tables.md
+          done
+
+          for variant in nvidia cpu mac; do
+            IMAGE="gperdrizet/datascience-${variant}:${VER}"
+            printf '\n### datascience-%s\n| Package | Version |\n| --- | --- |\n' "$variant" >> /tmp/version_tables.md
+            PLATFORM_FLAG=""
+            [[ "$variant" == "mac" ]] && PLATFORM_FLAG="--platform linux/arm64"
+            docker run --rm $PLATFORM_FLAG -v /tmp/get_versions.py:/tmp/get_versions.py \
+              "$IMAGE" python /tmp/get_versions.py $DS_PKGS >> /tmp/version_tables.md
           done
 
           echo "--- Version tables ---"
@@ -148,4 +186,3 @@ jobs:
               -d "{\"event_type\": \"docker-images-release\", \"client_payload\": {\"version\": \"${VERSION}\"}}"
             echo "Dispatched sync to $repo"
           done
-

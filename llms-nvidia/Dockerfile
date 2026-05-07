@@ -2,7 +2,7 @@
 # Based on nvidia/cuda runtime + custom PyTorch wheel for wide GPU compatibility.
 # PyTorch 2.11.0 (custom build), CUDA 12.8.1, Python 3.12, Ubuntu 24.04.
 # Supports Pascal (GTX 10xx) through Blackwell (RTX 50xx/B100/B200), sm_60-sm_100.
-# Requires host driver >= 560.x on Linux.
+# Requires host driver >= 570.x on Linux.
 # =============================================================================
 FROM nvidia/cuda:12.8.1-cudnn-runtime-ubuntu24.04
 

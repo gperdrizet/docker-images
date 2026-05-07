@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-IMAGE="${1:-gperdrizet/deeplearning-gpu:latest}"
+IMAGE="${1:-gperdrizet/deeplearning-nvidia:latest}"
 FAILS=0
 
 check() {

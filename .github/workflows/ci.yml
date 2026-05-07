@@ -178,7 +178,7 @@ jobs:
           GH_DISPATCH_TOKEN: ${{ secrets.GH_DISPATCH_TOKEN }}
           VERSION: ${{ inputs.version }}
         run: |
-          for repo in deeplearning-devcontainer llms-devcontainer; do
+          for repo in deeplearning-devcontainer llms-devcontainer datascience-devcontainer; do
             curl -s -X POST \
               -H "Authorization: Bearer $GH_DISPATCH_TOKEN" \
               -H "Accept: application/vnd.github+json" \

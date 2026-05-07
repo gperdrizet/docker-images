@@ -64,5 +64,5 @@ RUN pip install --no-cache-dir --break-system-packages --root-user-action=ignore
 # Validate torch import at build time
 RUN python3 -c "import torch; print('torch', torch.__version__, 'OK')"
 
-# docker build -t gperdrizet/llms-gpu:latest .
-# docker push gperdrizet/llms-gpu:latest
+# docker build -t gperdrizet/llms-nvidia:latest .
+# docker push gperdrizet/llms-nvidia:latest

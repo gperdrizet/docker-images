@@ -4,7 +4,7 @@ A ready-to-use LLM application development environment with NVIDIA GPU support f
 
 > **Note:** This container is designed to be used as part of a VS Code Dev Container environment, not run directly. See the [full environment setup on GitHub](https://github.com/gperdrizet/llms-devcontainer) for devcontainer configuration and usage instructions.
 
-> **CUDA version note:** This image uses a custom PyTorch 2.11.0 wheel built for CUDA 12.8.1, supporting GPU architectures from Pascal (GTX 10xx) through Blackwell (RTX 50xx/B100/B200). CUDA 12.x is the last series to support Pascal; [CUDA 13.0 removed Pascal, Maxwell, and Volta support entirely](https://docs.nvidia.com/cuda/cuda-toolkit-release-notes/index.html). Requires host driver ≥ 560.x on Linux.
+> **CUDA version note:** This image uses a custom PyTorch 2.11.0 wheel built for CUDA 12.8.1, supporting GPU architectures from Pascal (GTX 10xx) through Blackwell (RTX 50xx/B100/B200). CUDA 12.x is the last series to support Pascal; [CUDA 13.0 removed Pascal, Maxwell, and Volta support entirely](https://docs.nvidia.com/cuda/cuda-toolkit-release-notes/index.html). Requires host driver ≥ 570.x on Linux.
 
 ## 1. Features
 
@@ -13,7 +13,7 @@ A ready-to-use LLM application development environment with NVIDIA GPU support f
 - **API clients:** OpenAI and Anthropic SDKs with LangChain integrations
 - **Vector store:** ChromaDB for embeddings and retrieval
 - **Web UI:** Gradio for building interactive demos
-- **NVIDIA GPU acceleration:** PyTorch 2.7 from NVIDIA NGC with CUDA 12.8 and Blackwell support
+- **NVIDIA GPU acceleration:** PyTorch 2.11.0 (custom wheel, sm_60-sm_100) with CUDA 12.8 and Blackwell support
 - **VS Code Dev Container ready:** Pre-configured `vscode` user for seamless devcontainer integration
 
 ## 2. Included software

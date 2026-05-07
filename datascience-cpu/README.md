@@ -12,9 +12,18 @@ Lightweight data science environment for intro Python, data visualization, data 
 - optuna (hyperparameter optimization)
 - CPU only, linux/amd64; works on any machine
 
-## 2. Usage with VS Code Dev Containers
+## 2. Usage with VS Code
 
-See [`gperdrizet/deeplearning-devcontainer`](https://github.com/gperdrizet/deeplearning-devcontainer).
+Start the container, then use VS Code's **Dev Containers: Attach to Running Container** command to connect:
+
+```bash
+docker run --rm -it \
+  -v $(pwd):/workspace \
+  gperdrizet/datascience-cpu:latest \
+  /bin/bash
+```
+
+Open the Command Palette (`Ctrl+Shift+P`), run **Dev Containers: Attach to Running Container**, and select the container.
 
 ## 3. Running directly with Docker
 

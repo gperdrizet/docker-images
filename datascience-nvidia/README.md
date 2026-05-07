@@ -13,9 +13,19 @@ Data science environment with NVIDIA GPU acceleration for XGBoost and CuPy (GPU-
 - optuna (hyperparameter optimization)
 - CUDA 12.8, Pascal through Blackwell (sm_60-sm_100)
 
-## 2. Usage with VS Code Dev Containers
+## 2. Usage with VS Code
 
-See [`gperdrizet/deeplearning-devcontainer`](https://github.com/gperdrizet/deeplearning-devcontainer).
+Start the container, then use VS Code's **Dev Containers: Attach to Running Container** command to connect:
+
+```bash
+docker run --rm -it \
+  --gpus all \
+  -v $(pwd):/workspace \
+  gperdrizet/datascience-nvidia:latest \
+  /bin/bash
+```
+
+Open the Command Palette (`Ctrl+Shift+P`), run **Dev Containers: Attach to Running Container**, and select the container.
 
 ## 3. Running directly with Docker
 

@@ -14,9 +14,18 @@ Native ARM64 data science environment for Apple Silicon (M1/M2/M3) Macs. Runs wi
 - optuna (hyperparameter optimization)
 - linux/arm64, native Apple Silicon, no Rosetta
 
-## 2. Usage with VS Code Dev Containers
+## 2. Usage with VS Code
 
-See [`gperdrizet/deeplearning-devcontainer`](https://github.com/gperdrizet/deeplearning-devcontainer).
+Start the container, then use VS Code's **Dev Containers: Attach to Running Container** command to connect:
+
+```bash
+docker run --rm -it \
+  -v $(pwd):/workspace \
+  gperdrizet/datascience-mac:latest \
+  /bin/bash
+```
+
+Open the Command Palette (`Ctrl+Shift+P`), run **Dev Containers: Attach to Running Container**, and select the container.
 
 ## 3. Running directly with Docker
 

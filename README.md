@@ -14,6 +14,13 @@
 
 A collection of ready-to-use Docker images for VS Code Dev Containers, designed for AI/ML bootcamp students. GPU images are built with wide hardware compatibility (NVIDIA Pascal through Blackwell, sm_60-sm_100) so they work across diverse student hardware. All images include a pre-configured `vscode` user (UID 1000) with sudo access for seamless devcontainer integration. They can also be used standalone, with JupyterLab in a browser or VS Code attached directly to a running container.
 
+| Image | Base | Purpose |
+|---|---|---|
+| `deeplearning-gpu` | NGC TensorFlow 25.02 | TensorFlow + PyTorch on NVIDIA GPU |
+| `deeplearning-cpu` | `python:3.12-slim` | TensorFlow + PyTorch on CPU |
+| `llms-gpu` | `nvidia/cuda:12.8.1-cudnn-runtime` | LLM development on NVIDIA GPU |
+| `llms-cpu` | `python:3.12-slim` | LLM development on CPU |
+
 The `deeplearning-gpu` image is based on NVIDIA's official NGC TensorFlow container, which provides a fully validated CUDA + cuDNN + TensorFlow stack without any manual integration work. The `llms-gpu` image uses a minimal `nvidia/cuda` base with a custom-built PyTorch wheel, since the official PyTorch CUDA 12.x wheels dropped Pascal support and we need to cover the full sm_60-sm_100 range. CPU images use `python:3.12-slim`.
 
 ## Contents

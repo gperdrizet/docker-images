@@ -7,13 +7,13 @@
 [![CUDA](https://img.shields.io/badge/CUDA-12.8-76B900?logo=nvidia&logoColor=white)](https://developer.nvidia.com/cuda-toolkit)
 [![Transformers](https://img.shields.io/badge/🤗_Transformers-latest-FFD21E)](https://huggingface.co/docs/transformers)
 
+[![Docker Pulls datascience-nvidia](https://img.shields.io/docker/pulls/gperdrizet/datascience-nvidia?label=datascience-nvidia&logo=docker)](https://hub.docker.com/r/gperdrizet/datascience-nvidia)
+[![Docker Pulls datascience-cpu](https://img.shields.io/docker/pulls/gperdrizet/datascience-cpu?label=datascience-cpu&logo=docker)](https://hub.docker.com/r/gperdrizet/datascience-cpu)
+[![Docker Pulls datascience-mac](https://img.shields.io/docker/pulls/gperdrizet/datascience-mac?label=datascience-mac&logo=docker)](https://hub.docker.com/r/gperdrizet/datascience-mac)
 [![Docker Pulls deeplearning-nvidia](https://img.shields.io/docker/pulls/gperdrizet/deeplearning-nvidia?label=deeplearning-nvidia&logo=docker)](https://hub.docker.com/r/gperdrizet/deeplearning-nvidia)
 [![Docker Pulls deeplearning-cpu](https://img.shields.io/docker/pulls/gperdrizet/deeplearning-cpu?label=deeplearning-cpu&logo=docker)](https://hub.docker.com/r/gperdrizet/deeplearning-cpu)
 [![Docker Pulls llms-nvidia](https://img.shields.io/docker/pulls/gperdrizet/llms-nvidia?label=llms-nvidia&logo=docker)](https://hub.docker.com/r/gperdrizet/llms-nvidia)
 [![Docker Pulls llms-cpu](https://img.shields.io/docker/pulls/gperdrizet/llms-cpu?label=llms-cpu&logo=docker)](https://hub.docker.com/r/gperdrizet/llms-cpu)
-[![Docker Pulls datascience-nvidia](https://img.shields.io/docker/pulls/gperdrizet/datascience-nvidia?label=datascience-nvidia&logo=docker)](https://hub.docker.com/r/gperdrizet/datascience-nvidia)
-[![Docker Pulls datascience-cpu](https://img.shields.io/docker/pulls/gperdrizet/datascience-cpu?label=datascience-cpu&logo=docker)](https://hub.docker.com/r/gperdrizet/datascience-cpu)
-[![Docker Pulls datascience-mac](https://img.shields.io/docker/pulls/gperdrizet/datascience-mac?label=datascience-mac&logo=docker)](https://hub.docker.com/r/gperdrizet/datascience-mac)
 
 A collection of ready-to-use Docker images, designed for AI/ML bootcamp students. GPU images are built with wide hardware compatibility (NVIDIA Pascal through Blackwell, sm_60-sm_100) so they work across diverse student hardware. All images include a pre-configured `vscode` user (UID 1000) with sudo access for seamless devcontainer integration. They can also be used standalone, with JupyterLab in a browser or VS Code attached directly to a running container.
 
@@ -27,7 +27,7 @@ A collection of ready-to-use Docker images, designed for AI/ML bootcamp students
 | `llms-nvidia` | `nvidia/cuda:12.8.1-cudnn-runtime` | LLM development on NVIDIA GPU |
 | `llms-cpu` | `python:3.12-slim` | LLM development on CPU |
 
-The `deeplearning-nvidia` image is based on NVIDIA's official NGC TensorFlow container, which provides a fully validated CUDA + cuDNN + TensorFlow stack that supports Pascal (sm_60) out of the box. PyTorch is then added via a custom-built wheel, as official PyTorch CUDA 12.x wheels dropped Pascal support. The `llms-nvidia` image follows the same custom-wheel approach but on a minimal `nvidia/cuda` base, since it doesn't need TensorFlow. This combination ensures all NVIDIA images work on Pascal through Blackwell hardware with no changes to student workflow. CPU images use `python:3.12-slim` with the same Python packages, providing a consistent environment for CPU-only machines. The `datascience-*` images provide a lighter-weight environment for intro Python and ML courses: numpy, pandas, scikit-learn, xgboost, matplotlib, seaborn, plotly, jupyterlab, and optuna. The `datascience-mac` variant targets Apple Silicon (M1/M2/M3) and is built as a native `linux/arm64` image.
+The `datascience-*` images provide a lightweight environment for intro Python and ML courses: numpy, pandas, scikit-learn, xgboost, matplotlib, seaborn, plotly, jupyterlab, and optuna. The `datascience-mac` variant targets Apple Silicon (M1/M2/M3) and is built as a native `linux/arm64` image. The `deeplearning-nvidia` image is based on NVIDIA's official NGC TensorFlow container, which provides a fully validated CUDA + cuDNN + TensorFlow stack that supports Pascal (sm_60) out of the box. PyTorch is then added via a custom-built wheel, as official PyTorch CUDA 12.x wheels dropped Pascal support. The `llms-nvidia` image follows the same custom-wheel approach but on a minimal `nvidia/cuda` base, since it doesn't need TensorFlow. This combination ensures all NVIDIA images work on Pascal through Blackwell hardware with no changes to student workflow. CPU images use `python:3.12-slim` with the same Python packages, providing a consistent environment for CPU-only machines.
 
 ## Contents
 
@@ -37,13 +37,13 @@ The `deeplearning-nvidia` image is based on NVIDIA's official NGC TensorFlow con
   - [3.1. JupyterLab](#31-jupyterlab)
   - [3.2. VS Code: Attach to Running Container](#32-vs-code-attach-to-running-container)
 - [4. Container summaries](#4-container-summaries)
-  - [4.1. deeplearning-nvidia](#41-deeplearning-nvidia)
-  - [4.2. deeplearning-cpu](#42-deeplearning-cpu)
-  - [4.3. llms-nvidia](#43-llms-nvidia)
-  - [4.4. llms-cpu](#44-llms-cpu)
-  - [4.5. datascience-nvidia](#45-datascience-nvidia)
-  - [4.6. datascience-cpu](#46-datascience-cpu)
-  - [4.7. datascience-mac](#47-datascience-mac)
+  - [4.1. datascience-nvidia](#41-datascience-nvidia)
+  - [4.2. datascience-cpu](#42-datascience-cpu)
+  - [4.3. datascience-mac](#43-datascience-mac)
+  - [4.4. deeplearning-nvidia](#44-deeplearning-nvidia)
+  - [4.5. deeplearning-cpu](#45-deeplearning-cpu)
+  - [4.6. llms-nvidia](#46-llms-nvidia)
+  - [4.7. llms-cpu](#47-llms-cpu)
 - [5. Development](#5-development)
   - [5.1. Releasing a new version](#51-releasing-a-new-version)
   - [5.2. Makefile reference](#52-makefile-reference)
@@ -75,28 +75,28 @@ The images can be used directly with Docker, without VS Code Dev Containers. Two
 
 ### 3.1. JupyterLab
 
-All four images include JupyterLab. Start a container with the port exposed, then open the printed URL in a browser.
+All seven images include JupyterLab. Start a container with the port exposed, then open the printed URL in a browser.
 
 **CPU images:**
 ```bash
 docker run --rm -it \
   -p 8888:8888 \
   -v $(pwd):/workspace \
-  gperdrizet/llms-cpu:latest \
+  gperdrizet/datascience-cpu:latest \
   jupyter lab --ip=0.0.0.0 --no-browser --allow-root
 ```
 
-**GPU images** (add `--gpus all`):
+**NVIDIA GPU images** (add `--gpus all`):
 ```bash
 docker run --rm -it \
   --gpus all \
   -p 8888:8888 \
   -v $(pwd):/workspace \
-  gperdrizet/llms-nvidia:latest \
+  gperdrizet/datascience-nvidia:latest \
   jupyter lab --ip=0.0.0.0 --no-browser --allow-root
 ```
 
-Once running, copy the `http://127.0.0.1:8888/lab?token=...` URL from the terminal output and open it in your browser. Replace `llms-cpu` / `llms-nvidia` with `deeplearning-cpu` / `deeplearning-nvidia` as needed.
+Once running, copy the `http://127.0.0.1:8888/lab?token=...` URL from the terminal output and open it in your browser. Replace `datascience-cpu` / `datascience-nvidia` with the image name for whichever environment you need.
 
 ### 3.2. VS Code: attach to running container
 
@@ -108,14 +108,14 @@ This gives a full VS Code experience inside the container with no extra software
 # CPU
 docker run --rm -it \
   -v $(pwd):/workspace \
-  gperdrizet/llms-cpu:latest \
+  gperdrizet/datascience-cpu:latest \
   /bin/bash
 
 # NVIDIA GPU (add --gpus all)
 docker run --rm -it \
   --gpus all \
   -v $(pwd):/workspace \
-  gperdrizet/llms-nvidia:latest \
+  gperdrizet/datascience-nvidia:latest \
   /bin/bash
 ```
 
@@ -128,15 +128,59 @@ VS Code opens a new window connected to the container. Your mounted volume is av
 
 ## 4. Container summaries
 
-4.1. deeplearning-nvidia
-4.2. deeplearning-cpu
-4.3. llms-nvidia
-4.4. llms-cpu
-4.5. datascience-nvidia
-4.6. datascience-cpu
-4.7. datascience-mac
+4.1. datascience-nvidia
+4.2. datascience-cpu
+4.3. datascience-mac
+4.4. deeplearning-nvidia
+4.5. deeplearning-cpu
+4.6. llms-nvidia
+4.7. llms-cpu
 
-### 4.1. deeplearning-nvidia
+### 4.1. datascience-nvidia
+
+Lightweight data science environment for intro Python and ML courses, with NVIDIA GPU acceleration via CuPy.
+
+| Component | Version |
+|-----------|--------|
+| Base Image | `nvidia/cuda:12.8.1-runtime-ubuntu24.04` |
+| Python | 3.12 |
+| CUDA | 12.8 |
+| GPU Support | CUDA-capable NVIDIA GPU |
+
+**Packages:** numpy, pandas, scipy, scikit-learn, xgboost, statsmodels, matplotlib, seaborn, plotly, jupyterlab, optuna, cupy-cuda12x
+
+**DockerHub:** [`gperdrizet/datascience-nvidia:latest`](https://hub.docker.com/repository/docker/gperdrizet/datascience-nvidia/general)
+
+### 4.2. datascience-cpu
+
+Lightweight data science environment for intro Python and ML courses, CPU-only.
+
+| Component | Version |
+|-----------|--------|
+| Base Image | `python:3.12-slim` |
+| Python | 3.12 |
+
+**Packages:** numpy, pandas, scipy, scikit-learn, xgboost, statsmodels, matplotlib, seaborn, plotly, jupyterlab, optuna
+
+**DockerHub:** [`gperdrizet/datascience-cpu:latest`](https://hub.docker.com/repository/docker/gperdrizet/datascience-cpu/general)
+
+### 4.3. datascience-mac
+
+Lightweight data science environment for Apple Silicon (M1/M2/M3) Macs. Built as a native `linux/arm64` image; Docker Desktop on Mac runs it without emulation.
+
+| Component | Version |
+|-----------|--------|
+| Base Image | `python:3.12-slim` |
+| Platform | `linux/arm64` |
+| Python | 3.12 |
+
+**Packages:** numpy, pandas, scipy, scikit-learn, xgboost, statsmodels, matplotlib, seaborn, plotly, jupyterlab, optuna
+
+**Note:** GPU/Metal passthrough is not supported in Docker on macOS. This image provides CPU-only computation with native ARM64 performance.
+
+**DockerHub:** [`gperdrizet/datascience-mac:latest`](https://hub.docker.com/repository/docker/gperdrizet/datascience-mac/general)
+
+### 4.4. deeplearning-nvidia
 
 Full-featured deep learning environment with NVIDIA GPU support.
 
@@ -158,7 +202,7 @@ Full-featured deep learning environment with NVIDIA GPU support.
 
 **Devcontainer repository:** [`github.com/gperdrizet/deeplearning-devcontainer`](https://github.com/gperdrizet/deeplearning-devcontainer)
 
-### 4.2. deeplearning-cpu
+### 4.5. deeplearning-cpu
 
 Full-featured deep learning environment for CPU-only systems.
 
@@ -175,7 +219,7 @@ Full-featured deep learning environment for CPU-only systems.
 
 **Devcontainer repository:** [`github.com/gperdrizet/deeplearning-devcontainer`](https://github.com/gperdrizet/deeplearning-devcontainer)
 
-### 4.3. llms-nvidia
+### 4.6. llms-nvidia
 
 LLM application development environment with NVIDIA GPU support. Includes LangChain, LlamaIndex, Hugging Face Transformers, and API clients.
 
@@ -199,7 +243,7 @@ LLM application development environment with NVIDIA GPU support. Includes LangCh
 
 **Devcontainer repository:** [`github.com/gperdrizet/llms-devcontainer`](https://github.com/gperdrizet/llms-devcontainer)
 
-### 4.4. llms-cpu
+### 4.7. llms-cpu
 
 Lightweight LLM application development environment for CPU-only systems.
 
@@ -209,59 +253,15 @@ Lightweight LLM application development environment for CPU-only systems.
 | PyTorch | Latest CPU (via pip) |
 | Python | 3.12 |
 
-**LLM Frameworks:** langchain, llama-index, transformers, smolagents
+**LLM frameworks:** langchain, llama-index, transformers, smolagents
 
-**API Clients:** openai, anthropic, ollama
+**API clients:** openai, anthropic, ollama
 
 **Other packages:** chromadb, sentence-transformers, gradio, accelerate, datasets, tiktoken
 
 **DockerHub:** [`gperdrizet/llms-cpu:latest`](https://hub.docker.com/repository/docker/gperdrizet/llms-cpu/general)
 
 **Devcontainer repository:** [`github.com/gperdrizet/llms-devcontainer`](https://github.com/gperdrizet/llms-devcontainer)
-
-### 4.5. datascience-nvidia
-
-Lightweight data science environment for intro Python and ML courses, with NVIDIA GPU acceleration via CuPy.
-
-| Component | Version |
-|-----------|--------|
-| Base Image | `nvidia/cuda:12.8.1-runtime-ubuntu24.04` |
-| Python | 3.12 |
-| CUDA | 12.8 |
-| GPU Support | CUDA-capable NVIDIA GPU |
-
-**Packages:** numpy, pandas, scipy, scikit-learn, xgboost, statsmodels, matplotlib, seaborn, plotly, jupyterlab, optuna, cupy-cuda12x
-
-**DockerHub:** [`gperdrizet/datascience-nvidia:latest`](https://hub.docker.com/repository/docker/gperdrizet/datascience-nvidia/general)
-
-### 4.6. datascience-cpu
-
-Lightweight data science environment for intro Python and ML courses, CPU-only.
-
-| Component | Version |
-|-----------|--------|
-| Base Image | `python:3.12-slim` |
-| Python | 3.12 |
-
-**Packages:** numpy, pandas, scipy, scikit-learn, xgboost, statsmodels, matplotlib, seaborn, plotly, jupyterlab, optuna
-
-**DockerHub:** [`gperdrizet/datascience-cpu:latest`](https://hub.docker.com/repository/docker/gperdrizet/datascience-cpu/general)
-
-### 4.7. datascience-mac
-
-Lightweight data science environment for Apple Silicon (M1/M2/M3) Macs. Built as a native `linux/arm64` image; Docker Desktop on Mac runs it without emulation.
-
-| Component | Version |
-|-----------|--------|
-| Base Image | `python:3.12-slim` |
-| Platform | `linux/arm64` |
-| Python | 3.12 |
-
-**Packages:** numpy, pandas, scipy, scikit-learn, xgboost, statsmodels, matplotlib, seaborn, plotly, jupyterlab, optuna
-
-**Note:** GPU/Metal passthrough is not supported in Docker on macOS. This image provides CPU-only computation with native ARM64 performance.
-
-**DockerHub:** [`gperdrizet/datascience-mac:latest`](https://hub.docker.com/repository/docker/gperdrizet/datascience-mac/general)
 
 ## 5. Development
 

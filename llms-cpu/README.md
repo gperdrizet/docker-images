@@ -38,7 +38,7 @@ A ready-to-use LLM application development environment for VS Code. Includes **L
 
 ### 2.4. Additional tools
 - `gradio` - Web UI framework
-- `accelerate` - Model loading
+- `accelerate` - Model loading and distributed training
 - `datasets` - Hugging Face datasets
 - `tiktoken` - Token counting
 

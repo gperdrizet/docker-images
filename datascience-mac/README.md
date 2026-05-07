@@ -14,20 +14,21 @@ Native ARM64 data science environment for Apple Silicon (M1/M2/M3) Macs. Runs wi
 - optuna (hyperparameter optimization)
 - linux/arm64, native Apple Silicon, no Rosetta
 
-## 2. Usage with VS Code
+## 2. Included software
 
-Start the container, then use VS Code's **Dev Containers: Attach to Running Container** command to connect:
+| Component | Version |
+|-----------|--------|
+| Base Image | `python:3.12-slim` |
+| Platform | `linux/arm64` |
+| Python | 3.12 |
 
-```bash
-docker run --rm -it \
-  -v $(pwd):/workspace \
-  gperdrizet/datascience-mac:latest \
-  /bin/bash
-```
+**Packages:** numpy, pandas, scipy, scikit-learn, xgboost, statsmodels, matplotlib, seaborn, plotly, jupyterlab, optuna
 
-Open the Command Palette (`Ctrl+Shift+P`), run **Dev Containers: Attach to Running Container**, and select the container.
+## 3. Usage with VS Code Dev Containers
 
-## 3. Running directly with Docker
+This image is designed for use with the [datascience-devcontainer](https://github.com/gperdrizet/datascience-devcontainer) repository, which provides ready-to-use VS Code Dev Container configurations. The `vscode` user (UID 1000) is pre-configured with sudo access for a seamless development experience.
+
+## 4. Running directly with Docker
 
 ```bash
 docker run --rm -it \
@@ -37,10 +38,10 @@ docker run --rm -it \
   jupyter lab --ip=0.0.0.0 --no-browser --allow-root
 ```
 
-## 4. Requirements
+## 5. Requirements
 
 - Docker Desktop for Mac (Apple Silicon)
 
-## 5. License
+## 6. License
 
 MIT. See [docker-images](https://github.com/gperdrizet/docker-images/blob/main/LICENSE).

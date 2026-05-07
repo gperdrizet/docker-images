@@ -23,7 +23,7 @@ A ready-to-use LLM application development environment with NVIDIA GPU support f
 | Base Image | `nvidia/cuda:12.8.1-cudnn-runtime-ubuntu24.04` |
 | PyTorch | 2.11.0 (custom build, Pascal-Blackwell) |
 | Python | 3.12 |
-| CUDA | 12.8.1 |
+| CUDA | 12.8 |
 | GPU Support | Pascal through Blackwell (sm_60 - sm_100) |
 
 ### 2.1. LLM frameworks

@@ -27,40 +27,37 @@ A ready-to-use deep learning environment with NVIDIA GPU support for VS Code. In
 | GPU Support | Pascal through Blackwell (sm_60 - sm_100) |
 
 ### 2.1. Additional Python packages
+- `jupyterlab` - Notebook interface
+- `pandas` - Data manipulation
+- `scikit-learn` - Machine learning utilities
+- `scipy` - Scientific computing
 - `matplotlib` - Data visualization
 - `seaborn` - Statistical data visualization
+- `tensorboard` - Training visualization
 - `keras_tuner` - Hyperparameter tuning for Keras
-- `optuna` - General purpose hyperparameter optimization framework
+- `optuna` - Hyperparameter optimization framework
 - `ipywidgets` - Interactive widgets for Jupyter
 
 ## 3. Usage with VS Code Dev Containers
 
-This image is optimized for use with VS Code Dev Containers. The `vscode` user (UID 1000) is pre-configured with sudo access for a seamless development experience.
+This image is designed for use with the [deeplearning-devcontainer](https://github.com/gperdrizet/deeplearning-devcontainer) repository, which provides ready-to-use VS Code Dev Container configurations. The `vscode` user (UID 1000) is pre-configured with sudo access for a seamless development experience.
 
 ## 4. Running directly with Docker
 
-You can also run the container directly with Docker and launch a Jupyter server:
-
 ```bash
-docker run --gpus all -p 8888:8888 -v $(pwd):/workspace gperdrizet/deeplearning-nvidia:latest \
-    jupyter notebook --ip=0.0.0.0 --port=8888 --no-browser --allow-root --notebook-dir=/workspace \
-    --NotebookApp.token=''
+docker run --rm -it \
+  --gpus all \
+  -p 8888:8888 \
+  -v $(pwd):/workspace \
+  gperdrizet/deeplearning-nvidia:latest \
+  jupyter lab --ip=0.0.0.0 --no-browser --allow-root
 ```
-
-This will:
-- Enable GPU access with `--gpus all`
-- Map port 8888 for Jupyter access
-- Mount your current directory to `/workspace` in the container
-- Start a Jupyter notebook server accessible at `http://localhost:8888`
-- Disable token authentication (suitable for LAN-only environments)
-
-> **Security Note:** Only disable authentication on trusted networks. For public or untrusted networks, remove `--NotebookApp.token=''` to require token authentication.
 
 
 ## 5. Requirements
 
-- Docker with NVIDIA GPU support
-- NVIDIA GPU with compatible drivers
+- Docker with NVIDIA GPU support and host driver >= 570.x
+- NVIDIA Container Toolkit
 
 ## 6. License
 

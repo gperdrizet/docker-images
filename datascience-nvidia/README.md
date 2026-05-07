@@ -13,21 +13,22 @@ Data science environment with NVIDIA GPU acceleration for XGBoost and CuPy (GPU-
 - optuna (hyperparameter optimization)
 - CUDA 12.8, Pascal through Blackwell (sm_60-sm_100)
 
-## 2. Usage with VS Code
+## 2. Included software
 
-Start the container, then use VS Code's **Dev Containers: Attach to Running Container** command to connect:
+| Component | Version |
+|-----------|--------|
+| Base Image | `nvidia/cuda:12.8.1-runtime-ubuntu24.04` |
+| Python | 3.12 |
+| CUDA | 12.8 |
+| GPU Support | Pascal through Blackwell (sm_60 - sm_100) |
 
-```bash
-docker run --rm -it \
-  --gpus all \
-  -v $(pwd):/workspace \
-  gperdrizet/datascience-nvidia:latest \
-  /bin/bash
-```
+**Packages:** numpy, pandas, scipy, scikit-learn, xgboost, statsmodels, matplotlib, seaborn, plotly, jupyterlab, optuna, cupy-cuda12x
 
-Open the Command Palette (`Ctrl+Shift+P`), run **Dev Containers: Attach to Running Container**, and select the container.
+## 3. Usage with VS Code Dev Containers
 
-## 3. Running directly with Docker
+This image is designed for use with the [datascience-devcontainer](https://github.com/gperdrizet/datascience-devcontainer) repository, which provides ready-to-use VS Code Dev Container configurations. The `vscode` user (UID 1000) is pre-configured with sudo access for a seamless development experience.
+
+## 4. Running directly with Docker
 
 ```bash
 docker run --rm -it \
@@ -38,11 +39,11 @@ docker run --rm -it \
   jupyter lab --ip=0.0.0.0 --no-browser --allow-root
 ```
 
-## 4. Requirements
+## 5. Requirements
 
 - Docker with NVIDIA GPU support and host driver >= 570.x
 - NVIDIA Container Toolkit
 
-## 5. License
+## 6. License
 
 MIT. See [docker-images](https://github.com/gperdrizet/docker-images/blob/main/LICENSE).

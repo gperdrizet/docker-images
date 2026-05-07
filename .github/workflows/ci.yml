@@ -9,33 +9,96 @@ on:
         type: string
 
 jobs:
-  build:
-    name: Build all images
+  build-datascience-nvidia:
+    name: Build datascience-nvidia
     runs-on: self-hosted
     if: github.repository_owner == 'gperdrizet'
     steps:
       - uses: actions/checkout@v5
         with:
           fetch-depth: 0
+      - name: Build datascience-nvidia
+        run: make build-datascience-nvidia VERSION=${{ inputs.version }}
 
+  build-datascience-cpu:
+    name: Build datascience-cpu
+    runs-on: self-hosted
+    if: github.repository_owner == 'gperdrizet'
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+      - name: Build datascience-cpu
+        run: make build-datascience-cpu VERSION=${{ inputs.version }}
+
+  build-datascience-mac:
+    name: Build datascience-mac
+    runs-on: self-hosted
+    if: github.repository_owner == 'gperdrizet'
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
       - name: Set up QEMU for ARM64 builds
         uses: docker/setup-qemu-action@v3
         with:
           platforms: arm64
-
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
         with:
           driver-opts: network=host
+      - name: Build datascience-mac
+        run: make build-datascience-mac VERSION=${{ inputs.version }}
 
-      - name: Build all images
-        run: make build-all VERSION=${{ inputs.version }}
+  build-deeplearning-nvidia:
+    name: Build deeplearning-nvidia
+    runs-on: self-hosted
+    if: github.repository_owner == 'gperdrizet'
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+      - name: Build deeplearning-nvidia
+        run: make build-deeplearning-nvidia VERSION=${{ inputs.version }}
+
+  build-deeplearning-cpu:
+    name: Build deeplearning-cpu
+    runs-on: self-hosted
+    if: github.repository_owner == 'gperdrizet'
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+      - name: Build deeplearning-cpu
+        run: make build-deeplearning-cpu VERSION=${{ inputs.version }}
+
+  build-llms-nvidia:
+    name: Build llms-nvidia
+    runs-on: self-hosted
+    if: github.repository_owner == 'gperdrizet'
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+      - name: Build llms-nvidia
+        run: make build-llms-nvidia VERSION=${{ inputs.version }}
+
+  build-llms-cpu:
+    name: Build llms-cpu
+    runs-on: self-hosted
+    if: github.repository_owner == 'gperdrizet'
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+      - name: Build llms-cpu
+        run: make build-llms-cpu VERSION=${{ inputs.version }}
 
   test-cpu:
     name: Test CPU images
     runs-on: self-hosted
     if: github.repository_owner == 'gperdrizet'
-    needs: build
+    needs: [build-datascience-cpu, build-deeplearning-cpu, build-llms-cpu]
     steps:
       - uses: actions/checkout@v5
         with:
@@ -48,7 +111,7 @@ jobs:
     name: Test NVIDIA GPU images
     runs-on: self-hosted
     if: github.repository_owner == 'gperdrizet'
-    needs: build
+    needs: [build-datascience-nvidia, build-deeplearning-nvidia, build-llms-nvidia]
     steps:
       - uses: actions/checkout@v5
         with:
@@ -61,7 +124,7 @@ jobs:
     name: Test Mac (ARM64) image
     runs-on: self-hosted
     if: github.repository_owner == 'gperdrizet'
-    needs: build
+    needs: [build-datascience-mac]
     steps:
       - uses: actions/checkout@v5
         with:

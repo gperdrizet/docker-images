@@ -43,8 +43,7 @@ RUN chmod +x /usr/local/bin/motd.sh && \
 COPY README.md /workspace/README.md
 
 COPY requirements.txt .
-RUN pip install --no-cache-dir --break-system-packages --root-user-action=ignore --upgrade pip && \
-    pip install --no-cache-dir --break-system-packages --root-user-action=ignore -r requirements.txt
+RUN pip install --no-cache-dir --break-system-packages --root-user-action=ignore -r requirements.txt
 
 # docker build -t gperdrizet/datascience-nvidia:latest .
 # docker push gperdrizet/datascience-nvidia:latest

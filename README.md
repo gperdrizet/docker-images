@@ -15,7 +15,11 @@
 [![Docker Pulls llms-nvidia](https://img.shields.io/docker/pulls/gperdrizet/llms-nvidia?label=llms-nvidia&logo=docker)](https://hub.docker.com/r/gperdrizet/llms-nvidia)
 [![Docker Pulls llms-cpu](https://img.shields.io/docker/pulls/gperdrizet/llms-cpu?label=llms-cpu&logo=docker)](https://hub.docker.com/r/gperdrizet/llms-cpu)
 
-A collection of ready-to-use Docker images, designed for AI/ML bootcamp students. GPU images are built with wide hardware compatibility (NVIDIA Pascal through Blackwell, sm_60-sm_100) so they work across diverse student hardware. All images include a pre-configured `vscode` user (UID 1000) with sudo access for seamless devcontainer integration. They can also be used standalone, with JupyterLab in a browser or VS Code attached directly to a running container.
+A collection of ready-to-use Docker images for AI/ML education, designed for use with VS Code Dev Containers. All images include a pre-configured `vscode` user (UID 1000) with sudo access and can also be run standalone with JupyterLab.
+
+### Goal
+
+These images are built for AI/ML bootcamp students who need a consistent, ready-to-run development environment regardless of their hardware. The goal is to eliminate setup friction: students fork a devcontainer repo, clone it, and open it in VS Code — no manual environment configuration required. GPU images are built with wide hardware compatibility (NVIDIA Pascal through Blackwell, sm_60–sm_100) so the same image works across diverse student hardware. CPU fallbacks are provided for machines without a compatible GPU, and a native `linux/arm64` image supports Apple Silicon Macs.
 
 | Image | Base | Purpose |
 |---|---|---|
@@ -27,12 +31,10 @@ A collection of ready-to-use Docker images, designed for AI/ML bootcamp students
 | `llms-nvidia` | `nvidia/cuda:12.8.1-cudnn-runtime` | LLM development on NVIDIA GPU |
 | `llms-cpu` | `python:3.12-slim` | LLM development on CPU |
 
-The `datascience-*` images provide a lightweight environment for intro Python and ML courses: numpy, pandas, scikit-learn, xgboost, matplotlib, seaborn, plotly, jupyterlab, and optuna. The `datascience-mac` variant targets Apple Silicon (M1/M2/M3) and is built as a native `linux/arm64` image. The `deeplearning-nvidia` image is based on NVIDIA's official NGC TensorFlow container, which provides a fully validated CUDA + cuDNN + TensorFlow stack that supports Pascal (sm_60) out of the box. PyTorch is then added via a custom-built wheel, as official PyTorch CUDA 12.x wheels dropped Pascal support. The `llms-nvidia` image follows the same custom-wheel approach but on a minimal `nvidia/cuda` base, since it doesn't need TensorFlow. This combination ensures all NVIDIA images work on Pascal through Blackwell hardware with no changes to student workflow. CPU images use `python:3.12-slim` with the same Python packages, providing a consistent environment for CPU-only machines.
-
 ## Contents
 
-- [1. Related repositories](#1-related-repositories)
-- [2. Requirements](#2-requirements)
+- [1. Requirements](#1-requirements)
+- [2. Devcontainer repositories](#2-devcontainer-repositories)
 - [3. Standalone usage](#3-standalone-usage)
   - [3.1. JupyterLab](#31-jupyterlab)
   - [3.2. VS Code: Attach to Running Container](#32-vs-code-attach-to-running-container)
@@ -49,23 +51,25 @@ The `datascience-*` images provide a lightweight environment for intro Python an
   - [5.2. Makefile reference](#52-makefile-reference)
   - [5.3. CI/CD infrastructure](#53-cicd-infrastructure)
   - [5.4. Rebuilding PyTorch wheels](#54-rebuilding-pytorch-wheels)
+  - [5.5. Design rationale](#55-design-rationale)
 - [6. License](#6-license)
 
-## 1. Related repositories
-
-This is part of a multi-repo project. The devcontainer repositories consume the images built here and provide ready-to-use VS Code Dev Container configurations for students.
-
-| Repository | Images used | Description |
-|------------|-------------|-------------|
-| [`gperdrizet/deeplearning-devcontainer`](https://github.com/gperdrizet/deeplearning-devcontainer) | `deeplearning-nvidia`, `deeplearning-cpu` | Dev Container for deep learning (TensorFlow + PyTorch) |
-| [`gperdrizet/llms-devcontainer`](https://github.com/gperdrizet/llms-devcontainer) | `llms-nvidia`, `llms-cpu` | Dev Container for LLM application development |
-
-## 2. Requirements
+## 1. Requirements
 
 - **GPU images:** Docker with NVIDIA GPU support and host driver >= 570.x (required for CUDA 12.8)
 - **CPU images:** Docker
 
 > **CUDA version note:** GPU images use CUDA 12.8, supporting Pascal (GTX 10xx) through Blackwell (RTX 50xx/B100/B200). CUDA 12.x is the last series to support Pascal; [CUDA 13.0 removed Pascal, Maxwell, and Volta support entirely](https://docs.nvidia.com/cuda/cuda-toolkit-release-notes/index.html). CUDA 12.8 requires host driver >= 570.x on Linux.
+
+## 2. Devcontainer repositories
+
+This is part of a multi-repo project. The devcontainer repositories consume the images built here and provide ready-to-use VS Code Dev Container configurations for students.
+
+| Repository | Images used | Description |
+|------------|-------------|-------------|
+| [`gperdrizet/datascience-devcontainer`](https://github.com/gperdrizet/datascience-devcontainer) | `datascience-nvidia`, `datascience-cpu`, `datascience-mac` | Dev Container for intro data science |
+| [`gperdrizet/deeplearning-devcontainer`](https://github.com/gperdrizet/deeplearning-devcontainer) | `deeplearning-nvidia`, `deeplearning-cpu` | Dev Container for deep learning (TensorFlow + PyTorch) |
+| [`gperdrizet/llms-devcontainer`](https://github.com/gperdrizet/llms-devcontainer) | `llms-nvidia`, `llms-cpu` | Dev Container for LLM application development |
 
 ## 3. Standalone usage
 
@@ -369,7 +373,7 @@ Set in GitHub repo Settings -> Secrets -> Actions:
 |--------|----------|
 | `DOCKERHUB_USERNAME` | DockerHub login |
 | `DOCKERHUB_TOKEN` | DockerHub PAT (Read, Write & Delete) |
-| `GH_DISPATCH_TOKEN` | GitHub fine-grained PAT to push tags to this repo and trigger devcontainer repo syncs. Requires Contents: read/write on `docker-images`, `deeplearning-devcontainer`, and `llms-devcontainer`. |
+| `GH_DISPATCH_TOKEN` | GitHub fine-grained PAT to push tags to this repo and trigger devcontainer repo syncs. Requires Contents: read/write on `docker-images`, `datascience-devcontainer`, `deeplearning-devcontainer`, and `llms-devcontainer`. |
 
 #### Self-hosted runner
 
@@ -443,6 +447,12 @@ gh release create pytorch-2.11.0-cu128-cp312 ./wheels/torch-2.11.0-cp312-cp312-l
 |-----------|--------|------|------------|
 | deeplearning-nvidia | 3.12 | 12.8 | `torch-X.Y.Z-cp312-cp312-linux_x86_64.whl` |
 | llms-nvidia | 3.12 | 12.8 | same wheel (reused from GitHub Releases) |
+
+### 5.5. Design rationale
+
+The `datascience-*` images provide a lightweight environment for intro Python and ML courses: numpy, pandas, scikit-learn, xgboost, matplotlib, seaborn, plotly, jupyterlab, and optuna. The `datascience-mac` variant targets Apple Silicon (M1/M2/M3) and is built as a native `linux/arm64` image.
+
+The `deeplearning-nvidia` image is based on NVIDIA's official NGC TensorFlow container, which provides a fully validated CUDA + cuDNN + TensorFlow stack that supports Pascal (sm_60) out of the box. PyTorch is then added via a custom-built wheel, as official PyTorch CUDA 12.x wheels dropped Pascal support. The `llms-nvidia` image follows the same custom-wheel approach but on a minimal `nvidia/cuda` base, since it doesn't need TensorFlow. This combination ensures all NVIDIA images work on Pascal through Blackwell hardware with no changes to student workflow. CPU images use `python:3.12-slim` with the same Python packages, providing a consistent environment for CPU-only machines.
 
 ## 6. License
 

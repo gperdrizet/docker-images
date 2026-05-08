@@ -4,14 +4,9 @@ Data science environment with NVIDIA GPU acceleration for XGBoost and CuPy (GPU-
 
 ## 1. Features
 
-- Python 3.12
-- JupyterLab
-- scikit-learn, XGBoost (GPU), statsmodels
-- pandas, numpy, scipy
-- CuPy (GPU-accelerated NumPy-compatible arrays)
-- matplotlib, seaborn, plotly
-- optuna (hyperparameter optimization)
-- CUDA 12.8, Pascal through Blackwell (sm_60-sm_100)
+- **NVIDIA GPU acceleration:** CuPy for GPU-accelerated array computing and XGBoost GPU backend via CUDA 12.8
+- **Broad GPU compatibility:** Pascal through Blackwell (sm_60–sm_100), supports GTX 10xx through RTX 50xx/B200
+- **VS Code Dev Container ready:** Pre-configured `vscode` user (UID 1000) with sudo access for seamless devcontainer integration
 
 ## 2. Included software
 
@@ -22,7 +17,20 @@ Data science environment with NVIDIA GPU acceleration for XGBoost and CuPy (GPU-
 | CUDA | 12.8 |
 | GPU Support | Pascal through Blackwell (sm_60 - sm_100) |
 
-**Packages:** numpy, pandas, scipy, scikit-learn, xgboost, statsmodels, matplotlib, seaborn, plotly, jupyterlab, optuna, cupy-cuda12x
+### 2.1. Python packages
+
+- `numpy` - Numerical computing
+- `pandas` - Data manipulation
+- `scipy` - Scientific computing
+- `scikit-learn` - Machine learning
+- `xgboost` - Gradient boosted trees (GPU backend)
+- `statsmodels` - Statistical modeling
+- `matplotlib` - Data visualization
+- `seaborn` - Statistical data visualization
+- `plotly` - Interactive visualization
+- `jupyterlab` - Notebook interface
+- `optuna` - Hyperparameter optimization
+- `cupy-cuda12x` - GPU-accelerated NumPy-compatible arrays
 
 ## 3. Usage with VS Code Dev Containers
 

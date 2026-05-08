@@ -6,13 +6,9 @@ Native ARM64 data science environment for Apple Silicon (M1/M2/M3) Macs. Runs wi
 
 ## 1. Features
 
-- Python 3.12
-- JupyterLab
-- scikit-learn, XGBoost, statsmodels
-- pandas, numpy, scipy
-- matplotlib, seaborn, plotly
-- optuna (hyperparameter optimization)
-- linux/arm64, native Apple Silicon, no Rosetta
+- **Native Apple Silicon:** Built as `linux/arm64`; runs without Rosetta emulation in Docker Desktop on M1/M2/M3 Macs
+- **No deep learning frameworks:** Focused on classical ML and data analysis, keeping the image lean
+- **VS Code Dev Container ready:** Pre-configured `vscode` user (UID 1000) with sudo access for seamless devcontainer integration
 
 ## 2. Included software
 
@@ -22,7 +18,19 @@ Native ARM64 data science environment for Apple Silicon (M1/M2/M3) Macs. Runs wi
 | Platform | `linux/arm64` |
 | Python | 3.12 |
 
-**Packages:** numpy, pandas, scipy, scikit-learn, xgboost, statsmodels, matplotlib, seaborn, plotly, jupyterlab, optuna
+### 2.1. Python packages
+
+- `numpy` - Numerical computing
+- `pandas` - Data manipulation
+- `scipy` - Scientific computing
+- `scikit-learn` - Machine learning
+- `xgboost` - Gradient boosted trees
+- `statsmodels` - Statistical modeling
+- `matplotlib` - Data visualization
+- `seaborn` - Statistical data visualization
+- `plotly` - Interactive visualization
+- `jupyterlab` - Notebook interface
+- `optuna` - Hyperparameter optimization
 
 ## 3. Usage with VS Code Dev Containers
 

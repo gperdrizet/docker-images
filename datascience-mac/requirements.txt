@@ -11,12 +11,12 @@ scikit-learn
 statsmodels
 xgboost
 
-# Visualisation
+# Visualization
 matplotlib
 seaborn
 plotly
 
-# Hyperparameter optimisation
+# Hyperparameter optimization
 optuna
 
 # Utilities

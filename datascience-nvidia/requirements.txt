@@ -14,12 +14,12 @@ xgboost
 # GPU-accelerated extras
 cupy-cuda12x
 
-# Visualisation
+# Visualization
 matplotlib
 seaborn
 plotly
 
-# Hyperparameter optimisation
+# Hyperparameter optimization
 optuna
 
 # Utilities

@@ -50,6 +50,32 @@ docker run --rm -it \
 
 - Docker Desktop for Mac (Apple Silicon)
 
-## 6. License
+## 6. Building on linux
+
+### 5.4. Building on linux/ARM64 for macOS
+
+The `datascience-mac` image needs ARM64 emulation via Docker's buildx. You must create a builder before building the image:
+
+```
+# Create a brand new builder utilizing the docker-container driver
+docker buildx create --name mybuilder --driver docker-container --use
+
+# Boot and inspect the builder to ensure "arm64" is listed under platforms
+docker buildx inspect --bootstrap
+```
+
+#### Troubleshooting
+
+Try resetting the emulator registration and removing, then recreating the builder:
+
+```
+# Reset the emulator
+docker run --rm --privileged multiarch/qemu-user-static --reset -p yes
+
+# Stop and remove the current builder
+docker buildx rm mybuilder || true
+```
+
+## 7. License
 
 MIT. See [docker-images](https://github.com/gperdrizet/docker-images/blob/main/LICENSE).

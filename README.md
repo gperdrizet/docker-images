@@ -59,7 +59,8 @@ The `deeplearning-nvidia` image is based on NVIDIA's official NGC TensorFlow con
   - [5.1. Releasing a new version](#51-releasing-a-new-version)
   - [5.2. Makefile reference](#52-makefile-reference)
   - [5.3. CI/CD infrastructure](#53-cicd-infrastructure)
-  - [5.4. Rebuilding PyTorch wheels](#54-rebuilding-pytorch-wheels)
+  - [5.4. Building linux/ARM64 for macOS](#54-building-linuxarm64-for-macos)
+  - [5.5. Rebuilding PyTorch wheels](#55-rebuilding-pytorch-wheels)
 - [6. License](#6-license)
 
 ## 1. Requirements
@@ -398,7 +399,31 @@ sudo ./svc.sh status
 
 It polls GitHub via long-polling HTTPS; no inbound ports are required. Jobs are rejected unless `github.repository_owner == 'gperdrizet'`.
 
-### 5.4. Rebuilding PyTorch wheels
+### 5.4. Building linux/ARM64 for macOS
+
+The `datascience-mac` image needs ARM64 emulation via Docker's buildx. You must create a builder before building the image:
+
+```
+# Create a brand new builder utilizing the docker-container driver
+docker buildx create --name mybuilder --driver docker-container --use
+
+# Boot and inspect the builder to ensure "arm64" is listed under platforms
+docker buildx inspect --bootstrap
+```
+
+#### Troubleshooting
+
+Try resetting the emulator registration and removing, then recreating the builder:
+
+```
+# Reset the emulator
+docker run --rm --privileged multiarch/qemu-user-static --reset -p yes
+
+# Stop and remove the current builder
+docker buildx rm mybuilder || true
+```
+
+### 5.5. Rebuilding PyTorch wheels
 
 The `llms-nvidia` and `deeplearning-nvidia` images use custom-built PyTorch wheels with wide GPU architecture support (Pascal through Blackwell). Pre-built wheels are hosted on GitHub Releases and downloaded during image build.
 

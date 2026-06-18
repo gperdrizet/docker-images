@@ -219,30 +219,33 @@ jobs:
         run: |
           git remote set-url origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git
 
-      - name: Create git tag and GitHub release
+      - name: Create tag for release and push
         env:
-          GH_DISPATCH_TOKEN: ${{ secrets.GH_DISPATCH_TOKEN }}
           VERSION: ${{ inputs.version }}
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git remote set-url origin "https://x-access-token:${GH_DISPATCH_TOKEN}@github.com/gperdrizet/docker-images.git"
           git tag "v${VERSION}"
           git push origin "v${VERSION}"
+
+      - name: Create GitHub release
+        env:
+          VERSION: ${{ inputs.version }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
           RELEASE_BODY=$(cat /tmp/version_tables.md)
           gh release create "v${VERSION}" --title "v${VERSION}" --notes "$RELEASE_BODY"
           echo "Created release v${VERSION}"
 
       - name: Dispatch version sync to devcontainer repos
         env:
-          GH_DISPATCH_TOKEN: ${{ secrets.GH_DISPATCH_TOKEN }}
           VERSION: ${{ inputs.version }}
+          GH_TOKEN: ${{ secrets.GH_DISPATCH_TOKEN }}
         run: |
           for repo in deeplearning-devcontainer llms-devcontainer datascience-devcontainer; do
-            curl -s -X POST \
-              -H "Authorization: Bearer $GH_DISPATCH_TOKEN" \
-              -H "Accept: application/vnd.github+json" \
-              "https://api.github.com/repos/gperdrizet/${repo}/dispatches" \
-              -d "{\"event_type\": \"docker-images-release\", \"client_payload\": {\"version\": \"${VERSION}\"}}"
+            gh workflow run docker-images-release.yml \
+              --repo "${repo}" \
+              --ref "main" \
+              -f version="${VERSION}"
             echo "Dispatched sync to $repo"
           done

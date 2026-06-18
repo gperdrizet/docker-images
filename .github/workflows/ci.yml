@@ -18,7 +18,9 @@ jobs:
         with:
           fetch-depth: 0
       - name: Build datascience-nvidia
-        run: make build-datascience-nvidia VERSION=${{ inputs.version }}
+        run: |
+          docker pull gperdrizet/datascience-nvidia:latest || true
+          make build-datascience-nvidia VERSION=${{ inputs.version }}
 
   build-datascience-cpu:
     name: Build datascience-cpu
@@ -29,7 +31,9 @@ jobs:
         with:
           fetch-depth: 0
       - name: Build datascience-cpu
-        run: make build-datascience-cpu VERSION=${{ inputs.version }}
+        run: |
+          docker pull gperdrizet/datascience-cpu:latest || true
+          make build-datascience-cpu VERSION=${{ inputs.version }}
 
   build-datascience-mac:
     name: Build datascience-mac
@@ -48,7 +52,9 @@ jobs:
         with:
           driver-opts: network=host
       - name: Build datascience-mac
-        run: make build-datascience-mac VERSION=${{ inputs.version }}
+        run: |
+          docker pull gperdrizet/datascience-mac:latest || true
+          make build-datascience-mac VERSION=${{ inputs.version }}
 
   build-deeplearning-nvidia:
     name: Build deeplearning-nvidia
@@ -59,7 +65,9 @@ jobs:
         with:
           fetch-depth: 0
       - name: Build deeplearning-nvidia
-        run: make build-deeplearning-nvidia VERSION=${{ inputs.version }}
+        run: |
+          docker pull gperdrizet/deeplearning-nvidia:latest || true
+          make build-deeplearning-nvidia VERSION=${{ inputs.version }}
 
   build-deeplearning-cpu:
     name: Build deeplearning-cpu
@@ -70,7 +78,9 @@ jobs:
         with:
           fetch-depth: 0
       - name: Build deeplearning-cpu
-        run: make build-deeplearning-cpu VERSION=${{ inputs.version }}
+        run: |
+          docker pull gperdrizet/deeplearning-cpu:latest || true
+          make build-deeplearning-cpu VERSION=${{ inputs.version }}
 
   build-llms-nvidia:
     name: Build llms-nvidia
@@ -81,7 +91,9 @@ jobs:
         with:
           fetch-depth: 0
       - name: Build llms-nvidia
-        run: make build-llms-nvidia VERSION=${{ inputs.version }}
+        run: |
+          docker pull gperdrizet/llms-nvidia:latest || true
+          make build-llms-nvidia VERSION=${{ inputs.version }}
 
   build-llms-cpu:
     name: Build llms-cpu
@@ -92,7 +104,9 @@ jobs:
         with:
           fetch-depth: 0
       - name: Build llms-cpu
-        run: make build-llms-cpu VERSION=${{ inputs.version }}
+        run: |
+          docker pull gperdrizet/llms-cpu:latest || true
+          make build-llms-cpu VERSION=${{ inputs.version }}
 
   test-cpu:
     name: Test CPU images

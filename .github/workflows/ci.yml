@@ -243,9 +243,8 @@ jobs:
           GH_TOKEN: ${{ secrets.GH_DISPATCH_TOKEN }}
         run: |
           for repo in deeplearning-devcontainer llms-devcontainer datascience-devcontainer; do
-            gh workflow run docker-images-release.yml \
-              --repo "${repo}" \
-              --ref "main" \
-              -f version="${VERSION}"
+            gh api /repos/YOUR-ORG-OR-USER/${repo}/dispatches \
+              -F event_type="docker-images-release" \
+              -F client_payload="{\"version\": \"${VERSION}\"}"
             echo "Dispatched sync to $repo"
           done

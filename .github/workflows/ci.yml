@@ -152,7 +152,7 @@ jobs:
       - name: Test Mac image
         run: make test-mac VERSION=${{ inputs.version }}
 
-  push:
+  dockerhub-push:
     name: Push to DockerHub
     runs-on: self-hosted
     if: github.repository_owner == 'gperdrizet'
@@ -228,6 +228,20 @@ jobs:
       - name: Docker logout
         if: always()
         run: docker logout
+
+  github-release:
+    name: Create GitHub release
+    runs-on: self-hosted
+    if: github.repository_owner == 'gperdrizet'
+    needs: [test-cpu, test-nvidia, test-mac]
+    environment: production
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+          persist-credentials: false
 
       - name: Authenticate git with token
         run: |

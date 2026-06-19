@@ -71,8 +71,10 @@ build-datascience-cpu:
 		-t $(DATASCIENCE_CPU_IMAGE):$(VERSION) -t $(DATASCIENCE_CPU_IMAGE):latest ./datascience-cpu
 
 build-datascience-mac:
-	DOCKER_BUILDKIT=1 docker buildx build --platform linux/arm64 --network=host --build-arg IMAGE_VERSION=$(VERSION) \
-		--load -t $(DATASCIENCE_MAC_IMAGE):$(VERSION) -t $(DATASCIENCE_MAC_IMAGE):latest ./datascience-mac
+    DOCKER_BUILDKIT=1 docker buildx build --platform linux/arm64 --network=host --build-arg IMAGE_VERSION=$(VERSION) \
+        --cache-from type=registry,ref=$(DATASCIENCE_MAC_IMAGE):latest \
+        --cache-to type=inline \
+        --load -t $(DATASCIENCE_MAC_IMAGE):$(VERSION) -t $(DATASCIENCE_MAC_IMAGE):latest ./datascience-mac
 
 build-datascience: build-datascience-nvidia build-datascience-cpu build-datascience-mac
 

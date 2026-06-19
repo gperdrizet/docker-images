@@ -1,0 +1,38 @@
+# =============================================================================
+# CuPy Build Dockerfile (for *-gpu images)
+# =============================================================================
+# Use this to rebuild the custom CuPy wheel with wide GPU support.
+# The wheel can then be uploaded to GitHub Releases and used by the main Dockerfile.
+#
+# Build:
+#   docker build -f Dockerfile.build-cupy -t cupy-builder-dl .
+#
+# Extract wheel:
+#   mkdir -p wheels
+#   docker create --name extract cupy-builder-dl
+#   docker cp extract:/wheels/. ./wheels/
+#   docker rm extract
+FROM nvidia/cuda:12.8.1-devel-ubuntu24.04
+ARG CUPY_VERSION=13.6.0
+
+# Set critical compile flags to explicitly target Pascal (6.0, 6.1) alongside newer architectures
+# 60 = Pascal (GP100), 61 = Pascal (GTX 1080/1070/1060), 70 = Volta, 80 = Ampere, 89 = Ada,
+# 90 = Hopper, 100 = Blackwell
+ENV CUPY_NVCC_GENERATE_CODE="arch=compute_60,code=sm_60;arch=compute_61,code=sm_61;arch=compute_70,code=sm_70;arch=compute_80,code=sm_80;arch=compute_89,code=sm_89;arch=compute_90,code=sm_90;arch=compute_100,code=sm_100"
+
+# Install system dependencies needed for compilation
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    python3-dev \
+    python3-pip \
+    python3-wheel \
+    build-essential \
+    && rm -rf /var/lib/apt/lists/*
+
+# Build in wheels directory for easy extraction after build
+WORKDIR /wheels
+
+# Build CuPy into a reusable wheel file from pure source
+# This step can take 10-20 minutes depending on your CPU power
+RUN pip3 wheel --no-binary cupy "cupy==${CUPY_VERSION}"
+
+CMD ["ls", "-la"]

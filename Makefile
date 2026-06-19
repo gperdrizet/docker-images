@@ -16,7 +16,9 @@
         update-readme-datascience-nvidia update-readme-datascience-cpu update-readme-datascience-mac \
         update-readme-all \
         wheel-deeplearning-nvidia \
-        extract-wheel-deeplearning-nvidia
+        extract-wheel-deeplearning-nvidia \
+		wheel-datascience-nvidia \
+		extract-wheel-datascience-nvidia
 
 # Version - for local builds, defaults to the most recent git tag (e.g. v4.1.0 -> 4.1.0).
 # CI passes VERSION explicitly via workflow_dispatch input; tags are created by CI after a
@@ -218,4 +220,30 @@ extract-wheel-deeplearning-nvidia:
 	docker create --name wheel-extract-dl pytorch-builder-deeplearning-nvidia:$(PYTORCH_VERSION)
 	docker cp wheel-extract-dl:/wheels/. ./wheels/
 	docker rm wheel-extract-dl
+	@echo "Wheel saved to ./wheels/"
+
+# ─── CuPy wheel build ───────────────────────────────────────────────────────
+
+# datascience-nvidia only — llms-nvidia uses the same wheel.
+# Build takes about an hour. Upload resulting wheel to GitHub Releases after building.
+
+CUPY_VERSION ?= 13.6.0
+
+wheel-datascience-nvidia:
+	@echo "Building CuPy wheel for datascience-nvidia (Python 3.12, CUDA 12.8)..."
+	@echo "This will take about an hour. Grab some coffee."
+	DOCKER_BUILDKIT=1 docker build \
+		--network=host \
+		--shm-size=16g \
+		--build-arg CUPY_VERSION=$(CUPY_VERSION) \
+		-t cupy-builder-datascience-nvidia:$(CUPY_VERSION) \
+		-f ./datascience-nvidia/Dockerfile.build-cupy \
+		./datascience-nvidia
+
+extract-wheel-datascience-nvidia:
+	@echo "Extracting wheel from cupy-builder-datascience-nvidia..."
+	@mkdir -p ./wheels
+	docker create --name wheel-extract-ds cupy-builder-datascience-nvidia:$(CUPY_VERSION)
+	docker cp wheel-extract-ds:/wheels/. ./wheels/
+	docker rm wheel-extract-ds
 	@echo "Wheel saved to ./wheels/"

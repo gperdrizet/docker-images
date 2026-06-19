@@ -226,7 +226,7 @@ jobs:
     name: Create GitHub release
     runs-on: self-hosted
     if: github.repository_owner == 'gperdrizet'
-    needs: [test-cpu, test-nvidia, test-mac]
+    needs: [dockerhub-push]
     environment: production
     permissions:
       contents: write

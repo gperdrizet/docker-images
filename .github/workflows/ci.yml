@@ -19,7 +19,6 @@ jobs:
           fetch-depth: 0
       - name: Build datascience-nvidia
         run: |
-          docker pull gperdrizet/datascience-nvidia:latest || true
           make build-datascience-nvidia VERSION=${{ inputs.version }}
 
   build-datascience-cpu:
@@ -32,7 +31,6 @@ jobs:
           fetch-depth: 0
       - name: Build datascience-cpu
         run: |
-          docker pull gperdrizet/datascience-cpu:latest || true
           make build-datascience-cpu VERSION=${{ inputs.version }}
 
   build-datascience-mac:
@@ -53,7 +51,6 @@ jobs:
           driver-opts: network=host
       - name: Build datascience-mac
         run: |
-          docker pull gperdrizet/datascience-mac:latest || true
           make build-datascience-mac VERSION=${{ inputs.version }}
 
   build-deeplearning-nvidia:
@@ -66,7 +63,6 @@ jobs:
           fetch-depth: 0
       - name: Build deeplearning-nvidia
         run: |
-          docker pull gperdrizet/deeplearning-nvidia:latest || true
           make build-deeplearning-nvidia VERSION=${{ inputs.version }}
 
   build-deeplearning-cpu:
@@ -79,7 +75,6 @@ jobs:
           fetch-depth: 0
       - name: Build deeplearning-cpu
         run: |
-          docker pull gperdrizet/deeplearning-cpu:latest || true
           make build-deeplearning-cpu VERSION=${{ inputs.version }}
 
   build-llms-nvidia:
@@ -92,7 +87,6 @@ jobs:
           fetch-depth: 0
       - name: Build llms-nvidia
         run: |
-          docker pull gperdrizet/llms-nvidia:latest || true
           make build-llms-nvidia VERSION=${{ inputs.version }}
 
   build-llms-cpu:
@@ -105,7 +99,6 @@ jobs:
           fetch-depth: 0
       - name: Build llms-cpu
         run: |
-          docker pull gperdrizet/llms-cpu:latest || true
           make build-llms-cpu VERSION=${{ inputs.version }}
 
   test-cpu:

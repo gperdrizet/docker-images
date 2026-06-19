@@ -1,4 +1,5 @@
 .env
+.vscode
 wheels/
 docker_images.code-workspace
 dockerfile.build-cupy

@@ -1,5 +1,7 @@
 # Jupyter
 jupyterlab
+ipykernel
+ipywidgets
 
 # LLM Frameworks
 langchain
@@ -43,4 +45,3 @@ python-dotenv
 pydantic
 accelerate
 datasets
-bitsandbytes

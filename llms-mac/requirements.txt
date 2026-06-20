@@ -1,0 +1,46 @@
+# Jupyter
+jupyterlab
+
+# LLM Frameworks
+langchain
+langchain-community
+langchain-core
+langchain-huggingface
+llama-index
+transformers
+smolagents
+
+# Inference (no vLLM - requires CUDA)
+ollama
+
+# API clients
+openai
+anthropic
+langchain-openai
+langchain-anthropic
+langchain-ollama
+langchain-google-genai
+langchain-mistralai
+
+# Vector store
+chromadb
+langchain-chroma
+psycopg2-binary
+psycopg[binary]
+pgvector
+langchain-postgres
+langchain-text-splitters
+pypdf
+
+# UI
+gradio
+
+# Supporting libraries
+huggingface-hub
+sentence-transformers
+tiktoken
+python-dotenv
+pydantic
+accelerate
+datasets
+bitsandbytes

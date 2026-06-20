@@ -10,7 +10,8 @@ A ready-to-use deep learning environment with NVIDIA GPU support for VS Code. In
 
 ## 1. Features
 
-- **Dual framework support:** Both TensorFlow 2.17 and PyTorch 2.11 pre-installed and GPU-ready
+- **Dual framework support:** Both TensorFlow 2.17 and PyTorch 2.11.0 pre-installed and GPU-ready
+- **GPU-accelerated arrays:** CuPy 13.6.0 (custom wheel, sm_60-sm_100) for GPU NumPy-compatible computation
 - **NVIDIA GPU acceleration:** Built on NVIDIA's official TensorFlow container with CUDA 12.8 and Blackwell support
 - **VS Code Dev Container ready:** Pre-configured `vscode` user for seamless devcontainer integration
 
@@ -21,7 +22,8 @@ A ready-to-use deep learning environment with NVIDIA GPU support for VS Code. In
 | Base Image | `nvcr.io/nvidia/tensorflow:25.02-tf2-py3` |
 | TensorFlow | 2.17 |
 | Keras | 3.x |
-| PyTorch | 2.11 (custom build, CUDA 12.8) |
+| PyTorch | 2.11.0 (custom build, CUDA 12.8) |
+| CuPy | 13.6.0 (custom build, sm_60-sm_100) |
 | Python | 3.12 |
 | CUDA | 12.8 |
 | GPU Support | Pascal through Blackwell (sm_60 - sm_100) |

@@ -6,37 +6,28 @@ Native ARM64 data science environment for Apple Silicon (M1/M2/M3) Macs. Runs wi
 
 ## 1. Features
 
-- **Native Apple Silicon:** Built as `linux/arm64`; runs without Rosetta emulation in Docker Desktop on M1/M2/M3 Macs
-- **No deep learning frameworks:** Focused on classical ML and data analysis, keeping the image lean
-- **VS Code Dev Container ready:** Pre-configured `vscode` user (UID 1000) with sudo access for seamless devcontainer integration
+- Python 3.12
+- JupyterLab
+- scikit-learn, XGBoost, statsmodels
+- pandas, numpy, scipy
+- matplotlib, seaborn, plotly
+- optuna (hyperparameter optimization)
+- linux/arm64, native Apple Silicon, no Rosetta
 
-## 2. Included software
+## 2. Usage with VS Code
 
-| Component | Version |
-|-----------|--------|
-| Base Image | `python:3.12-slim` |
-| Platform | `linux/arm64` |
-| Python | 3.12 |
+Start the container, then use VS Code's **Dev Containers: Attach to Running Container** command to connect:
 
-### 2.1. Python packages
+```bash
+docker run --rm -it \
+  -v $(pwd):/workspace \
+  gperdrizet/datascience-mac:latest \
+  /bin/bash
+```
 
-- `numpy` - Numerical computing
-- `pandas` - Data manipulation
-- `scipy` - Scientific computing
-- `scikit-learn` - Machine learning
-- `xgboost` - Gradient boosted trees
-- `statsmodels` - Statistical modeling
-- `matplotlib` - Data visualization
-- `seaborn` - Statistical data visualization
-- `plotly` - Interactive visualization
-- `jupyterlab` - Notebook interface
-- `optuna` - Hyperparameter optimization
+Open the Command Palette (`Ctrl+Shift+P`), run **Dev Containers: Attach to Running Container**, and select the container.
 
-## 3. Usage with VS Code Dev Containers
-
-This image is designed for use with the [datascience-devcontainer](https://github.com/gperdrizet/datascience-devcontainer) repository, which provides ready-to-use VS Code Dev Container configurations. The `vscode` user (UID 1000) is pre-configured with sudo access for a seamless development experience.
-
-## 4. Running directly with Docker
+## 3. Running directly with Docker
 
 ```bash
 docker run --rm -it \
@@ -46,36 +37,10 @@ docker run --rm -it \
   jupyter lab --ip=0.0.0.0 --no-browser --allow-root
 ```
 
-## 5. Requirements
+## 4. Requirements
 
 - Docker Desktop for Mac (Apple Silicon)
 
-## 6. Building on linux
-
-### 5.4. Building on linux/ARM64 for macOS
-
-The `datascience-mac` image needs ARM64 emulation via Docker's buildx. You must create a builder before building the image:
-
-```
-# Create a brand new builder utilizing the docker-container driver
-docker buildx create --name mybuilder --driver docker-container --use
-
-# Boot and inspect the builder to ensure "arm64" is listed under platforms
-docker buildx inspect --bootstrap
-```
-
-#### Troubleshooting
-
-Try resetting the emulator registration and removing, then recreating the builder:
-
-```
-# Reset the emulator
-docker run --rm --privileged multiarch/qemu-user-static --reset -p yes
-
-# Stop and remove the current builder
-docker buildx rm mybuilder || true
-```
-
-## 7. License
+## 5. License
 
 MIT. See [docker-images](https://github.com/gperdrizet/docker-images/blob/main/LICENSE).

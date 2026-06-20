@@ -12,8 +12,10 @@
 [![Docker Pulls datascience-mac](https://img.shields.io/docker/pulls/gperdrizet/datascience-mac?label=datascience-mac&logo=docker)](https://hub.docker.com/r/gperdrizet/datascience-mac)
 [![Docker Pulls deeplearning-nvidia](https://img.shields.io/docker/pulls/gperdrizet/deeplearning-nvidia?label=deeplearning-nvidia&logo=docker)](https://hub.docker.com/r/gperdrizet/deeplearning-nvidia)
 [![Docker Pulls deeplearning-cpu](https://img.shields.io/docker/pulls/gperdrizet/deeplearning-cpu?label=deeplearning-cpu&logo=docker)](https://hub.docker.com/r/gperdrizet/deeplearning-cpu)
+[![Docker Pulls deeplearning-mac](https://img.shields.io/docker/pulls/gperdrizet/deeplearning-mac?label=deeplearning-mac&logo=docker)](https://hub.docker.com/r/gperdrizet/deeplearning-mac)
 [![Docker Pulls llms-nvidia](https://img.shields.io/docker/pulls/gperdrizet/llms-nvidia?label=llms-nvidia&logo=docker)](https://hub.docker.com/r/gperdrizet/llms-nvidia)
 [![Docker Pulls llms-cpu](https://img.shields.io/docker/pulls/gperdrizet/llms-cpu?label=llms-cpu&logo=docker)](https://hub.docker.com/r/gperdrizet/llms-cpu)
+[![Docker Pulls llms-mac](https://img.shields.io/docker/pulls/gperdrizet/llms-mac?label=llms-mac&logo=docker)](https://hub.docker.com/r/gperdrizet/llms-mac)
 
 A collection of containerized development environments for AI/ML and data science education, designed for use with VS Code Dev Containers.
 
@@ -24,8 +26,10 @@ A collection of containerized development environments for AI/ML and data scienc
 | `datascience-mac` | `python:3.12-slim` | Intro data science on Apple Silicon |
 | `deeplearning-nvidia` | NGC TensorFlow 25.02 | TensorFlow + PyTorch on NVIDIA GPU |
 | `deeplearning-cpu` | `python:3.12-slim` | TensorFlow + PyTorch on CPU |
+| `deeplearning-mac` | `python:3.12-slim` | TensorFlow + PyTorch on Apple Silicon |
 | `llms-nvidia` | `nvidia/cuda:12.8.1-cudnn-runtime` | LLM development on NVIDIA GPU |
 | `llms-cpu` | `python:3.12-slim` | LLM development on CPU |
+| `llms-mac` | `python:3.12-slim` | LLM development on Apple Silicon |
 
 ### Goals
 
@@ -36,7 +40,7 @@ A collection of containerized development environments for AI/ML and data scienc
 
 ### Design rationale
 
-The `datascience-*` images provide a lightweight environment for intro Python and ML classes: numpy, pandas, scikit-learn, xgboost, matplotlib, seaborn, plotly, jupyterlab, and optuna. The `datascience-mac` variant targets Apple Silicon (M1/M2/M3) and is built as a native `linux/arm64` image.
+The `datascience-*` images provide a lightweight environment for intro Python and ML classes: numpy, pandas, scikit-learn, xgboost, matplotlib, seaborn, plotly, jupyterlab, and optuna. The `datascience-mac`, `deeplearning-mac`, and `llms-mac` variants target Apple Silicon (M1/M2/M3) and are built as native `linux/arm64` images.
 
 The `deeplearning-nvidia` image is based on NVIDIA's official NGC TensorFlow container, which provides a fully validated CUDA + cuDNN + TensorFlow stack that supports Pascal (sm_60) out of the box. PyTorch is then added via a custom-built wheel, as official PyTorch CUDA 12.x wheels dropped Pascal support. The `llms-nvidia` image follows the same custom-wheel approach but on a minimal `nvidia/cuda` base, since it doesn't need TensorFlow. This combination ensures all NVIDIA images work on Pascal through Blackwell hardware with no changes to student workflow. CPU images use `python:3.12-slim` with the same Python packages, providing a consistent environment for CPU-only machines.
 
@@ -53,14 +57,16 @@ The `deeplearning-nvidia` image is based on NVIDIA's official NGC TensorFlow con
   - [4.3. datascience-mac](#43-datascience-mac)
   - [4.4. deeplearning-nvidia](#44-deeplearning-nvidia)
   - [4.5. deeplearning-cpu](#45-deeplearning-cpu)
-  - [4.6. llms-nvidia](#46-llms-nvidia)
-  - [4.7. llms-cpu](#47-llms-cpu)
+  - [4.6. deeplearning-mac](#46-deeplearning-mac)
+  - [4.7. llms-nvidia](#47-llms-nvidia)
+  - [4.8. llms-cpu](#48-llms-cpu)
+  - [4.9. llms-mac](#49-llms-mac)
 - [5. Development](#5-development)
   - [5.1. Releasing a new version](#51-releasing-a-new-version)
   - [5.2. Makefile reference](#52-makefile-reference)
   - [5.3. CI/CD infrastructure](#53-cicd-infrastructure)
   - [5.4. Building linux/ARM64 for macOS](#54-building-linuxarm64-for-macos)
-  - [5.5. Rebuilding PyTorch wheels](#55-rebuilding-pytorch-wheels)
+  - [5.5. Building custom wheels](#55-building-custom-wheels)
 - [6. License](#6-license)
 
 ## 1. Requirements
@@ -77,8 +83,8 @@ The devcontainer repositories consume the images built here and provide the rest
 | Repository | Images used | Description |
 |------------|-------------|-------------|
 | [`gperdrizet/datascience-devcontainer`](https://github.com/gperdrizet/datascience-devcontainer) | `datascience-nvidia`, `datascience-cpu`, `datascience-mac` | Dev Container for intro data science |
-| [`gperdrizet/deeplearning-devcontainer`](https://github.com/gperdrizet/deeplearning-devcontainer) | `deeplearning-nvidia`, `deeplearning-cpu` | Dev Container for deep learning (TensorFlow + PyTorch) |
-| [`gperdrizet/llms-devcontainer`](https://github.com/gperdrizet/llms-devcontainer) | `llms-nvidia`, `llms-cpu` | Dev Container for LLM application development |
+| [`gperdrizet/deeplearning-devcontainer`](https://github.com/gperdrizet/deeplearning-devcontainer) | `deeplearning-nvidia`, `deeplearning-cpu`, `deeplearning-mac` | Dev Container for deep learning (TensorFlow + PyTorch) |
+| [`gperdrizet/llms-devcontainer`](https://github.com/gperdrizet/llms-devcontainer) | `llms-nvidia`, `llms-cpu`, `llms-mac` | Dev Container for LLM application development |
 
 The devcontainer configurations handle additional environment and repository set-up such as GPU pass-through, environment variables, publishing common ports (for e.g. Streamlit, Gradio, TensorBoard, Optuna, etc), creating standard directory structure (e.g. `notebooks/`, `models/`, `data/` etc), selecting the Python interpreter and installing common VS Code extensions. They also provide a `.gitignore`, `README.md`, license and a notebook or Python module to test and verify the environment.
 
@@ -149,8 +155,10 @@ VS Code opens a new window connected to the container. Your mounted volume is av
 - 4.3. datascience-mac
 - 4.4. deeplearning-nvidia
 - 4.5. deeplearning-cpu
-- 4.6. llms-nvidia
-- 4.7. llms-cpu
+- 4.6. deeplearning-mac
+- 4.7. llms-nvidia
+- 4.8. llms-cpu
+- 4.9. llms-mac
 
 ### 4.1. datascience-nvidia
 
@@ -163,7 +171,7 @@ Lightweight data science environment for intro Python and ML courses, with NVIDI
 | CUDA | 12.8 |
 | GPU Support | CUDA-capable NVIDIA GPU |
 
-**Packages:** numpy, pandas, scipy, scikit-learn, xgboost, statsmodels, matplotlib, seaborn, plotly, jupyterlab, optuna, cupy-cuda12x
+**Packages:** numpy, pandas, scipy, scikit-learn, xgboost, statsmodels, matplotlib, seaborn, plotly, jupyterlab, optuna, cupy 13.6.0 (custom wheel, sm_60-sm_100)
 
 **DockerHub:** [`gperdrizet/datascience-nvidia:latest`](https://hub.docker.com/repository/docker/gperdrizet/datascience-nvidia/general)
 
@@ -205,12 +213,13 @@ Full-featured deep learning environment with NVIDIA GPU support.
 | Base Image | `nvcr.io/nvidia/tensorflow:25.02-tf2-py3` |
 | TensorFlow | 2.17 |
 | PyTorch | 2.11.0 (custom wheel) |
+| CuPy | 13.6.0 (custom wheel) |
 | Keras | 3.x |
 | Python | 3.12 |
 | CUDA | 12.8 |
 | GPU Support | Pascal - Blackwell (sm_60 - sm_100) |
 
-**Custom PyTorch build:** PyTorch is built from source with wide GPU architecture support. The pre-built wheel is downloaded from GitHub Releases during image build. See [Rebuilding PyTorch wheels](#rebuilding-pytorch-wheels) if you need to rebuild.
+**Custom wheels:** PyTorch and CuPy are built from source with wide GPU architecture support. Pre-built wheels are downloaded from GitHub Releases during image build. See [Building custom wheels](#55-building-custom-wheels) if you need to rebuild.
 
 **Other packages:** numpy, pandas, scikit-learn, scipy, matplotlib, seaborn, jupyterlab, keras_tuner, optuna, tensorboard
 
@@ -235,7 +244,26 @@ Full-featured deep learning environment for CPU-only systems.
 
 **Devcontainer repository:** [`github.com/gperdrizet/deeplearning-devcontainer`](https://github.com/gperdrizet/deeplearning-devcontainer)
 
-### 4.6. llms-nvidia
+### 4.6. deeplearning-mac
+
+Full-featured deep learning environment for Apple Silicon (M1/M2/M3) Macs. Built as a native `linux/arm64` image — no Rosetta emulation. GPU acceleration is not available inside Docker on macOS.
+
+| Component | Version |
+|-----------|----------|
+| Base Image | `python:3.12-slim` |
+| Platform | `linux/arm64` |
+| TensorFlow | 2.17 |
+| Keras | 3.x |
+| PyTorch | Latest (CPU, ARM64) |
+| Python | 3.12 |
+
+**Other packages:** numpy, pandas, scikit-learn, scipy, matplotlib, seaborn, jupyterlab, keras_tuner, optuna, tensorboard
+
+**DockerHub:** [`gperdrizet/deeplearning-mac:latest`](https://hub.docker.com/repository/docker/gperdrizet/deeplearning-mac/general)
+
+**Devcontainer repository:** [`github.com/gperdrizet/deeplearning-devcontainer`](https://github.com/gperdrizet/deeplearning-devcontainer)
+
+### 4.7. llms-nvidia
 
 LLM application development environment with NVIDIA GPU support. Includes LangChain, LlamaIndex, Hugging Face Transformers, and API clients.
 
@@ -247,7 +275,7 @@ LLM application development environment with NVIDIA GPU support. Includes LangCh
 | CUDA | 12.8 |
 | GPU Support | Pascal - Blackwell (sm_60 - sm_100) |
 
-**Custom PyTorch build:** PyTorch is built from source with wide GPU architecture support. The pre-built wheel is downloaded from GitHub Releases during image build. See [Rebuilding PyTorch wheels](#rebuilding-pytorch-wheels) if you need to rebuild.
+**Custom PyTorch build:** PyTorch is built from source with wide GPU architecture support. The pre-built wheel is downloaded from GitHub Releases during image build. See [Building custom wheels](#55-building-custom-wheels) if you need to rebuild.
 
 **LLM frameworks:** langchain, llama-index, transformers, smolagents
 
@@ -259,7 +287,7 @@ LLM application development environment with NVIDIA GPU support. Includes LangCh
 
 **Devcontainer repository:** [`github.com/gperdrizet/llms-devcontainer`](https://github.com/gperdrizet/llms-devcontainer)
 
-### 4.7. llms-cpu
+### 4.8. llms-cpu
 
 Lightweight LLM application development environment for CPU-only systems.
 
@@ -276,6 +304,27 @@ Lightweight LLM application development environment for CPU-only systems.
 **Other packages:** chromadb, sentence-transformers, gradio, accelerate, datasets, tiktoken
 
 **DockerHub:** [`gperdrizet/llms-cpu:latest`](https://hub.docker.com/repository/docker/gperdrizet/llms-cpu/general)
+
+**Devcontainer repository:** [`github.com/gperdrizet/llms-devcontainer`](https://github.com/gperdrizet/llms-devcontainer)
+
+### 4.9. llms-mac
+
+Lightweight LLM application development environment for Apple Silicon (M1/M2/M3) Macs. Built as a native `linux/arm64` image — no Rosetta emulation. GPU acceleration is not available inside Docker on macOS.
+
+| Component | Version |
+|-----------|--------|
+| Base Image | `python:3.12-slim` |
+| Platform | `linux/arm64` |
+| PyTorch | Latest (CPU, ARM64) |
+| Python | 3.12 |
+
+**LLM frameworks:** langchain, llama-index, transformers, smolagents
+
+**API clients:** openai, anthropic, ollama
+
+**Other packages:** chromadb, sentence-transformers, gradio, accelerate, datasets, tiktoken
+
+**DockerHub:** [`gperdrizet/llms-mac:latest`](https://hub.docker.com/repository/docker/gperdrizet/llms-mac/general)
 
 **Devcontainer repository:** [`github.com/gperdrizet/llms-devcontainer`](https://github.com/gperdrizet/llms-devcontainer)
 
@@ -307,10 +356,12 @@ These commands are useful for local development and testing. The CI/CD pipeline 
 |---------|-------------|
 | `make build-deeplearning-nvidia` | Build deeplearning NVIDIA image |
 | `make build-deeplearning-cpu` | Build deeplearning CPU image |
-| `make build-deeplearning` | Build both deeplearning images |
+| `make build-deeplearning-mac` | Build deeplearning Mac (linux/arm64) image |
+| `make build-deeplearning` | Build all three deeplearning images |
 | `make build-llms-nvidia` | Build llms NVIDIA image |
 | `make build-llms-cpu` | Build llms CPU image |
-| `make build-llms` | Build both llms images |
+| `make build-llms-mac` | Build llms Mac (linux/arm64) image |
+| `make build-llms` | Build all three llms images |
 | `make build-datascience-nvidia` | Build datascience NVIDIA image |
 | `make build-datascience-cpu` | Build datascience CPU image |
 | `make build-datascience-mac` | Build datascience Mac (linux/arm64) image |
@@ -323,8 +374,10 @@ These commands are useful for local development and testing. The CI/CD pipeline 
 |---------|-------------|
 | `make test-deeplearning-cpu` | Test deeplearning CPU image |
 | `make test-deeplearning-nvidia` | Test deeplearning NVIDIA image |
+| `make test-deeplearning-mac` | Test deeplearning Mac image |
 | `make test-llms-cpu` | Test llms CPU image |
 | `make test-llms-nvidia` | Test llms NVIDIA image |
+| `make test-llms-mac` | Test llms Mac image |
 | `make test-datascience-cpu` | Test datascience CPU image |
 | `make test-datascience-nvidia` | Test datascience NVIDIA image |
 | `make test-datascience-mac` | Test datascience Mac image |
@@ -345,10 +398,12 @@ bash tests/test-deeplearning-cpu.sh gperdrizet/deeplearning-cpu:4.1.0
 |---------|-------------|
 | `make push-deeplearning-nvidia` | Push deeplearning NVIDIA image |
 | `make push-deeplearning-cpu` | Push deeplearning CPU image |
-| `make push-deeplearning` | Push both deeplearning images |
+| `make push-deeplearning-mac` | Push deeplearning Mac image |
+| `make push-deeplearning` | Push all three deeplearning images |
 | `make push-llms-nvidia` | Push llms NVIDIA image |
 | `make push-llms-cpu` | Push llms CPU image |
-| `make push-llms` | Push both llms images |
+| `make push-llms-mac` | Push llms Mac image |
+| `make push-llms` | Push all three llms images |
 | `make push-datascience-nvidia` | Push datascience NVIDIA image |
 | `make push-datascience-cpu` | Push datascience CPU image |
 | `make push-datascience-mac` | Push datascience Mac image |
@@ -368,8 +423,10 @@ DOCKERHUB_TOKEN=your-dockerhub-pat
 |---------|-------------|
 | `make update-readme-deeplearning-nvidia` | Update deeplearning-nvidia DockerHub README |
 | `make update-readme-deeplearning-cpu` | Update deeplearning-cpu DockerHub README |
+| `make update-readme-deeplearning-mac` | Update deeplearning-mac DockerHub README |
 | `make update-readme-llms-nvidia` | Update llms-nvidia DockerHub README |
 | `make update-readme-llms-cpu` | Update llms-cpu DockerHub README |
+| `make update-readme-llms-mac` | Update llms-mac DockerHub README |
 | `make update-readme-datascience-nvidia` | Update datascience-nvidia DockerHub README |
 | `make update-readme-datascience-cpu` | Update datascience-cpu DockerHub README |
 | `make update-readme-datascience-mac` | Update datascience-mac DockerHub README |
@@ -423,44 +480,40 @@ docker run --rm --privileged multiarch/qemu-user-static --reset -p yes
 docker buildx rm mybuilder || true
 ```
 
-### 5.5. Rebuilding PyTorch wheels
+### 5.5. Building custom wheels
 
-The `llms-nvidia` and `deeplearning-nvidia` images use custom-built PyTorch wheels with wide GPU architecture support (Pascal through Blackwell). Pre-built wheels are hosted on GitHub Releases and downloaded during image build.
-
-#### Why custom wheels?
-
-Standard PyTorch wheels only support recent GPU architectures. Our custom builds include `sm_60` through `sm_100` for compatibility with diverse student hardware, from GTX 1060 to RTX 5090/B200.
+The `deeplearning-nvidia` and `llms-nvidia` images use a custom PyTorch wheel, and `datascience-nvidia` uses a custom CuPy wheel. Both are built with wide GPU architecture support (Pascal through Blackwell, sm_60–sm_100). Pre-built wheels are hosted on GitHub Releases and downloaded during image build. Wheel builds are infrequent and done manually; once a wheel is on GitHub Releases, all subsequent image builds just download it — no compile step.
 
 #### When to rebuild
 
 Rebuild wheels when:
-- Upgrading PyTorch version
+- Upgrading PyTorch or CuPy version
 - Adding/removing GPU architecture support
-- Updating CUDA version in base image
+- Updating the CUDA version in a base image
 
-#### Build commands
+#### PyTorch wheel (deeplearning-nvidia + llms-nvidia)
+
+| Container | Python | CUDA | Wheel name |
+|-----------|--------|------|------------|
+| deeplearning-nvidia | 3.12 | 12.8 | `torch-X.Y.Z-cp312-cp312-linux_x86_64.whl` |
+| llms-nvidia | 3.12 | 12.8 | same wheel (reused from GitHub Releases) |
+
+**Build commands:**
 
 | Command | Description |
 |---------|-------------|
 | `make wheel-deeplearning-nvidia` | Build PyTorch wheel (Python 3.12, CUDA 12.8) |
 | `make extract-wheel-deeplearning-nvidia` | Extract wheel from builder container |
 
-#### Build configuration
-
-Override defaults via environment variables:
+**Build configuration** — override defaults via environment variables:
 
 ```bash
-# Custom PyTorch version
 make wheel-deeplearning-nvidia PYTORCH_VERSION=2.12.0
-
-# Adjust build parallelism (default: 16)
 make wheel-deeplearning-nvidia MAX_JOBS=8
-
-# Custom GPU architectures
 make wheel-deeplearning-nvidia CUDA_ARCH_LIST="7.0;7.5;8.0;8.6"
 ```
 
-#### Full workflow
+**Full workflow:**
 
 ```bash
 # 1. Build the wheel (takes 3-4 hours)
@@ -470,19 +523,50 @@ make wheel-deeplearning-nvidia
 make extract-wheel-deeplearning-nvidia
 
 # 3. Upload to GitHub Releases
-gh release create pytorch-2.11.0-cu128-cp312 ./wheels/torch-2.11.0-cp312-cp312-linux_x86_64.whl \
+gh release create pytorch-2.11.0-cu128-cp312 \
+  ./wheels/torch-2.11.0-cp312-cp312-linux_x86_64.whl \
   --title "PyTorch 2.11.0 CUDA 12.8 (Pascal-Blackwell)" \
   --notes "Custom PyTorch wheel with sm_60-sm_100 support"
 
-# 4. Update WHEEL_URL in both Dockerfiles and rebuild via CI
+# 4. Update WHEEL_URL in deeplearning-nvidia/Dockerfile and llms-nvidia/Dockerfile, then rebuild via CI
 ```
 
-#### Wheel specifications
+#### CuPy wheel (datascience-nvidia)
 
-| Container | Python | CUDA | Wheel Name |
+| Container | Python | CUDA | Wheel name |
 |-----------|--------|------|------------|
-| deeplearning-nvidia | 3.12 | 12.8 | `torch-X.Y.Z-cp312-cp312-linux_x86_64.whl` |
-| llms-nvidia | 3.12 | 12.8 | same wheel (reused from GitHub Releases) |
+| datascience-nvidia | 3.12 | 12.8 | `cupy-X.Y.Z-cp312-cp312-linux_x86_64.whl` |
+
+**Build commands:**
+
+| Command | Description |
+|---------|-------------|
+| `make wheel-datascience-nvidia` | Build CuPy wheel (Python 3.12, CUDA 12.8) |
+| `make extract-wheel-datascience-nvidia` | Extract wheel from builder container |
+
+**Build configuration** — override defaults via environment variables:
+
+```bash
+make wheel-datascience-nvidia CUPY_VERSION=13.7.0
+```
+
+**Full workflow:**
+
+```bash
+# 1. Build the wheel (~1 hour)
+make wheel-datascience-nvidia
+
+# 2. Extract wheel to ./wheels/
+make extract-wheel-datascience-nvidia
+
+# 3. Upload to GitHub Releases
+gh release create cupy-13.6.0-cu128-cp312 \
+  ./wheels/cupy-13.6.0-cp312-cp312-linux_x86_64.whl \
+  --title "CuPy 13.6.0 CUDA 12.8 (Pascal-Blackwell)" \
+  --notes "Custom CuPy wheel with sm_60-sm_100 support"
+
+# 4. Update WHEEL_URL in datascience-nvidia/Dockerfile, then rebuild via CI
+```
 
 ## 6. License
 

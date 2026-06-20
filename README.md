@@ -40,7 +40,7 @@ A collection of containerized development environments for AI/ML and data scienc
 
 ### Design rationale
 
-The `datascience-*` images provide a lightweight environment for intro Python and ML classes: numpy, pandas, scikit-learn, xgboost, matplotlib, seaborn, plotly, jupyterlab, and optuna. The `datascience-mac`, `deeplearning-mac`, and `llms-mac` variants target Apple Silicon (M1/M2/M3) and are built as native `linux/arm64` images.
+The `datascience-*` images provide a lightweight environment for intro Python and ML classes: numpy, pandas, scikit-learn, xgboost, matplotlib, seaborn, plotly, jupyterlab, optuna, and python-dotenv. The `datascience-mac`, `deeplearning-mac`, and `llms-mac` variants target Apple Silicon (M1/M2/M3) and are built as native `linux/arm64` images.
 
 The `deeplearning-nvidia` image is based on NVIDIA's official NGC TensorFlow container, which provides a fully validated CUDA + cuDNN + TensorFlow stack that supports Pascal (sm_60) out of the box. PyTorch is then added via a custom-built wheel, as official PyTorch CUDA 12.x wheels dropped Pascal support. The `llms-nvidia` image follows the same custom-wheel approach but on a minimal `nvidia/cuda` base, since it doesn't need TensorFlow. This combination ensures all NVIDIA images work on Pascal through Blackwell hardware with no changes to student workflow. CPU images use `python:3.12-slim` with the same Python packages, providing a consistent environment for CPU-only machines.
 
@@ -171,7 +171,7 @@ Lightweight data science environment for intro Python and ML courses, with NVIDI
 | CUDA | 12.8 |
 | GPU Support | CUDA-capable NVIDIA GPU |
 
-**Packages:** numpy, pandas, scipy, scikit-learn, xgboost, statsmodels, matplotlib, seaborn, plotly, jupyterlab, optuna, cupy 13.6.0 (custom wheel, sm_60-sm_100)
+**Packages:** numpy, pandas, scipy, scikit-learn, xgboost, statsmodels, matplotlib, seaborn, plotly, jupyterlab, optuna, python-dotenv, cupy 13.6.0 (custom wheel, sm_60-sm_100)
 
 **DockerHub:** [`gperdrizet/datascience-nvidia:latest`](https://hub.docker.com/repository/docker/gperdrizet/datascience-nvidia/general)
 
@@ -184,7 +184,7 @@ Lightweight data science environment for intro Python and ML courses, CPU-only.
 | Base Image | `python:3.12-slim` |
 | Python | 3.12 |
 
-**Packages:** numpy, pandas, scipy, scikit-learn, xgboost, statsmodels, matplotlib, seaborn, plotly, jupyterlab, optuna
+**Packages:** numpy, pandas, scipy, scikit-learn, xgboost, statsmodels, matplotlib, seaborn, plotly, jupyterlab, optuna, python-dotenv
 
 **DockerHub:** [`gperdrizet/datascience-cpu:latest`](https://hub.docker.com/repository/docker/gperdrizet/datascience-cpu/general)
 
@@ -198,7 +198,7 @@ Lightweight data science environment for Apple Silicon (M1/M2/M3) Macs. Built as
 | Platform | `linux/arm64` |
 | Python | 3.12 |
 
-**Packages:** numpy, pandas, scipy, scikit-learn, xgboost, statsmodels, matplotlib, seaborn, plotly, jupyterlab, optuna
+**Packages:** numpy, pandas, scipy, scikit-learn, xgboost, statsmodels, matplotlib, seaborn, plotly, jupyterlab, optuna, python-dotenv
 
 **Note:** GPU/Metal passthrough is not supported in Docker on macOS. This image provides CPU-only computation with native ARM64 performance.
 
@@ -221,7 +221,7 @@ Full-featured deep learning environment with NVIDIA GPU support.
 
 **Custom wheels:** PyTorch and CuPy are built from source with wide GPU architecture support. Pre-built wheels are downloaded from GitHub Releases during image build. See [Building custom wheels](#55-building-custom-wheels) if you need to rebuild.
 
-**Other packages:** numpy, pandas, scikit-learn, scipy, matplotlib, seaborn, jupyterlab, keras_tuner, optuna, tensorboard
+**Other packages:** numpy, pandas, scikit-learn, scipy, matplotlib, seaborn, plotly, jupyterlab, keras_tuner, optuna, tensorboard, python-dotenv
 
 **DockerHub:** [`gperdrizet/deeplearning-nvidia:latest`](https://hub.docker.com/repository/docker/gperdrizet/deeplearning-nvidia/general)
 
@@ -238,7 +238,7 @@ Full-featured deep learning environment for CPU-only systems.
 | PyTorch | Latest CPU (via pip) |
 | Python | 3.12 |
 
-**Other packages:** numpy, pandas, scikit-learn, scipy, matplotlib, seaborn, jupyterlab, keras_tuner, optuna, tensorboard
+**Other packages:** numpy, pandas, scikit-learn, scipy, matplotlib, seaborn, plotly, jupyterlab, keras_tuner, optuna, tensorboard, python-dotenv
 
 **DockerHub:** [`gperdrizet/deeplearning-cpu:latest`](https://hub.docker.com/repository/docker/gperdrizet/deeplearning-cpu/general)
 
@@ -257,7 +257,7 @@ Full-featured deep learning environment for Apple Silicon (M1/M2/M3) Macs. Built
 | PyTorch | Latest (CPU, ARM64) |
 | Python | 3.12 |
 
-**Other packages:** numpy, pandas, scikit-learn, scipy, matplotlib, seaborn, jupyterlab, keras_tuner, optuna, tensorboard
+**Other packages:** numpy, pandas, scikit-learn, scipy, matplotlib, seaborn, plotly, jupyterlab, keras_tuner, optuna, tensorboard, python-dotenv
 
 **DockerHub:** [`gperdrizet/deeplearning-mac:latest`](https://hub.docker.com/repository/docker/gperdrizet/deeplearning-mac/general)
 
@@ -281,7 +281,7 @@ LLM application development environment with NVIDIA GPU support. Includes LangCh
 
 **API clients:** openai, anthropic, ollama
 
-**Other packages:** chromadb, sentence-transformers, gradio, accelerate, datasets, tiktoken
+**Other packages:** jupyterlab, ipykernel, ipywidgets, chromadb, sentence-transformers, gradio, accelerate, datasets, tiktoken
 
 **DockerHub:** [`gperdrizet/llms-nvidia:latest`](https://hub.docker.com/repository/docker/gperdrizet/llms-nvidia/general)
 
@@ -301,7 +301,7 @@ Lightweight LLM application development environment for CPU-only systems.
 
 **API clients:** openai, anthropic, ollama
 
-**Other packages:** chromadb, sentence-transformers, gradio, accelerate, datasets, tiktoken
+**Other packages:** jupyterlab, ipykernel, ipywidgets, chromadb, sentence-transformers, gradio, accelerate, datasets, tiktoken
 
 **DockerHub:** [`gperdrizet/llms-cpu:latest`](https://hub.docker.com/repository/docker/gperdrizet/llms-cpu/general)
 
@@ -322,7 +322,7 @@ Lightweight LLM application development environment for Apple Silicon (M1/M2/M3)
 
 **API clients:** openai, anthropic, ollama
 
-**Other packages:** chromadb, sentence-transformers, gradio, accelerate, datasets, tiktoken
+**Other packages:** jupyterlab, ipykernel, ipywidgets, chromadb, sentence-transformers, gradio, accelerate, datasets, tiktoken
 
 **DockerHub:** [`gperdrizet/llms-mac:latest`](https://hub.docker.com/repository/docker/gperdrizet/llms-mac/general)
 

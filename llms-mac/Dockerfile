@@ -35,8 +35,9 @@ RUN apt-get update && \
 WORKDIR /workspace
 
 # Install Ollama server binary for ARM64
+# Use explicit zstd decompression pipeline — tar --zstd from stdin is unreliable in QEMU builds
 RUN curl -fsSL https://github.com/ollama/ollama/releases/latest/download/ollama-linux-arm64.tar.zst \
-        | tar -x --zstd -C /usr/local
+        | zstd -d | tar -x -C /usr/local
 
 RUN pip install --no-cache-dir --upgrade pip setuptools wheel
 

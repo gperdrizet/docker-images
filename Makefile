@@ -1,18 +1,18 @@
 .PHONY: \
-        build-deeplearning-nvidia build-deeplearning-cpu \
-        build-llms-nvidia build-llms-cpu \
+        build-deeplearning-nvidia build-deeplearning-cpu build-deeplearning-mac \
+        build-llms-nvidia build-llms-cpu build-llms-mac \
         build-datascience-nvidia build-datascience-cpu build-datascience-mac \
         build-deeplearning build-llms build-datascience build-all \
-        push-deeplearning-nvidia push-deeplearning-cpu \
-        push-llms-nvidia push-llms-cpu \
+        push-deeplearning-nvidia push-deeplearning-cpu push-deeplearning-mac \
+        push-llms-nvidia push-llms-cpu push-llms-mac \
         push-datascience-nvidia push-datascience-cpu push-datascience-mac \
         push-deeplearning push-llms push-datascience push-all all \
-        test-deeplearning-cpu test-deeplearning-nvidia \
-        test-llms-cpu test-llms-nvidia \
+        test-deeplearning-cpu test-deeplearning-nvidia test-deeplearning-mac \
+        test-llms-cpu test-llms-nvidia test-llms-mac \
         test-datascience-cpu test-datascience-nvidia test-datascience-mac \
         test-cpu test-nvidia test-mac test-all \
-        update-readme-deeplearning-nvidia update-readme-deeplearning-cpu \
-        update-readme-llms-nvidia update-readme-llms-cpu \
+        update-readme-deeplearning-nvidia update-readme-deeplearning-cpu update-readme-deeplearning-mac \
+        update-readme-llms-nvidia update-readme-llms-cpu update-readme-llms-mac \
         update-readme-datascience-nvidia update-readme-datascience-cpu update-readme-datascience-mac \
         update-readme-all \
         wheel-deeplearning-nvidia \
@@ -35,6 +35,8 @@ DEEPLEARNING_NVIDIA_IMAGE := gperdrizet/deeplearning-nvidia
 DEEPLEARNING_CPU_IMAGE    := gperdrizet/deeplearning-cpu
 LLMS_NVIDIA_IMAGE         := gperdrizet/llms-nvidia
 LLMS_CPU_IMAGE            := gperdrizet/llms-cpu
+DEEPLEARNING_MAC_IMAGE    := gperdrizet/deeplearning-mac
+LLMS_MAC_IMAGE            := gperdrizet/llms-mac
 DATASCIENCE_NVIDIA_IMAGE  := gperdrizet/datascience-nvidia
 DATASCIENCE_CPU_IMAGE     := gperdrizet/datascience-cpu
 DATASCIENCE_MAC_IMAGE     := gperdrizet/datascience-mac
@@ -50,7 +52,13 @@ build-deeplearning-cpu:
 	DOCKER_BUILDKIT=1 docker build --network=host --build-arg IMAGE_VERSION=$(VERSION) \
 		-t $(DEEPLEARNING_CPU_IMAGE):$(VERSION) -t $(DEEPLEARNING_CPU_IMAGE):latest ./deeplearning-cpu
 
-build-deeplearning: build-deeplearning-nvidia build-deeplearning-cpu
+build-deeplearning-mac:
+	DOCKER_BUILDKIT=1 docker buildx build --platform linux/arm64 --network=host --build-arg IMAGE_VERSION=$(VERSION) \
+		--cache-from type=registry,ref=$(DEEPLEARNING_MAC_IMAGE):latest \
+		--cache-to type=inline \
+		--load -t $(DEEPLEARNING_MAC_IMAGE):$(VERSION) -t $(DEEPLEARNING_MAC_IMAGE):latest ./deeplearning-mac
+
+build-deeplearning: build-deeplearning-nvidia build-deeplearning-cpu build-deeplearning-mac
 
 # llms
 build-llms-nvidia:
@@ -61,7 +69,13 @@ build-llms-cpu:
 	DOCKER_BUILDKIT=1 docker build --network=host --build-arg IMAGE_VERSION=$(VERSION) \
 		-t $(LLMS_CPU_IMAGE):$(VERSION) -t $(LLMS_CPU_IMAGE):latest ./llms-cpu
 
-build-llms: build-llms-nvidia build-llms-cpu
+build-llms-mac:
+	DOCKER_BUILDKIT=1 docker buildx build --platform linux/arm64 --network=host --build-arg IMAGE_VERSION=$(VERSION) \
+		--cache-from type=registry,ref=$(LLMS_MAC_IMAGE):latest \
+		--cache-to type=inline \
+		--load -t $(LLMS_MAC_IMAGE):$(VERSION) -t $(LLMS_MAC_IMAGE):latest ./llms-mac
+
+build-llms: build-llms-nvidia build-llms-cpu build-llms-mac
 
 # datascience
 build-datascience-nvidia:
@@ -105,9 +119,15 @@ test-datascience-nvidia:
 test-datascience-mac:
 	@bash ./tests/test-datascience-mac.sh $(DATASCIENCE_MAC_IMAGE):$(VERSION)
 
+test-deeplearning-mac:
+	@bash ./tests/test-deeplearning-mac.sh $(DEEPLEARNING_MAC_IMAGE):$(VERSION)
+
+test-llms-mac:
+	@bash ./tests/test-llms-mac.sh $(LLMS_MAC_IMAGE):$(VERSION)
+
 test-cpu:    test-deeplearning-cpu test-llms-cpu test-datascience-cpu
 test-nvidia: test-deeplearning-nvidia test-llms-nvidia test-datascience-nvidia
-test-mac:    test-datascience-mac
+test-mac:    test-datascience-mac test-deeplearning-mac test-llms-mac
 test-all:    test-cpu test-nvidia test-mac
 
 # ─── Push targets ─────────────────────────────────────────────────────────────
@@ -120,7 +140,11 @@ push-deeplearning-cpu:
 	docker push $(DEEPLEARNING_CPU_IMAGE):$(VERSION)
 	docker push $(DEEPLEARNING_CPU_IMAGE):latest
 
-push-deeplearning: push-deeplearning-nvidia push-deeplearning-cpu
+push-deeplearning-mac:
+	docker push $(DEEPLEARNING_MAC_IMAGE):$(VERSION)
+	docker push $(DEEPLEARNING_MAC_IMAGE):latest
+
+push-deeplearning: push-deeplearning-nvidia push-deeplearning-cpu push-deeplearning-mac
 
 push-llms-nvidia:
 	docker push $(LLMS_NVIDIA_IMAGE):$(VERSION)
@@ -130,7 +154,11 @@ push-llms-cpu:
 	docker push $(LLMS_CPU_IMAGE):$(VERSION)
 	docker push $(LLMS_CPU_IMAGE):latest
 
-push-llms: push-llms-nvidia push-llms-cpu
+push-llms-mac:
+	docker push $(LLMS_MAC_IMAGE):$(VERSION)
+	docker push $(LLMS_MAC_IMAGE):latest
+
+push-llms: push-llms-nvidia push-llms-cpu push-llms-mac
 
 push-datascience-nvidia:
 	docker push $(DATASCIENCE_NVIDIA_IMAGE):$(VERSION)
@@ -188,9 +216,15 @@ update-readme-datascience-cpu:
 update-readme-datascience-mac:
 	$(call update_readme,datascience-mac)
 
+update-readme-deeplearning-mac:
+	$(call update_readme,deeplearning-mac)
+
+update-readme-llms-mac:
+	$(call update_readme,llms-mac)
+
 update-readme-all: \
-	update-readme-deeplearning-nvidia update-readme-deeplearning-cpu \
-	update-readme-llms-nvidia update-readme-llms-cpu \
+	update-readme-deeplearning-nvidia update-readme-deeplearning-cpu update-readme-deeplearning-mac \
+	update-readme-llms-nvidia update-readme-llms-cpu update-readme-llms-mac \
 	update-readme-datascience-nvidia update-readme-datascience-cpu update-readme-datascience-mac
 
 # ─── PyTorch wheel build ───────────────────────────────────────────────────────

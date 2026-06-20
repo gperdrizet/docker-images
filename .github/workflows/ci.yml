@@ -77,6 +77,26 @@ jobs:
         run: |
           make build-deeplearning-cpu VERSION=${{ inputs.version }}
 
+  build-deeplearning-mac:
+    name: Build deeplearning-mac
+    runs-on: self-hosted
+    if: github.repository_owner == 'gperdrizet'
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+      - name: Set up QEMU for ARM64 builds
+        uses: docker/setup-qemu-action@v3
+        with:
+          platforms: arm64
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+        with:
+          driver-opts: network=host
+      - name: Build deeplearning-mac
+        run: |
+          make build-deeplearning-mac VERSION=${{ inputs.version }}
+
   build-llms-nvidia:
     name: Build llms-nvidia
     runs-on: self-hosted
@@ -100,6 +120,26 @@ jobs:
       - name: Build llms-cpu
         run: |
           make build-llms-cpu VERSION=${{ inputs.version }}
+
+  build-llms-mac:
+    name: Build llms-mac
+    runs-on: self-hosted
+    if: github.repository_owner == 'gperdrizet'
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+      - name: Set up QEMU for ARM64 builds
+        uses: docker/setup-qemu-action@v3
+        with:
+          platforms: arm64
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+        with:
+          driver-opts: network=host
+      - name: Build llms-mac
+        run: |
+          make build-llms-mac VERSION=${{ inputs.version }}
 
   test-cpu:
     name: Test CPU images
@@ -128,10 +168,10 @@ jobs:
         run: make test-nvidia VERSION=${{ inputs.version }}
 
   test-mac:
-    name: Test Mac (ARM64) image
+    name: Test Mac (ARM64) images
     runs-on: self-hosted
     if: github.repository_owner == 'gperdrizet'
-    needs: [build-datascience-mac]
+    needs: [build-datascience-mac, build-deeplearning-mac, build-llms-mac]
     steps:
       - uses: actions/checkout@v5
         with:
@@ -188,21 +228,25 @@ jobs:
 
           > /tmp/version_tables.md
 
-          for variant in nvidia cpu; do
+          for variant in nvidia cpu mac; do
             IMAGE="gperdrizet/deeplearning-${variant}:${VER}"
             printf '\n### deeplearning-%s\n| Package | Version |\n| --- | --- |\n' "$variant" >> /tmp/version_tables.md
-            docker run --rm -v /tmp/get_versions.py:/tmp/get_versions.py \
-              "$IMAGE" python /tmp/get_versions.py $DL_PKGS >> /tmp/version_tables.md
+            PLATFORM_FLAG=""
+            [[ "$variant" == "mac" ]] && PLATFORM_FLAG="--platform linux/arm64"
+            docker run --rm $PLATFORM_FLAG -v /tmp/get_versions.py:/tmp/get_versions.py \
+              "$IMAGE" python /tmp/get_versions.py $DL_PKGS 2>/dev/null | grep '^|' >> /tmp/version_tables.md
           done
 
-          for variant in nvidia cpu; do
+          for variant in nvidia cpu mac; do
             IMAGE="gperdrizet/llms-${variant}:${VER}"
             printf '\n### llms-%s\n| Package | Version |\n| --- | --- |\n' "$variant" >> /tmp/version_tables.md
             EXTRA=""
             [[ "$variant" == "nvidia" ]] && EXTRA="bitsandbytes"
-            docker run --rm -v /tmp/get_versions.py:/tmp/get_versions.py \
-              "$IMAGE" python /tmp/get_versions.py $LLM_PKGS $EXTRA >> /tmp/version_tables.md
-            OLLAMA=$(docker run --rm "$IMAGE" ollama --version 2>&1 | grep -oP '[\d.]+' | head -1)
+            PLATFORM_FLAG=""
+            [[ "$variant" == "mac" ]] && PLATFORM_FLAG="--platform linux/arm64"
+            docker run --rm $PLATFORM_FLAG -v /tmp/get_versions.py:/tmp/get_versions.py \
+              "$IMAGE" python /tmp/get_versions.py $LLM_PKGS $EXTRA 2>/dev/null | grep '^|' >> /tmp/version_tables.md
+            OLLAMA=$(docker run --rm $PLATFORM_FLAG "$IMAGE" ollama --version 2>&1 | grep -oP '[\d.]+' | head -1)
             echo "| ollama | ${OLLAMA} |" >> /tmp/version_tables.md
           done
 
@@ -212,7 +256,7 @@ jobs:
             PLATFORM_FLAG=""
             [[ "$variant" == "mac" ]] && PLATFORM_FLAG="--platform linux/arm64"
             docker run --rm $PLATFORM_FLAG -v /tmp/get_versions.py:/tmp/get_versions.py \
-              "$IMAGE" python /tmp/get_versions.py $DS_PKGS >> /tmp/version_tables.md
+              "$IMAGE" python /tmp/get_versions.py $DS_PKGS 2>/dev/null | grep '^|' >> /tmp/version_tables.md
           done
 
           echo "--- Version tables ---"

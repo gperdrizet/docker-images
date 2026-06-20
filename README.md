@@ -19,25 +19,19 @@
 
 A collection of containerized development environments for AI/ML and data science education, designed for use with VS Code Dev Containers.
 
-| Image | Base | Purpose |
-|---|---|---|
-| `datascience-nvidia` | `nvidia/cuda:12.8.1-runtime` | Intro data science + GPU acceleration |
-| `datascience-cpu` | `python:3.12-slim` | Intro data science on CPU |
-| `datascience-mac` | `python:3.12-slim` | Intro data science on Apple Silicon |
-| `deeplearning-nvidia` | NGC TensorFlow 25.02 | TensorFlow + PyTorch on NVIDIA GPU |
-| `deeplearning-cpu` | `python:3.12-slim` | TensorFlow + PyTorch on CPU |
-| `deeplearning-mac` | `python:3.12-slim` | TensorFlow + PyTorch on Apple Silicon |
-| `llms-nvidia` | `nvidia/cuda:12.8.1-cudnn-runtime` | LLM development on NVIDIA GPU |
-| `llms-cpu` | `python:3.12-slim` | LLM development on CPU |
-| `llms-mac` | `python:3.12-slim` | LLM development on Apple Silicon |
+**Students:** use the devcontainer repositories below. Click **Use this template** on GitHub to start a new project instantly.
 
-**Students:** use these images via the devcontainer repositories. Click **Use this template** on GitHub to start a new project instantly.
-
-| Repository | Description |
-|------------|-------------|
-| [`gperdrizet/datascience-devcontainer`](https://github.com/gperdrizet/datascience-devcontainer) | Intro data science |
-| [`gperdrizet/deeplearning-devcontainer`](https://github.com/gperdrizet/deeplearning-devcontainer) | Deep learning (TensorFlow + PyTorch) |
-| [`gperdrizet/llms-devcontainer`](https://github.com/gperdrizet/llms-devcontainer) | LLM application development |
+| Devcontainer | Image | Base | Purpose |
+|---|---|---|---|
+| [`datascience-devcontainer`](https://github.com/gperdrizet/datascience-devcontainer) | `datascience-nvidia` | `nvidia/cuda:12.8.1-runtime` | Intro data science + GPU acceleration |
+| | `datascience-cpu` | `python:3.12-slim` | Intro data science on CPU |
+| | `datascience-mac` | `python:3.12-slim` | Intro data science on Apple Silicon |
+| [`deeplearning-devcontainer`](https://github.com/gperdrizet/deeplearning-devcontainer) | `deeplearning-nvidia` | NGC TensorFlow 25.02 | TensorFlow + PyTorch on NVIDIA GPU |
+| | `deeplearning-cpu` | `python:3.12-slim` | TensorFlow + PyTorch on CPU |
+| | `deeplearning-mac` | `python:3.12-slim` | TensorFlow + PyTorch on Apple Silicon |
+| [`llms-devcontainer`](https://github.com/gperdrizet/llms-devcontainer) | `llms-nvidia` | `nvidia/cuda:12.8.1-cudnn-runtime` | LLM development on NVIDIA GPU |
+| | `llms-cpu` | `python:3.12-slim` | LLM development on CPU |
+| | `llms-mac` | `python:3.12-slim` | LLM development on Apple Silicon |
 
 ### Goals
 

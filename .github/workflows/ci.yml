@@ -185,11 +185,35 @@ jobs:
       - name: Test Mac image
         run: make test-mac VERSION=${{ inputs.version }}
 
+  push-staging:
+    name: Push staging tags
+    runs-on: self-hosted
+    if: github.repository_owner == 'gperdrizet'
+    needs: [test-cpu, test-nvidia, test-mac]
+    steps:
+      - name: Log in to DockerHub
+        run: echo "${{ secrets.DOCKERHUB_TOKEN }}" | docker login -u "${{ secrets.DOCKERHUB_USERNAME }}" --password-stdin
+
+      - name: Tag and push :staging images
+        env:
+          VERSION: ${{ inputs.version }}
+        run: |
+          for image in datascience-nvidia datascience-cpu datascience-mac \
+                       deeplearning-nvidia deeplearning-cpu deeplearning-mac \
+                       llms-nvidia llms-cpu llms-mac; do
+            docker tag "gperdrizet/${image}:${VERSION}" "gperdrizet/${image}:staging"
+            docker push "gperdrizet/${image}:staging"
+          done
+
+      - name: Docker logout
+        if: always()
+        run: docker logout
+
   dockerhub-push:
     name: Push to DockerHub
     runs-on: self-hosted
     if: github.repository_owner == 'gperdrizet'
-    needs: [test-cpu, test-nvidia, test-mac]
+    needs: [push-staging]
     environment: production
     steps:
       - uses: actions/checkout@v5

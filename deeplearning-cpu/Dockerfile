@@ -3,6 +3,10 @@
 # Python 3.12, CPU only, compatible with any machine.
 FROM python:3.12-slim
 
+LABEL org.opencontainers.image.source="https://github.com/gperdrizet/docker-images" \
+      org.opencontainers.image.licenses="MIT" \
+      org.opencontainers.image.authors="gperdrizet"
+
 ARG IMAGE_VERSION=dev
 ENV DEBIAN_FRONTEND=noninteractive
 
@@ -28,21 +32,25 @@ RUN apt-get update && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
 
+WORKDIR /workspace
+
 # Copy and configure startup script and custom bash.bashrc
 COPY motd.sh /usr/local/bin/motd.sh
 COPY bash.bashrc /etc/bash.bashrc
 RUN chmod +x /usr/local/bin/motd.sh && \
     echo "${IMAGE_VERSION}" > /etc/image-version
 
-COPY README.md /workspace/README.md
+COPY README.md README.md
 
 # Upgrade pip and install requirements
-COPY requirements.txt .
+COPY requirements.txt requirements.txt
 RUN pip install --no-cache-dir --root-user-action=ignore --upgrade pip && \
     pip install --no-cache-dir --root-user-action=ignore -r requirements.txt
 
 # Install PyTorch CPU version
 RUN pip install --no-cache-dir --root-user-action=ignore torch torchvision --index-url https://download.pytorch.org/whl/cpu
+
+EXPOSE 8888 6006
 
 # docker build -t gperdrizet/deeplearning-cpu:latest .
 # docker push gperdrizet/deeplearning-cpu:latest

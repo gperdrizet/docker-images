@@ -6,6 +6,10 @@
 # =============================================================================
 FROM nvidia/cuda:12.8.1-cudnn-runtime-ubuntu24.04
 
+LABEL org.opencontainers.image.source="https://github.com/gperdrizet/docker-images" \
+      org.opencontainers.image.licenses="MIT" \
+      org.opencontainers.image.authors="gperdrizet"
+
 ARG IMAGE_VERSION=dev
 ENV DEBIAN_FRONTEND=noninteractive
 ENV LD_LIBRARY_PATH=/usr/local/cuda/lib64:/usr/lib/x86_64-linux-gnu${LD_LIBRARY_PATH:+:${LD_LIBRARY_PATH}}
@@ -42,6 +46,8 @@ RUN apt-get update && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
 
+WORKDIR /workspace
+
 # Install Ollama server binary directly from latest release
 RUN curl -fsSL https://github.com/ollama/ollama/releases/latest/download/ollama-linux-amd64.tar.zst \
         | tar -x --zstd -C /usr/local
@@ -53,16 +59,18 @@ RUN chmod +x /usr/local/bin/motd.sh && \
     echo "${IMAGE_VERSION}" > /etc/image-version
 
 # Copy our README to workspace
-COPY README.md /workspace/README.md
+COPY README.md README.md
 
 # Install all dependencies. torch is specified as a direct URL in requirements.txt so pip
 # installs our custom wheel and satisfies the torch dep for all other packages without
 # ever touching PyPI for torch. No nvidia-*-cu12 pip packages are pulled in.
-COPY requirements.txt .
+COPY requirements.txt requirements.txt
 RUN pip install --no-cache-dir --break-system-packages --root-user-action=ignore -r requirements.txt
 
 # Validate torch import at build time
 RUN python3 -c "import torch; print('torch', torch.__version__, 'OK')"
+
+EXPOSE 8888 7860
 
 # docker build -t gperdrizet/llms-nvidia:latest .
 # docker push gperdrizet/llms-nvidia:latest

@@ -3,6 +3,10 @@
 # Python 3.12, CPU only, linux/amd64.
 FROM python:3.12-slim
 
+LABEL org.opencontainers.image.source="https://github.com/gperdrizet/docker-images" \
+      org.opencontainers.image.licenses="MIT" \
+      org.opencontainers.image.authors="gperdrizet"
+
 ARG IMAGE_VERSION=dev
 ENV DEBIAN_FRONTEND=noninteractive
 
@@ -28,16 +32,20 @@ RUN apt-get update && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
 
+WORKDIR /workspace
+
 COPY motd.sh /usr/local/bin/motd.sh
 COPY bash.bashrc /etc/bash.bashrc
 RUN chmod +x /usr/local/bin/motd.sh && \
     echo "${IMAGE_VERSION}" > /etc/image-version
 
-COPY README.md /workspace/README.md
+COPY README.md README.md
 
-COPY requirements.txt .
+COPY requirements.txt requirements.txt
 RUN pip install --no-cache-dir --root-user-action=ignore --upgrade pip && \
     pip install --no-cache-dir --root-user-action=ignore -r requirements.txt
+
+EXPOSE 8888
 
 # docker build -t gperdrizet/datascience-cpu:latest .
 # docker push gperdrizet/datascience-cpu:latest

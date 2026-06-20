@@ -1,6 +1,10 @@
 # Use Python 3.12 slim image for lightweight CPU-only LLM development
 FROM python:3.12-slim
 
+LABEL org.opencontainers.image.source="https://github.com/gperdrizet/docker-images" \
+      org.opencontainers.image.licenses="MIT" \
+      org.opencontainers.image.authors="gperdrizet"
+
 ARG IMAGE_VERSION=dev
 
 # Install system packages in a single layer
@@ -31,6 +35,8 @@ RUN apt-get update && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
 
+WORKDIR /workspace
+
 # Install Ollama server binary directly from latest release
 RUN curl -fsSL https://github.com/ollama/ollama/releases/latest/download/ollama-linux-amd64.tar.zst \
         | tar -x --zstd -C /usr/local
@@ -45,14 +51,16 @@ RUN chmod +x /usr/local/bin/motd.sh && \
     echo "${IMAGE_VERSION}" > /etc/image-version
 
 # Copy our README to workspace
-COPY README.md /workspace/README.md
+COPY README.md README.md
 
 # Copy requirements and install Python dependencies
-COPY requirements.txt .
+COPY requirements.txt requirements.txt
 RUN pip install --no-cache-dir --root-user-action=ignore -r requirements.txt
 
 # Install PyTorch CPU version
 RUN pip install --no-cache-dir --root-user-action=ignore torch torchvision --index-url https://download.pytorch.org/whl/cpu
+
+EXPOSE 8888 7860
 
 # docker build -t gperdrizet/llms-cpu:latest .
 # docker push gperdrizet/llms-cpu:latest

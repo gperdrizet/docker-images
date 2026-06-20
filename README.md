@@ -17,9 +17,9 @@
 [![Docker Pulls llms-cpu](https://img.shields.io/docker/pulls/gperdrizet/llms-cpu?label=llms-cpu&logo=docker)](https://hub.docker.com/r/gperdrizet/llms-cpu)
 [![Docker Pulls llms-mac](https://img.shields.io/docker/pulls/gperdrizet/llms-mac?label=llms-mac&logo=docker)](https://hub.docker.com/r/gperdrizet/llms-mac)
 
-Nine containerized development environments for AI/ML and data science education, organized into three families — **datascience**, **deeplearning**, and **llms** — each available in NVIDIA GPU, CPU-only, and Apple Silicon variants. Students use these images through the devcontainer repositories below, which wrap them with VS Code configuration, standard project structure, and a setup verification script so a new project is ready with a single `git clone`.
+Nine containerized development environments for AI/ML and data science education, organized into three families: **datascience**, **deeplearning**, and **llms**. Each is available in NVIDIA GPU, CPU-only, and Apple Silicon variants. Students use these images through the devcontainer repositories below, which wrap them with VS Code configuration, standard project structure, and a setup verification script so a new project is ready with a single `git clone`.
 
-| Devcontainer | Purpose | Hardware | Image |
+| Devcontainer repo | Purpose | Hardware | Image |
 |---|---|---|---|
 | [`datascience-devcontainer`](https://github.com/gperdrizet/datascience-devcontainer) | Intro data science | NVIDIA GPU | `datascience-nvidia` |
 | | | CPU | `datascience-cpu` |

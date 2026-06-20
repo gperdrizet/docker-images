@@ -34,5 +34,3 @@ WORKDIR /wheels
 # Build CuPy into a reusable wheel file from pure source
 # This step can take 10-20 minutes depending on your CPU power
 RUN pip3 wheel --no-binary cupy "cupy==${CUPY_VERSION}"
-
-CMD ["ls", "-la"]

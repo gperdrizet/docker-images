@@ -1,5 +1,5 @@
 # =============================================================================
-# PyTorch Build Dockerfile (for deeplearning-gpu)
+# PyTorch Build Dockerfile (for *-gpu images)
 # =============================================================================
 # Use this to rebuild the custom PyTorch wheel with wide GPU support.
 # The wheel is then uploaded to GitHub Releases and used by the main Dockerfile.

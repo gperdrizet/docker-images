@@ -47,7 +47,8 @@ RUN chmod +x /usr/local/bin/motd.sh && \
 COPY README.md README.md
 
 # Upgrade pip
-RUN pip install --no-cache-dir --root-user-action=ignore --upgrade pip
+# --ignore-installed: base image pip was installed by apt (no RECORD file), skip uninstall
+RUN pip install --no-cache-dir --root-user-action=ignore --upgrade pip --ignore-installed
 
 # Install custom PyTorch wheel with Pascal+ support from GitHub release
 # Note: Python 3.12 (TensorFlow 25.02 base) — wheel must be cp312

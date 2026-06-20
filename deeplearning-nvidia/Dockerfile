@@ -61,8 +61,10 @@ RUN pip install --no-cache-dir --root-user-action=ignore --force-reinstall --no-
 # Note: Python 3.12 (TensorFlow 25.02 base) — wheel must be cp312
 # --force-reinstall: ensure our wheel takes precedence over any PyPI cupy
 # --no-deps: preserve existing nvidia-*-cu12 CUDA packages from the base image
+# fastrlock: CuPy dependency not installed by --no-deps, safe to pull from PyPI
 ARG CUPY_WHEEL_URL=https://github.com/gperdrizet/docker-images/releases/download/cupy-13.6.0-cu128-cp312/cupy-13.6.0-cp312-cp312-linux_x86_64.whl
-RUN pip install --no-cache-dir --root-user-action=ignore --force-reinstall --no-deps ${CUPY_WHEEL_URL}
+RUN pip install --no-cache-dir --root-user-action=ignore fastrlock && \
+    pip install --no-cache-dir --root-user-action=ignore --force-reinstall --no-deps ${CUPY_WHEEL_URL}
 
 # Install remaining Python dependencies
 COPY requirements.txt requirements.txt

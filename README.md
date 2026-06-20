@@ -31,6 +31,14 @@ A collection of containerized development environments for AI/ML and data scienc
 | `llms-cpu` | `python:3.12-slim` | LLM development on CPU |
 | `llms-mac` | `python:3.12-slim` | LLM development on Apple Silicon |
 
+**Students:** use these images via the devcontainer repositories. Click **Use this template** on GitHub to start a new project instantly.
+
+| Repository | Description |
+|------------|-------------|
+| [`gperdrizet/datascience-devcontainer`](https://github.com/gperdrizet/datascience-devcontainer) | Intro data science |
+| [`gperdrizet/deeplearning-devcontainer`](https://github.com/gperdrizet/deeplearning-devcontainer) | Deep learning (TensorFlow + PyTorch) |
+| [`gperdrizet/llms-devcontainer`](https://github.com/gperdrizet/llms-devcontainer) | LLM application development |
+
 ### Goals
 
 1. **Eliminate setup friction**: students use a template devcontainer repo, clone it, and open it in VS Code. No manual environment configuration required. 

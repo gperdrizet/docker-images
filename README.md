@@ -246,7 +246,7 @@ Full-featured deep learning environment for CPU-only systems.
 
 ### 4.6. deeplearning-mac
 
-Full-featured deep learning environment for Apple Silicon (M1/M2/M3) Macs. Built as a native `linux/arm64` image — no Rosetta emulation. GPU acceleration is not available inside Docker on macOS.
+Full-featured deep learning environment for Apple Silicon (M1/M2/M3) Macs. Built as a native `linux/arm64` image, no Rosetta emulation. GPU acceleration is not available inside Docker on macOS.
 
 | Component | Version |
 |-----------|----------|
@@ -309,7 +309,7 @@ Lightweight LLM application development environment for CPU-only systems.
 
 ### 4.9. llms-mac
 
-Lightweight LLM application development environment for Apple Silicon (M1/M2/M3) Macs. Built as a native `linux/arm64` image — no Rosetta emulation. GPU acceleration is not available inside Docker on macOS.
+Lightweight LLM application development environment for Apple Silicon (M1/M2/M3) Macs. Built as a native `linux/arm64` image, no Rosetta emulation. GPU acceleration is not available inside Docker on macOS.
 
 | Component | Version |
 |-----------|--------|
@@ -482,7 +482,7 @@ docker buildx rm mybuilder || true
 
 ### 5.5. Building custom wheels
 
-The `deeplearning-nvidia` and `llms-nvidia` images use a custom PyTorch wheel, and `datascience-nvidia` uses a custom CuPy wheel. Both are built with wide GPU architecture support (Pascal through Blackwell, sm_60–sm_100). Pre-built wheels are hosted on GitHub Releases and downloaded during image build. Wheel builds are infrequent and done manually; once a wheel is on GitHub Releases, all subsequent image builds just download it — no compile step.
+The `deeplearning-nvidia` and `llms-nvidia` images use a custom PyTorch wheel, and `datascience-nvidia` uses a custom CuPy wheel. Both are built with wide GPU architecture support (Pascal through Blackwell, sm_60–sm_100). Pre-built wheels are hosted on GitHub Releases and downloaded during image build. Wheel builds are infrequent and done manually; once a wheel is on GitHub Releases, all subsequent image builds just download it, no compile step.
 
 #### When to rebuild
 
@@ -505,7 +505,7 @@ Rebuild wheels when:
 | `make wheel-deeplearning-nvidia` | Build PyTorch wheel (Python 3.12, CUDA 12.8) |
 | `make extract-wheel-deeplearning-nvidia` | Extract wheel from builder container |
 
-**Build configuration** — override defaults via environment variables:
+**Build configuration**: override defaults via environment variables:
 
 ```bash
 make wheel-deeplearning-nvidia PYTORCH_VERSION=2.12.0
@@ -544,7 +544,7 @@ gh release create pytorch-2.11.0-cu128-cp312 \
 | `make wheel-datascience-nvidia` | Build CuPy wheel (Python 3.12, CUDA 12.8) |
 | `make extract-wheel-datascience-nvidia` | Extract wheel from builder container |
 
-**Build configuration** — override defaults via environment variables:
+**Build configuration**: override defaults via environment variables:
 
 ```bash
 make wheel-datascience-nvidia CUPY_VERSION=13.7.0

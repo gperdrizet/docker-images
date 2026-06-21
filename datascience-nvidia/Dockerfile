@@ -26,7 +26,8 @@ RUN apt-get update && \
         bmon \
         curl \
         git \
-        openssh-client && \
+        openssh-client \
+        cuda-nvcc-12-8 && \
     mkdir -p /run/screen && chmod 777 /run/screen && \
     ln -sf /usr/bin/python3.12 /usr/bin/python && \
     ln -sf /usr/bin/python3.12 /usr/bin/python3 && \

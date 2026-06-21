@@ -295,6 +295,7 @@ jobs:
     runs-on: self-hosted
     if: github.repository_owner == 'gperdrizet'
     needs: [dockerhub-push]
+    environment: production
     permissions:
       contents: write
     steps:

@@ -333,7 +333,8 @@ jobs:
         run: |
           for repo in deeplearning-devcontainer llms-devcontainer datascience-devcontainer; do
             gh api /repos/gperdrizet/${repo}/dispatches \
-              -F event_type="docker-images-release" \
-              -F client_payload="{\"version\": \"${VERSION}\"}"
+              --input - <<EOF
+          {"event_type": "docker-images-release", "client_payload": {"version": "${VERSION}"}}
+          EOF
             echo "Dispatched sync to $repo"
           done

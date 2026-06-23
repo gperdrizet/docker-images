@@ -41,10 +41,7 @@ WORKDIR /workspace
 COPY motd.sh /usr/local/bin/motd.sh
 RUN chmod +x /usr/local/bin/motd.sh && \
     echo 'source /usr/local/bin/motd.sh' >> /etc/bash.bashrc && \
-    echo "${IMAGE_VERSION}" > /etc/image-version && \
     mv /workspace/README.md /workspace/NVIDIA_README.md 2>/dev/null || true
-
-COPY README.md README.md
 
 # Upgrade pip
 # --ignore-installed: base image pip was installed by apt (no RECORD file), skip uninstall
@@ -69,6 +66,9 @@ RUN pip install --no-cache-dir --root-user-action=ignore fastrlock && \
 # Install remaining Python dependencies
 COPY requirements.txt requirements.txt
 RUN pip install --no-cache-dir --root-user-action=ignore -r requirements.txt
+
+COPY README.md README.md
+RUN echo "${IMAGE_VERSION}" > /etc/image-version
 
 # Validate GPU imports at build time
 RUN python3 -c "import torch; print('torch', torch.__version__, 'OK')"

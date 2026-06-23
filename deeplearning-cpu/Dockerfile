@@ -37,10 +37,7 @@ WORKDIR /workspace
 # Copy and configure startup script and custom bash.bashrc
 COPY motd.sh /usr/local/bin/motd.sh
 COPY bash.bashrc /etc/bash.bashrc
-RUN chmod +x /usr/local/bin/motd.sh && \
-    echo "${IMAGE_VERSION}" > /etc/image-version
-
-COPY README.md README.md
+RUN chmod +x /usr/local/bin/motd.sh
 
 # Upgrade pip and install requirements
 COPY requirements.txt requirements.txt
@@ -49,6 +46,9 @@ RUN pip install --no-cache-dir --root-user-action=ignore --upgrade pip && \
 
 # Install PyTorch CPU version
 RUN pip install --no-cache-dir --root-user-action=ignore torch torchvision --index-url https://download.pytorch.org/whl/cpu
+
+COPY README.md README.md
+RUN echo "${IMAGE_VERSION}" > /etc/image-version
 
 EXPOSE 8888 6006
 

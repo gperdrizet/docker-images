@@ -47,11 +47,7 @@ RUN pip install --no-cache-dir --upgrade pip setuptools wheel
 # Copy and configure startup script and custom bash.bashrc
 COPY motd.sh /usr/local/bin/motd.sh
 COPY bash.bashrc /etc/bash.bashrc
-RUN chmod +x /usr/local/bin/motd.sh && \
-    echo "${IMAGE_VERSION}" > /etc/image-version
-
-# Copy our README to workspace
-COPY README.md README.md
+RUN chmod +x /usr/local/bin/motd.sh
 
 # Copy requirements and install Python dependencies
 COPY requirements.txt requirements.txt
@@ -59,6 +55,10 @@ RUN pip install --no-cache-dir --root-user-action=ignore -r requirements.txt
 
 # Install PyTorch CPU version
 RUN pip install --no-cache-dir --root-user-action=ignore torch torchvision --index-url https://download.pytorch.org/whl/cpu
+
+# Copy our README to workspace
+COPY README.md README.md
+RUN echo "${IMAGE_VERSION}" > /etc/image-version
 
 EXPOSE 8888 7860
 

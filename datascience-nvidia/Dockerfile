@@ -48,10 +48,7 @@ WORKDIR /workspace
 # Copy and configure startup script
 COPY motd.sh /usr/local/bin/motd.sh
 RUN chmod +x /usr/local/bin/motd.sh && \
-    echo 'source /usr/local/bin/motd.sh' >> /etc/bash.bashrc && \
-    echo "${IMAGE_VERSION}" > /etc/image-version
-
-COPY README.md README.md
+    echo 'source /usr/local/bin/motd.sh' >> /etc/bash.bashrc
 
 # Upgrade pip
 # --ignore-installed: base image pip was installed by apt (no RECORD file), skip uninstall
@@ -69,6 +66,9 @@ RUN pip install --no-cache-dir --root-user-action=ignore fastrlock && \
 # Install remaining Python dependencies
 COPY requirements.txt requirements.txt
 RUN pip install --no-cache-dir --root-user-action=ignore -r requirements.txt
+
+COPY README.md README.md
+RUN echo "${IMAGE_VERSION}" > /etc/image-version
 
 # Validate GPU import at build time
 RUN python3 -c "import cupy; print('cupy', cupy.__version__, 'OK')"

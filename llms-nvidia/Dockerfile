@@ -55,17 +55,17 @@ RUN curl -fsSL https://github.com/ollama/ollama/releases/latest/download/ollama-
 # Copy and configure startup script
 COPY motd.sh /usr/local/bin/motd.sh
 RUN chmod +x /usr/local/bin/motd.sh && \
-    echo 'source /usr/local/bin/motd.sh' >> /etc/bash.bashrc && \
-    echo "${IMAGE_VERSION}" > /etc/image-version
-
-# Copy our README to workspace
-COPY README.md README.md
+    echo 'source /usr/local/bin/motd.sh' >> /etc/bash.bashrc
 
 # Install all dependencies. torch is specified as a direct URL in requirements.txt so pip
 # installs our custom wheel and satisfies the torch dep for all other packages without
 # ever touching PyPI for torch. No nvidia-*-cu12 pip packages are pulled in.
 COPY requirements.txt requirements.txt
 RUN pip install --no-cache-dir --break-system-packages --root-user-action=ignore -r requirements.txt
+
+# Copy our README to workspace
+COPY README.md README.md
+RUN echo "${IMAGE_VERSION}" > /etc/image-version
 
 # Validate torch import at build time
 RUN python3 -c "import torch; print('torch', torch.__version__, 'OK')"

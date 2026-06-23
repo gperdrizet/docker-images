@@ -37,14 +37,14 @@ WORKDIR /workspace
 
 COPY motd.sh /usr/local/bin/motd.sh
 COPY bash.bashrc /etc/bash.bashrc
-RUN chmod +x /usr/local/bin/motd.sh && \
-    echo "${IMAGE_VERSION}" > /etc/image-version
-
-COPY README.md README.md
+RUN chmod +x /usr/local/bin/motd.sh
 
 COPY requirements.txt requirements.txt
 RUN pip install --no-cache-dir --root-user-action=ignore --upgrade pip && \
     pip install --no-cache-dir --root-user-action=ignore -r requirements.txt
+
+COPY README.md README.md
+RUN echo "${IMAGE_VERSION}" > /etc/image-version
 
 EXPOSE 8888
 

@@ -37,10 +37,7 @@ WORKDIR /workspace
 
 COPY motd.sh /usr/local/bin/motd.sh
 COPY bash.bashrc /etc/bash.bashrc
-RUN chmod +x /usr/local/bin/motd.sh && \
-    echo "${IMAGE_VERSION}" > /etc/image-version
-
-COPY README.md README.md
+RUN chmod +x /usr/local/bin/motd.sh
 
 COPY requirements.txt requirements.txt
 RUN pip install --no-cache-dir --root-user-action=ignore --upgrade pip && \
@@ -48,6 +45,9 @@ RUN pip install --no-cache-dir --root-user-action=ignore --upgrade pip && \
 
 # Install PyTorch for ARM64 — pytorch.org/whl/cpu only has x86 wheels; PyPI has aarch64
 RUN pip install --no-cache-dir --root-user-action=ignore torch torchvision
+
+COPY README.md README.md
+RUN echo "${IMAGE_VERSION}" > /etc/image-version
 
 EXPOSE 8888 6006
 

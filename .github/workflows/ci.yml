@@ -179,6 +179,15 @@ jobs:
         with:
           fetch-depth: 0
 
+      - name: Check GPU availability
+        run: |
+          if ! nvidia-smi > /dev/null 2>&1; then
+            echo "ERROR: nvidia-smi failed — possible driver/library version mismatch or missing kernel module."
+            nvidia-smi 2>&1 || true
+            echo "Check that nvidia-persistenced is running: systemctl status nvidia-persistenced"
+            exit 1
+          fi
+
       - name: Test NVIDIA images
         run: make test-nvidia VERSION=${{ inputs.version }}
 

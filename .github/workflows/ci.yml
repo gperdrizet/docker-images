@@ -49,9 +49,14 @@ jobs:
         uses: docker/setup-buildx-action@v3
         with:
           driver-opts: network=host
+      - name: Log in to DockerHub
+        run: echo "${{ secrets.DOCKERHUB_TOKEN }}" | docker login -u "${{ secrets.DOCKERHUB_USERNAME }}" --password-stdin
       - name: Build datascience-mac
         run: |
           make build-datascience-mac VERSION=${{ inputs.version }}
+      - name: Docker logout
+        if: always()
+        run: docker logout
 
   build-deeplearning-nvidia:
     name: Build deeplearning-nvidia
@@ -93,9 +98,14 @@ jobs:
         uses: docker/setup-buildx-action@v3
         with:
           driver-opts: network=host
+      - name: Log in to DockerHub
+        run: echo "${{ secrets.DOCKERHUB_TOKEN }}" | docker login -u "${{ secrets.DOCKERHUB_USERNAME }}" --password-stdin
       - name: Build deeplearning-mac
         run: |
           make build-deeplearning-mac VERSION=${{ inputs.version }}
+      - name: Docker logout
+        if: always()
+        run: docker logout
 
   build-llms-nvidia:
     name: Build llms-nvidia
@@ -137,9 +147,14 @@ jobs:
         uses: docker/setup-buildx-action@v3
         with:
           driver-opts: network=host
+      - name: Log in to DockerHub
+        run: echo "${{ secrets.DOCKERHUB_TOKEN }}" | docker login -u "${{ secrets.DOCKERHUB_USERNAME }}" --password-stdin
       - name: Build llms-mac
         run: |
           make build-llms-mac VERSION=${{ inputs.version }}
+      - name: Docker logout
+        if: always()
+        run: docker logout
 
   test-cpu:
     name: Test CPU images

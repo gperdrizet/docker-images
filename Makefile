@@ -54,8 +54,9 @@ build-deeplearning-cpu:
 
 build-deeplearning-mac:
 	DOCKER_BUILDKIT=1 docker buildx build --platform linux/arm64 --network=host --build-arg IMAGE_VERSION=$(VERSION) \
+		--cache-from type=registry,ref=$(DEEPLEARNING_MAC_IMAGE):buildcache \
 		--cache-from type=registry,ref=$(DEEPLEARNING_MAC_IMAGE):latest \
-		--cache-to type=inline \
+		--cache-to type=registry,ref=$(DEEPLEARNING_MAC_IMAGE):buildcache,mode=max \
 		--load -t $(DEEPLEARNING_MAC_IMAGE):$(VERSION) -t $(DEEPLEARNING_MAC_IMAGE):latest ./deeplearning-mac
 
 build-deeplearning: build-deeplearning-nvidia build-deeplearning-cpu build-deeplearning-mac
@@ -71,8 +72,9 @@ build-llms-cpu:
 
 build-llms-mac:
 	DOCKER_BUILDKIT=1 docker buildx build --platform linux/arm64 --network=host --build-arg IMAGE_VERSION=$(VERSION) \
+		--cache-from type=registry,ref=$(LLMS_MAC_IMAGE):buildcache \
 		--cache-from type=registry,ref=$(LLMS_MAC_IMAGE):latest \
-		--cache-to type=inline \
+		--cache-to type=registry,ref=$(LLMS_MAC_IMAGE):buildcache,mode=max \
 		--load -t $(LLMS_MAC_IMAGE):$(VERSION) -t $(LLMS_MAC_IMAGE):latest ./llms-mac
 
 build-llms: build-llms-nvidia build-llms-cpu build-llms-mac
@@ -88,8 +90,9 @@ build-datascience-cpu:
 
 build-datascience-mac:
 	DOCKER_BUILDKIT=1 docker buildx build --platform linux/arm64 --network=host --build-arg IMAGE_VERSION=$(VERSION) \
+		--cache-from type=registry,ref=$(DATASCIENCE_MAC_IMAGE):buildcache \
 		--cache-from type=registry,ref=$(DATASCIENCE_MAC_IMAGE):latest \
-		--cache-to type=inline \
+		--cache-to type=registry,ref=$(DATASCIENCE_MAC_IMAGE):buildcache,mode=max \
 		--load -t $(DATASCIENCE_MAC_IMAGE):$(VERSION) -t $(DATASCIENCE_MAC_IMAGE):latest ./datascience-mac
 
 build-datascience: build-datascience-nvidia build-datascience-cpu build-datascience-mac

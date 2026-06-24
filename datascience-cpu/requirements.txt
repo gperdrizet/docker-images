@@ -9,7 +9,7 @@ pandas==2.2.3
 scipy
 scikit-learn
 statsmodels
-xgboost
+xgboost<3.0
 
 # Visualization
 matplotlib

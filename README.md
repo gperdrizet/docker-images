@@ -16,8 +16,11 @@
 [![Docker Pulls llms-nvidia](https://img.shields.io/docker/pulls/gperdrizet/llms-nvidia?label=llms-nvidia&logo=docker)](https://hub.docker.com/r/gperdrizet/llms-nvidia)
 [![Docker Pulls llms-cpu](https://img.shields.io/docker/pulls/gperdrizet/llms-cpu?label=llms-cpu&logo=docker)](https://hub.docker.com/r/gperdrizet/llms-cpu)
 [![Docker Pulls llms-mac](https://img.shields.io/docker/pulls/gperdrizet/llms-mac?label=llms-mac&logo=docker)](https://hub.docker.com/r/gperdrizet/llms-mac)
+[![Docker Pulls kaggle-nvidia](https://img.shields.io/docker/pulls/gperdrizet/kaggle-nvidia?label=kaggle-nvidia&logo=docker)](https://hub.docker.com/r/gperdrizet/kaggle-nvidia)
+[![Docker Pulls kaggle-cpu](https://img.shields.io/docker/pulls/gperdrizet/kaggle-cpu?label=kaggle-cpu&logo=docker)](https://hub.docker.com/r/gperdrizet/kaggle-cpu)
+[![Docker Pulls kaggle-mac](https://img.shields.io/docker/pulls/gperdrizet/kaggle-mac?label=kaggle-mac&logo=docker)](https://hub.docker.com/r/gperdrizet/kaggle-mac)
 
-Nine containerized development environments for AI/ML and data science education, organized into three families: **datascience**, **deeplearning**, and **llms**. Each is available in NVIDIA GPU, CPU-only, and Apple Silicon variants. Students use these images through the devcontainer repositories below, which wrap them with VS Code configuration, standard project structure, and a setup verification script so a new project is ready with a single `git clone`.
+Twelve containerized development environments for AI/ML and data science education, organized into four families: **datascience**, **deeplearning**, **llms**, and **kaggle**. Each is available in NVIDIA GPU, CPU-only, and Apple Silicon variants. Students use these images through the devcontainer repositories below, which wrap them with VS Code configuration, standard project structure, and a setup verification script so a new project is ready with a single `git clone`.
 
 | Devcontainer repo | Purpose | Hardware | Image |
 |---|---|---|---|
@@ -30,6 +33,9 @@ Nine containerized development environments for AI/ML and data science education
 | [`llms-devcontainer`](https://github.com/gperdrizet/llms-devcontainer) | LLM application development | NVIDIA GPU | `llms-nvidia` |
 | | | CPU | `llms-cpu` |
 | | | Mac (Apple Silicon) | `llms-mac` |
+| [`kaggle-devcontainer`](https://github.com/gperdrizet/kaggle-devcontainer) | Kaggle competitions | NVIDIA GPU | `kaggle-nvidia` |
+| | | CPU | `kaggle-cpu` |
+| | | Mac (Apple Silicon) | `kaggle-mac` |
 
 ### Goals
 
@@ -43,6 +49,8 @@ Nine containerized development environments for AI/ML and data science education
 The `datascience-*` images provide a lightweight environment for intro Python and ML classes: numpy, pandas, scikit-learn, xgboost, matplotlib, seaborn, plotly, jupyterlab, optuna, and python-dotenv. The `datascience-mac`, `deeplearning-mac`, and `llms-mac` variants target Apple Silicon (M1/M2/M3) and are built as native `linux/arm64` images.
 
 The `deeplearning-nvidia` image is based on NVIDIA's official NGC TensorFlow container, which provides a fully validated CUDA + cuDNN + TensorFlow stack that supports Pascal (sm_60) out of the box. PyTorch is then added via a custom-built wheel, as official PyTorch CUDA 12.x wheels dropped Pascal support. The `llms-nvidia` image follows the same custom-wheel approach but on a minimal `nvidia/cuda` base, since it doesn't need TensorFlow. This combination ensures all NVIDIA images work on Pascal through Blackwell hardware with no changes to student workflow. CPU images use `python:3.12-slim` with the same Python packages, providing a consistent environment for CPU-only machines.
+
+The `kaggle-*` images mirror the Kaggle notebook submission environment: package versions are pinned to match the pip freeze of a Kaggle notebook session (Python 3.12), so code developed locally behaves the same when submitted to competitions. The `kaggle-nvidia` image additionally ships the RAPIDS stack (cuDF/cuML/CuPy) as found in Kaggle GPU sessions, and uses a custom PyTorch 2.10.0 wheel with Pascal support — notably, Kaggle ships the stock cu128 wheel, which has no Pascal kernels, so torch on Kaggle's own P100s fails with `no kernel image is available`. Same torch version, but it actually works on P100/GTX 10xx hardware.
 
 ## Contents
 
@@ -61,6 +69,9 @@ The `deeplearning-nvidia` image is based on NVIDIA's official NGC TensorFlow con
   - [4.7. llms-nvidia](#47-llms-nvidia)
   - [4.8. llms-cpu](#48-llms-cpu)
   - [4.9. llms-mac](#49-llms-mac)
+  - [4.10. kaggle-nvidia](#410-kaggle-nvidia)
+  - [4.11. kaggle-cpu](#411-kaggle-cpu)
+  - [4.12. kaggle-mac](#412-kaggle-mac)
 - [5. Development](#5-development)
   - [5.1. Releasing a new version](#51-releasing-a-new-version)
   - [5.2. Makefile reference](#52-makefile-reference)
@@ -85,6 +96,7 @@ The devcontainer repositories consume the images built here and provide the rest
 | [`gperdrizet/datascience-devcontainer`](https://github.com/gperdrizet/datascience-devcontainer) | `datascience-nvidia`, `datascience-cpu`, `datascience-mac` | Dev Container for intro data science |
 | [`gperdrizet/deeplearning-devcontainer`](https://github.com/gperdrizet/deeplearning-devcontainer) | `deeplearning-nvidia`, `deeplearning-cpu`, `deeplearning-mac` | Dev Container for deep learning (TensorFlow + PyTorch) |
 | [`gperdrizet/llms-devcontainer`](https://github.com/gperdrizet/llms-devcontainer) | `llms-nvidia`, `llms-cpu`, `llms-mac` | Dev Container for LLM application development |
+| [`gperdrizet/kaggle-devcontainer`](https://github.com/gperdrizet/kaggle-devcontainer) | `kaggle-nvidia`, `kaggle-cpu`, `kaggle-mac` | Dev Container for Kaggle competitions |
 
 The devcontainer configurations handle additional environment and repository set-up such as GPU pass-through, environment variables, publishing common ports (for e.g. Streamlit, Gradio, TensorBoard, Optuna, etc), creating standard directory structure (e.g. `notebooks/`, `models/`, `data/` etc), selecting the Python interpreter and installing common VS Code extensions. They also provide a `.gitignore`, `README.md`, license and a notebook or Python module to test and verify the environment.
 
@@ -328,6 +340,66 @@ Lightweight LLM application development environment for Apple Silicon (M1/M2/M3)
 
 **Devcontainer repository:** [`github.com/gperdrizet/llms-devcontainer`](https://github.com/gperdrizet/llms-devcontainer)
 
+### 4.10. kaggle-nvidia
+
+Mirror of the Kaggle notebook GPU environment. Package versions are pinned to match the pip freeze of a Kaggle GPU notebook session, so code developed here behaves the same when submitted to competitions. Uses a custom PyTorch 2.10.0 wheel with Pascal support (sm_60–sm_100) — same version Kaggle ships, but unlike Kaggle's stock cu128 wheel it actually works on P100/GTX 10xx hardware. Includes the RAPIDS stack (cuDF/cuML/CuPy) as found in Kaggle GPU sessions; note RAPIDS requires Volta (sm_70) or newer, on Kaggle and everywhere else.
+
+| Component | Version |
+|-----------|--------|
+| Base Image | `nvidia/cuda:12.8.1-cudnn-runtime-ubuntu24.04` |
+| CUDA | 12.8.1 |
+| PyTorch | 2.10.0 (custom wheel, sm_60–sm_100) |
+| TensorFlow | 2.20.0 |
+| RAPIDS | cuDF 26.2.1, cuML 26.2.0, CuPy 14.0.1 |
+| Python | 3.12 |
+
+**ML packages:** scikit-learn 1.6.1, xgboost 3.2.0, lightgbm 4.6.0, catboost 1.2.10, transformers 5.0.0, keras 3.13.2
+
+**Other packages:** numpy 2.0.2, pandas 2.3.3, polars, jupyterlab 3.6.8, optuna, shap, opencv, albumentations, kaggle, kagglehub
+
+**DockerHub:** [`gperdrizet/kaggle-nvidia:latest`](https://hub.docker.com/repository/docker/gperdrizet/kaggle-nvidia/general)
+
+**Devcontainer repository:** [`github.com/gperdrizet/kaggle-devcontainer`](https://github.com/gperdrizet/kaggle-devcontainer)
+
+### 4.11. kaggle-cpu
+
+Mirror of the Kaggle notebook CPU environment. Package versions are pinned to match the pip freeze of a Kaggle CPU notebook session. No GPU dependencies; works on any machine.
+
+| Component | Version |
+|-----------|--------|
+| Base Image | `python:3.12-slim` |
+| PyTorch | 2.10.0 (CPU) |
+| TensorFlow | 2.20.0 |
+| Python | 3.12 |
+
+**ML packages:** scikit-learn 1.6.1, xgboost 3.2.0, lightgbm 4.6.0, catboost 1.2.10, transformers 5.0.0, keras 3.13.2
+
+**Other packages:** numpy 2.0.2, pandas 2.3.3, polars, jupyterlab 3.6.8, optuna, shap, opencv, albumentations, kaggle, kagglehub
+
+**DockerHub:** [`gperdrizet/kaggle-cpu:latest`](https://hub.docker.com/repository/docker/gperdrizet/kaggle-cpu/general)
+
+**Devcontainer repository:** [`github.com/gperdrizet/kaggle-devcontainer`](https://github.com/gperdrizet/kaggle-devcontainer)
+
+### 4.12. kaggle-mac
+
+Mirror of the Kaggle notebook CPU environment for Apple Silicon (M1/M2/M3) Macs. Built as a native `linux/arm64` image, no Rosetta emulation. GPU acceleration is not available inside Docker on macOS.
+
+| Component | Version |
+|-----------|--------|
+| Base Image | `python:3.12-slim` |
+| Platform | `linux/arm64` |
+| PyTorch | 2.10.0 (CPU, ARM64) |
+| TensorFlow | 2.20.0 |
+| Python | 3.12 |
+
+**ML packages:** scikit-learn 1.6.1, xgboost 3.2.0, lightgbm 4.6.0, catboost 1.2.10, transformers 5.0.0, keras 3.13.2
+
+**Other packages:** numpy 2.0.2, pandas 2.3.3, polars, jupyterlab 3.6.8, optuna, shap, opencv, albumentations, kaggle, kagglehub
+
+**DockerHub:** [`gperdrizet/kaggle-mac:latest`](https://hub.docker.com/repository/docker/gperdrizet/kaggle-mac/general)
+
+**Devcontainer repository:** [`github.com/gperdrizet/kaggle-devcontainer`](https://github.com/gperdrizet/kaggle-devcontainer)
+
 ## 5. Development
 
 ### 5.1. Releasing a new version
@@ -337,12 +409,12 @@ Lightweight LLM application development environment for Apple Silicon (M1/M2/M3)
 
 The pipeline runs automatically:
 
-1. **Build:** all seven images are built with the specified version (including linux/arm64 via QEMU)
+1. **Build:** all twelve images are built with the specified version (including linux/arm64 via QEMU)
 2. **Test:** CPU, NVIDIA, and Mac image tests run in parallel
 3. **Approve:** pipeline pauses; a notification is sent for manual approval
 4. **Push:** on approval, images are pushed to DockerHub and DockerHub READMEs are updated
 5. **Tag:** a git tag (`vx.x.x`) and GitHub release are created automatically
-6. **Sync:** a dispatch event is sent to `datascience-devcontainer`, `deeplearning-devcontainer` and `llms-devcontainer`, which each create a matching version tag and GitHub release
+6. **Sync:** a dispatch event is sent to `datascience-devcontainer`, `deeplearning-devcontainer`, `llms-devcontainer` and `kaggle-devcontainer`, which each create a matching version tag and GitHub release
 
 Git tags are only created after a successful, approved push, so a tag always corresponds to a verified image on DockerHub.
 
@@ -366,6 +438,10 @@ These commands are useful for local development and testing. The CI/CD pipeline 
 | `make build-datascience-cpu` | Build datascience CPU image |
 | `make build-datascience-mac` | Build datascience Mac (linux/arm64) image |
 | `make build-datascience` | Build all three datascience images |
+| `make build-kaggle-nvidia` | Build kaggle NVIDIA image |
+| `make build-kaggle-cpu` | Build kaggle CPU image |
+| `make build-kaggle-mac` | Build kaggle Mac (linux/arm64) image |
+| `make build-kaggle` | Build all three kaggle images |
 | `make build-all` | Build all images |
 
 #### Test commands
@@ -381,6 +457,9 @@ These commands are useful for local development and testing. The CI/CD pipeline 
 | `make test-datascience-cpu` | Test datascience CPU image |
 | `make test-datascience-nvidia` | Test datascience NVIDIA image |
 | `make test-datascience-mac` | Test datascience Mac image |
+| `make test-kaggle-cpu` | Test kaggle CPU image |
+| `make test-kaggle-nvidia` | Test kaggle NVIDIA image |
+| `make test-kaggle-mac` | Test kaggle Mac image |
 | `make test-cpu` | Test all CPU images |
 | `make test-nvidia` | Test all NVIDIA images |
 | `make test-mac` | Test Mac image |
@@ -408,6 +487,10 @@ bash tests/test-deeplearning-cpu.sh gperdrizet/deeplearning-cpu:4.1.0
 | `make push-datascience-cpu` | Push datascience CPU image |
 | `make push-datascience-mac` | Push datascience Mac image |
 | `make push-datascience` | Push all three datascience images |
+| `make push-kaggle-nvidia` | Push kaggle NVIDIA image |
+| `make push-kaggle-cpu` | Push kaggle CPU image |
+| `make push-kaggle-mac` | Push kaggle Mac image |
+| `make push-kaggle` | Push all three kaggle images |
 | `make push-all` | Push all images |
 
 #### DockerHub README commands
@@ -430,6 +513,9 @@ DOCKERHUB_TOKEN=your-dockerhub-pat
 | `make update-readme-datascience-nvidia` | Update datascience-nvidia DockerHub README |
 | `make update-readme-datascience-cpu` | Update datascience-cpu DockerHub README |
 | `make update-readme-datascience-mac` | Update datascience-mac DockerHub README |
+| `make update-readme-kaggle-nvidia` | Update kaggle-nvidia DockerHub README |
+| `make update-readme-kaggle-cpu` | Update kaggle-cpu DockerHub README |
+| `make update-readme-kaggle-mac` | Update kaggle-mac DockerHub README |
 | `make update-readme-all` | Update all DockerHub READMEs |
 
 ### 5.3. CI/CD infrastructure
@@ -442,7 +528,7 @@ Set in GitHub repo Settings -> Secrets -> Actions:
 |--------|----------|
 | `DOCKERHUB_USERNAME` | DockerHub login |
 | `DOCKERHUB_TOKEN` | DockerHub PAT (Read, Write & Delete) |
-| `GH_DISPATCH_TOKEN` | GitHub fine-grained PAT to push tags to this repo and trigger devcontainer repo syncs. Requires Contents: read/write on `docker-images`, `datascience-devcontainer`, `deeplearning-devcontainer`, and `llms-devcontainer`. |
+| `GH_DISPATCH_TOKEN` | GitHub fine-grained PAT to push tags to this repo and trigger devcontainer repo syncs. Requires Contents: read/write on `docker-images`, `datascience-devcontainer`, `deeplearning-devcontainer`, `llms-devcontainer`, and `kaggle-devcontainer`. |
 
 #### Self-hosted runner
 
@@ -482,7 +568,7 @@ docker buildx rm mybuilder || true
 
 ### 5.5. Building custom wheels
 
-The `deeplearning-nvidia` and `llms-nvidia` images use a custom PyTorch wheel, and `datascience-nvidia` uses a custom CuPy wheel. Both are built with wide GPU architecture support (Pascal through Blackwell, sm_60–sm_100). Pre-built wheels are hosted on GitHub Releases and downloaded during image build. Wheel builds are infrequent and done manually; once a wheel is on GitHub Releases, all subsequent image builds just download it, no compile step.
+The `deeplearning-nvidia`, `llms-nvidia`, and `kaggle-nvidia` images use custom PyTorch wheels, and `datascience-nvidia` uses a custom CuPy wheel. All are built with wide GPU architecture support (Pascal through Blackwell, sm_60–sm_100). Pre-built wheels are hosted on GitHub Releases and downloaded during image build. Wheel builds are infrequent and done manually; once a wheel is on GitHub Releases, all subsequent image builds just download it, no compile step.
 
 #### When to rebuild
 
@@ -497,6 +583,7 @@ Rebuild wheels when:
 |-----------|--------|------|------------|
 | deeplearning-nvidia | 3.12 | 12.8 | `torch-X.Y.Z-cp312-cp312-linux_x86_64.whl` |
 | llms-nvidia | 3.12 | 12.8 | same wheel (reused from GitHub Releases) |
+| kaggle-nvidia | 3.12 | 12.8 | `torch-2.10.0-cp312-cp312-linux_x86_64.whl` (version pinned to match Kaggle) |
 
 **Build commands:**
 

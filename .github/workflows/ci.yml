@@ -156,11 +156,60 @@ jobs:
         if: always()
         run: docker logout
 
+  build-kaggle-nvidia:
+    name: Build kaggle-nvidia
+    runs-on: self-hosted
+    if: github.repository_owner == 'gperdrizet'
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+      - name: Build kaggle-nvidia
+        run: |
+          make build-kaggle-nvidia VERSION=${{ inputs.version }}
+
+  build-kaggle-cpu:
+    name: Build kaggle-cpu
+    runs-on: self-hosted
+    if: github.repository_owner == 'gperdrizet'
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+      - name: Build kaggle-cpu
+        run: |
+          make build-kaggle-cpu VERSION=${{ inputs.version }}
+
+  build-kaggle-mac:
+    name: Build kaggle-mac
+    runs-on: self-hosted
+    if: github.repository_owner == 'gperdrizet'
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+      - name: Set up QEMU for ARM64 builds
+        uses: docker/setup-qemu-action@v3
+        with:
+          platforms: arm64
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+        with:
+          driver-opts: network=host
+      - name: Log in to DockerHub
+        run: echo "${{ secrets.DOCKERHUB_TOKEN }}" | docker login -u "${{ secrets.DOCKERHUB_USERNAME }}" --password-stdin
+      - name: Build kaggle-mac
+        run: |
+          make build-kaggle-mac VERSION=${{ inputs.version }}
+      - name: Docker logout
+        if: always()
+        run: docker logout
+
   test-cpu:
     name: Test CPU images
     runs-on: self-hosted
     if: github.repository_owner == 'gperdrizet'
-    needs: [build-datascience-cpu, build-deeplearning-cpu, build-llms-cpu]
+    needs: [build-datascience-cpu, build-deeplearning-cpu, build-llms-cpu, build-kaggle-cpu]
     steps:
       - uses: actions/checkout@v5
         with:
@@ -173,7 +222,7 @@ jobs:
     name: Test NVIDIA GPU images
     runs-on: self-hosted
     if: github.repository_owner == 'gperdrizet'
-    needs: [build-datascience-nvidia, build-deeplearning-nvidia, build-llms-nvidia]
+    needs: [build-datascience-nvidia, build-deeplearning-nvidia, build-llms-nvidia, build-kaggle-nvidia]
     steps:
       - uses: actions/checkout@v5
         with:
@@ -195,7 +244,7 @@ jobs:
     name: Test Mac (ARM64) images
     runs-on: self-hosted
     if: github.repository_owner == 'gperdrizet'
-    needs: [build-datascience-mac, build-deeplearning-mac, build-llms-mac]
+    needs: [build-datascience-mac, build-deeplearning-mac, build-llms-mac, build-kaggle-mac]
     steps:
       - uses: actions/checkout@v5
         with:
@@ -224,7 +273,8 @@ jobs:
         run: |
           for image in datascience-nvidia datascience-cpu datascience-mac \
                        deeplearning-nvidia deeplearning-cpu deeplearning-mac \
-                       llms-nvidia llms-cpu llms-mac; do
+                       llms-nvidia llms-cpu llms-mac \
+                       kaggle-nvidia kaggle-cpu kaggle-mac; do
             docker tag "gperdrizet/${image}:${VERSION}" "gperdrizet/${image}:staging"
             docker push "gperdrizet/${image}:staging"
           done
@@ -273,6 +323,7 @@ jobs:
           DL_PKGS="torch tensorflow numpy pandas scikit-learn scipy matplotlib seaborn jupyterlab keras-tuner optuna tensorboard"
           LLM_PKGS="torch transformers langchain langchain-community smolagents chromadb sentence-transformers gradio accelerate datasets tiktoken"
           DS_PKGS="numpy pandas scipy scikit-learn xgboost statsmodels matplotlib seaborn plotly jupyterlab optuna"
+          KG_PKGS="torch tensorflow keras numpy pandas polars scikit-learn xgboost lightgbm catboost transformers optuna jupyterlab"
 
           > /tmp/version_tables.md
 
@@ -305,6 +356,17 @@ jobs:
             [[ "$variant" == "mac" ]] && PLATFORM_FLAG="--platform linux/arm64"
             docker run --rm $PLATFORM_FLAG -v /tmp/get_versions.py:/tmp/get_versions.py \
               "$IMAGE" python /tmp/get_versions.py $DS_PKGS 2>/dev/null | grep '^|' >> /tmp/version_tables.md
+          done
+
+          for variant in nvidia cpu mac; do
+            IMAGE="gperdrizet/kaggle-${variant}:${VER}"
+            printf '\n### kaggle-%s\n| Package | Version |\n| --- | --- |\n' "$variant" >> /tmp/version_tables.md
+            EXTRA=""
+            [[ "$variant" == "nvidia" ]] && EXTRA="cudf-cu12 cuml-cu12 cupy-cuda12x"
+            PLATFORM_FLAG=""
+            [[ "$variant" == "mac" ]] && PLATFORM_FLAG="--platform linux/arm64"
+            docker run --rm $PLATFORM_FLAG -v /tmp/get_versions.py:/tmp/get_versions.py \
+              "$IMAGE" python /tmp/get_versions.py $KG_PKGS $EXTRA 2>/dev/null | grep '^|' >> /tmp/version_tables.md
           done
 
           echo "--- Version tables ---"
@@ -354,7 +416,7 @@ jobs:
           VERSION: ${{ inputs.version }}
           GH_TOKEN: ${{ secrets.GH_DISPATCH_TOKEN }}
         run: |
-          for repo in deeplearning-devcontainer llms-devcontainer datascience-devcontainer; do
+          for repo in deeplearning-devcontainer llms-devcontainer datascience-devcontainer kaggle-devcontainer; do
             gh api /repos/gperdrizet/${repo}/dispatches \
               --input - <<EOF
           {"event_type": "docker-images-release", "client_payload": {"version": "${VERSION}"}}

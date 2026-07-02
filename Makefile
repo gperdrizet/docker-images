@@ -2,18 +2,22 @@
         build-deeplearning-nvidia build-deeplearning-cpu build-deeplearning-mac \
         build-llms-nvidia build-llms-cpu build-llms-mac \
         build-datascience-nvidia build-datascience-cpu build-datascience-mac \
-        build-deeplearning build-llms build-datascience build-all \
+        build-kaggle-nvidia build-kaggle-cpu build-kaggle-mac \
+        build-deeplearning build-llms build-datascience build-kaggle build-all \
         push-deeplearning-nvidia push-deeplearning-cpu push-deeplearning-mac \
         push-llms-nvidia push-llms-cpu push-llms-mac \
         push-datascience-nvidia push-datascience-cpu push-datascience-mac \
-        push-deeplearning push-llms push-datascience push-all all \
+        push-kaggle-nvidia push-kaggle-cpu push-kaggle-mac \
+        push-deeplearning push-llms push-datascience push-kaggle push-all all \
         test-deeplearning-cpu test-deeplearning-nvidia test-deeplearning-mac \
         test-llms-cpu test-llms-nvidia test-llms-mac \
         test-datascience-cpu test-datascience-nvidia test-datascience-mac \
+        test-kaggle-cpu test-kaggle-nvidia test-kaggle-mac \
         test-cpu test-nvidia test-mac test-all \
         update-readme-deeplearning-nvidia update-readme-deeplearning-cpu update-readme-deeplearning-mac \
         update-readme-llms-nvidia update-readme-llms-cpu update-readme-llms-mac \
         update-readme-datascience-nvidia update-readme-datascience-cpu update-readme-datascience-mac \
+        update-readme-kaggle-nvidia update-readme-kaggle-cpu update-readme-kaggle-mac \
         update-readme-all \
         wheel-deeplearning-nvidia \
         extract-wheel-deeplearning-nvidia \
@@ -40,6 +44,9 @@ LLMS_MAC_IMAGE            := gperdrizet/llms-mac
 DATASCIENCE_NVIDIA_IMAGE  := gperdrizet/datascience-nvidia
 DATASCIENCE_CPU_IMAGE     := gperdrizet/datascience-cpu
 DATASCIENCE_MAC_IMAGE     := gperdrizet/datascience-mac
+KAGGLE_NVIDIA_IMAGE       := gperdrizet/kaggle-nvidia
+KAGGLE_CPU_IMAGE          := gperdrizet/kaggle-cpu
+KAGGLE_MAC_IMAGE          := gperdrizet/kaggle-mac
 
 # ─── Build targets ────────────────────────────────────────────────────────────
 
@@ -97,7 +104,25 @@ build-datascience-mac:
 
 build-datascience: build-datascience-nvidia build-datascience-cpu build-datascience-mac
 
-build-all: build-deeplearning build-llms build-datascience
+# kaggle
+build-kaggle-nvidia:
+	DOCKER_BUILDKIT=1 docker build --network=host --build-arg IMAGE_VERSION=$(VERSION) \
+		-t $(KAGGLE_NVIDIA_IMAGE):$(VERSION) -t $(KAGGLE_NVIDIA_IMAGE):latest ./kaggle-nvidia
+
+build-kaggle-cpu:
+	DOCKER_BUILDKIT=1 docker build --network=host --build-arg IMAGE_VERSION=$(VERSION) \
+		-t $(KAGGLE_CPU_IMAGE):$(VERSION) -t $(KAGGLE_CPU_IMAGE):latest ./kaggle-cpu
+
+build-kaggle-mac:
+	DOCKER_BUILDKIT=1 docker buildx build --platform linux/arm64 --network=host --build-arg IMAGE_VERSION=$(VERSION) \
+		--cache-from type=registry,ref=$(KAGGLE_MAC_IMAGE):buildcache \
+		--cache-from type=registry,ref=$(KAGGLE_MAC_IMAGE):latest \
+		--cache-to type=registry,ref=$(KAGGLE_MAC_IMAGE):buildcache,mode=max \
+		--load -t $(KAGGLE_MAC_IMAGE):$(VERSION) -t $(KAGGLE_MAC_IMAGE):latest ./kaggle-mac
+
+build-kaggle: build-kaggle-nvidia build-kaggle-cpu build-kaggle-mac
+
+build-all: build-deeplearning build-llms build-datascience build-kaggle
 
 # ─── Test targets ─────────────────────────────────────────────────────────────
 
@@ -128,9 +153,18 @@ test-deeplearning-mac:
 test-llms-mac:
 	@bash ./tests/test-llms-mac.sh $(LLMS_MAC_IMAGE):$(VERSION)
 
-test-cpu:    test-deeplearning-cpu test-llms-cpu test-datascience-cpu
-test-nvidia: test-deeplearning-nvidia test-llms-nvidia test-datascience-nvidia
-test-mac:    test-datascience-mac test-deeplearning-mac test-llms-mac
+test-kaggle-cpu:
+	@bash ./tests/test-kaggle-cpu.sh $(KAGGLE_CPU_IMAGE):$(VERSION)
+
+test-kaggle-nvidia:
+	@bash ./tests/test-kaggle-nvidia.sh $(KAGGLE_NVIDIA_IMAGE):$(VERSION)
+
+test-kaggle-mac:
+	@bash ./tests/test-kaggle-mac.sh $(KAGGLE_MAC_IMAGE):$(VERSION)
+
+test-cpu:    test-deeplearning-cpu test-llms-cpu test-datascience-cpu test-kaggle-cpu
+test-nvidia: test-deeplearning-nvidia test-llms-nvidia test-datascience-nvidia test-kaggle-nvidia
+test-mac:    test-datascience-mac test-deeplearning-mac test-llms-mac test-kaggle-mac
 test-all:    test-cpu test-nvidia test-mac
 
 # ─── Push targets ─────────────────────────────────────────────────────────────
@@ -177,7 +211,21 @@ push-datascience-mac:
 
 push-datascience: push-datascience-nvidia push-datascience-cpu push-datascience-mac
 
-push-all: push-deeplearning push-llms push-datascience
+push-kaggle-nvidia:
+	docker push $(KAGGLE_NVIDIA_IMAGE):$(VERSION)
+	docker push $(KAGGLE_NVIDIA_IMAGE):latest
+
+push-kaggle-cpu:
+	docker push $(KAGGLE_CPU_IMAGE):$(VERSION)
+	docker push $(KAGGLE_CPU_IMAGE):latest
+
+push-kaggle-mac:
+	docker push $(KAGGLE_MAC_IMAGE):$(VERSION)
+	docker push $(KAGGLE_MAC_IMAGE):latest
+
+push-kaggle: push-kaggle-nvidia push-kaggle-cpu push-kaggle-mac
+
+push-all: push-deeplearning push-llms push-datascience push-kaggle
 
 # Build, push, and update readmes
 all: build-all push-all update-readme-all
@@ -225,10 +273,20 @@ update-readme-deeplearning-mac:
 update-readme-llms-mac:
 	$(call update_readme,llms-mac)
 
+update-readme-kaggle-nvidia:
+	$(call update_readme,kaggle-nvidia)
+
+update-readme-kaggle-cpu:
+	$(call update_readme,kaggle-cpu)
+
+update-readme-kaggle-mac:
+	$(call update_readme,kaggle-mac)
+
 update-readme-all: \
 	update-readme-deeplearning-nvidia update-readme-deeplearning-cpu update-readme-deeplearning-mac \
 	update-readme-llms-nvidia update-readme-llms-cpu update-readme-llms-mac \
-	update-readme-datascience-nvidia update-readme-datascience-cpu update-readme-datascience-mac
+	update-readme-datascience-nvidia update-readme-datascience-cpu update-readme-datascience-mac \
+	update-readme-kaggle-nvidia update-readme-kaggle-cpu update-readme-kaggle-mac
 
 # ─── PyTorch wheel build ───────────────────────────────────────────────────────
 

@@ -14,10 +14,16 @@ ARG IMAGE_VERSION=dev
 ENV DEBIAN_FRONTEND=noninteractive
 
 # Update and install common utilities, create vscode user, and clean up apt caches
-RUN apt-get update && \
+# Migrate CUDA APT signing key from legacy keyring to modern per-repo location
+RUN if [ -f /etc/apt/trusted.gpg ]; then \
+        cp /etc/apt/trusted.gpg /etc/apt/trusted.gpg.d/cuda-keyring.gpg && \
+        rm -f /etc/apt/trusted.gpg; \
+    fi && \
+    apt-get update && \
     apt-get install -y --no-install-recommends \
         python3.12 \
         python3.12-dev \
+        python3.12-venv \
         python3-pip \
         procps \
         screen \

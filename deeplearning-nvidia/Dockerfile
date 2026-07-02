@@ -4,7 +4,7 @@
 # Use NVIDIA's official TensorFlow 25.02 image with GPU support
 # Note: 25.02 is the final NVIDIA TF NGC container release.
 # See here: https://docs.nvidia.com/deeplearning/frameworks/tensorflow-release-notes/rel-25-02.html
-FROM nvcr.io/nvidia/tensorflow:25.02-tf2-py3
+FROM nvcr.io/nvidia/tensorflow:25.02-tf2-py3@sha256:c83b37d26f19ab00d8a13cf974edd079c3d099918ec3110c304a989d6e2f75d5
 
 LABEL org.opencontainers.image.source="https://github.com/gperdrizet/docker-images" \
       org.opencontainers.image.licenses="MIT" \

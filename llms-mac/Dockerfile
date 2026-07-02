@@ -2,7 +2,7 @@
 # Identical to llms-cpu but built for linux/arm64 (Apple Silicon).
 # Runs natively on M1/M2/M3 Macs via Docker Desktop — no Rosetta emulation.
 # Note: No GPU acceleration — Metal/MPS is not accessible inside Docker containers.
-FROM python:3.12-slim
+FROM python:3.12-slim@sha256:423ed6ab25b1921a477529254bfeeabf5855151dc2c3141699a1bfc852199fbf
 
 LABEL org.opencontainers.image.source="https://github.com/gperdrizet/docker-images" \
       org.opencontainers.image.licenses="MIT" \

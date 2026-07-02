@@ -22,7 +22,8 @@
         wheel-deeplearning-nvidia \
         extract-wheel-deeplearning-nvidia \
 		wheel-datascience-nvidia \
-		extract-wheel-datascience-nvidia
+		extract-wheel-datascience-nvidia \
+		buildx-builder base-digests
 
 # Version - for local builds, defaults to the most recent git tag (e.g. v4.1.0 -> 4.1.0).
 # CI passes VERSION explicitly via workflow_dispatch input; tags are created by CI after a
@@ -33,6 +34,13 @@ VERSION ?= $(shell git describe --tags --abbrev=0 2>/dev/null | sed 's/^v//' | g
 # DockerHub credentials (set via environment variables or .env file)
 DOCKERHUB_USERNAME ?= gperdrizet
 DOCKERHUB_TOKEN ?=
+
+# Persistent buildx builder for ARM64 (mac) builds. Pinning the builder explicitly
+# prevents builds from attaching to whatever builder happens to be "current" —
+# ephemeral CI builders being torn down mid-build killed in-flight builds with
+# gRPC graceful_stop errors. The persistent builder also keeps a local BuildKit
+# layer cache between runs. Create once with: make buildx-builder
+BUILDX_BUILDER ?= mybuilder
 
 # Image names
 DEEPLEARNING_NVIDIA_IMAGE := gperdrizet/deeplearning-nvidia
@@ -50,6 +58,22 @@ KAGGLE_MAC_IMAGE          := gperdrizet/kaggle-mac
 
 # ─── Build targets ────────────────────────────────────────────────────────────
 
+# Ensure the persistent ARM64 builder exists (no-op if it already does)
+buildx-builder:
+	@docker buildx inspect $(BUILDX_BUILDER) > /dev/null 2>&1 || \
+		docker buildx create --name $(BUILDX_BUILDER) --driver docker-container \
+			--driver-opt network=host --bootstrap
+
+# Print current upstream digests for all base images (for bumping FROM pins)
+base-digests:
+	@for ref in python:3.12-slim \
+	            nvidia/cuda:12.8.1-runtime-ubuntu24.04 \
+	            nvidia/cuda:12.8.1-cudnn-runtime-ubuntu24.04 \
+	            nvcr.io/nvidia/tensorflow:25.02-tf2-py3; do \
+		printf '%s => ' "$$ref"; \
+		docker buildx imagetools inspect "$$ref" 2>/dev/null | grep -m1 Digest | awk '{print $$2}'; \
+	done
+
 # deeplearning
 build-deeplearning-nvidia:
 	DOCKER_BUILDKIT=1 docker build --network=host --build-arg IMAGE_VERSION=$(VERSION) --shm-size=16g \
@@ -59,8 +83,8 @@ build-deeplearning-cpu:
 	DOCKER_BUILDKIT=1 docker build --network=host --build-arg IMAGE_VERSION=$(VERSION) \
 		-t $(DEEPLEARNING_CPU_IMAGE):$(VERSION) -t $(DEEPLEARNING_CPU_IMAGE):latest ./deeplearning-cpu
 
-build-deeplearning-mac:
-	DOCKER_BUILDKIT=1 docker buildx build --platform linux/arm64 --network=host --build-arg IMAGE_VERSION=$(VERSION) \
+build-deeplearning-mac: buildx-builder
+	DOCKER_BUILDKIT=1 docker buildx build --builder $(BUILDX_BUILDER) --platform linux/arm64 --network=host --build-arg IMAGE_VERSION=$(VERSION) \
 		--cache-from type=registry,ref=$(DEEPLEARNING_MAC_IMAGE):buildcache \
 		--cache-from type=registry,ref=$(DEEPLEARNING_MAC_IMAGE):latest \
 		--cache-to type=registry,ref=$(DEEPLEARNING_MAC_IMAGE):buildcache,mode=max \
@@ -77,8 +101,8 @@ build-llms-cpu:
 	DOCKER_BUILDKIT=1 docker build --network=host --build-arg IMAGE_VERSION=$(VERSION) \
 		-t $(LLMS_CPU_IMAGE):$(VERSION) -t $(LLMS_CPU_IMAGE):latest ./llms-cpu
 
-build-llms-mac:
-	DOCKER_BUILDKIT=1 docker buildx build --platform linux/arm64 --network=host --build-arg IMAGE_VERSION=$(VERSION) \
+build-llms-mac: buildx-builder
+	DOCKER_BUILDKIT=1 docker buildx build --builder $(BUILDX_BUILDER) --platform linux/arm64 --network=host --build-arg IMAGE_VERSION=$(VERSION) \
 		--cache-from type=registry,ref=$(LLMS_MAC_IMAGE):buildcache \
 		--cache-from type=registry,ref=$(LLMS_MAC_IMAGE):latest \
 		--cache-to type=registry,ref=$(LLMS_MAC_IMAGE):buildcache,mode=max \
@@ -95,8 +119,8 @@ build-datascience-cpu:
 	DOCKER_BUILDKIT=1 docker build --network=host --build-arg IMAGE_VERSION=$(VERSION) \
 		-t $(DATASCIENCE_CPU_IMAGE):$(VERSION) -t $(DATASCIENCE_CPU_IMAGE):latest ./datascience-cpu
 
-build-datascience-mac:
-	DOCKER_BUILDKIT=1 docker buildx build --platform linux/arm64 --network=host --build-arg IMAGE_VERSION=$(VERSION) \
+build-datascience-mac: buildx-builder
+	DOCKER_BUILDKIT=1 docker buildx build --builder $(BUILDX_BUILDER) --platform linux/arm64 --network=host --build-arg IMAGE_VERSION=$(VERSION) \
 		--cache-from type=registry,ref=$(DATASCIENCE_MAC_IMAGE):buildcache \
 		--cache-from type=registry,ref=$(DATASCIENCE_MAC_IMAGE):latest \
 		--cache-to type=registry,ref=$(DATASCIENCE_MAC_IMAGE):buildcache,mode=max \
@@ -113,8 +137,8 @@ build-kaggle-cpu:
 	DOCKER_BUILDKIT=1 docker build --network=host --build-arg IMAGE_VERSION=$(VERSION) \
 		-t $(KAGGLE_CPU_IMAGE):$(VERSION) -t $(KAGGLE_CPU_IMAGE):latest ./kaggle-cpu
 
-build-kaggle-mac:
-	DOCKER_BUILDKIT=1 docker buildx build --platform linux/arm64 --network=host --build-arg IMAGE_VERSION=$(VERSION) \
+build-kaggle-mac: buildx-builder
+	DOCKER_BUILDKIT=1 docker buildx build --builder $(BUILDX_BUILDER) --platform linux/arm64 --network=host --build-arg IMAGE_VERSION=$(VERSION) \
 		--cache-from type=registry,ref=$(KAGGLE_MAC_IMAGE):buildcache \
 		--cache-from type=registry,ref=$(KAGGLE_MAC_IMAGE):latest \
 		--cache-to type=registry,ref=$(KAGGLE_MAC_IMAGE):buildcache,mode=max \

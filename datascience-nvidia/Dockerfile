@@ -4,7 +4,7 @@
 # Supports Pascal (GTX 10xx) through Blackwell (RTX 50xx/B100/B200), sm_60-sm_100.
 # Pre-built CuPy wheel with wide GPU support
 # Requires host driver >= 570.x on Linux.
-FROM nvidia/cuda:12.8.1-runtime-ubuntu24.04
+FROM nvidia/cuda:12.8.1-runtime-ubuntu24.04@sha256:ebef3c171eeef0298e4eb2e4be843105edf3b8b0ac45e0b43acee358e8046867
 
 LABEL org.opencontainers.image.source="https://github.com/gperdrizet/docker-images" \
       org.opencontainers.image.licenses="MIT" \

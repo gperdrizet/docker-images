@@ -30,7 +30,9 @@ kagglehub==1.0.0
 # Core data science
 numpy==2.0.2
 pandas==2.3.3
-polars==1.35.2
+# [rtcompat] adds a fallback runtime for pre-AVX2 x86 CPUs; same polars version.
+# Without it, import crashes on older Xeons (incl. the CI runner).
+polars[rtcompat]==1.35.2
 pyarrow==24.0.0
 duckdb==1.3.2
 scipy==1.16.3

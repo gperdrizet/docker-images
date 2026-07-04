@@ -54,6 +54,10 @@ RUN mkdir -p /wheels && \
     git submodule sync && \
     git submodule update --init --recursive --depth 1 && \
     pip install --root-user-action=ignore -r requirements.txt && \
+    # Build against NumPy 2.x headers: binaries built with the NumPy 2 C API run on
+    # both 1.x and 2.x at runtime; binaries built against 1.x (the NGC base ships
+    # numpy 1.26) fail to initialize NumPy interop under 2.x (kaggle images pin 2.0.2).
+    pip install --root-user-action=ignore --force-reinstall "numpy==2.0.2" && \
     PYTORCH_BUILD_VERSION=${PYTORCH_VERSION} \
     PYTORCH_BUILD_NUMBER=1 \
     MAX_JOBS=${MAX_JOBS} \

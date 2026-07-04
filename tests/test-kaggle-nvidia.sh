@@ -24,6 +24,7 @@ check "pandas 2.3.3"         python3 -c "import pandas; assert pandas.__version_
 check "sklearn 1.6.1"        python3 -c "import sklearn; assert sklearn.__version__ == '1.6.1', sklearn.__version__"
 check "xgboost 3.2.0"        python3 -c "import xgboost; assert xgboost.__version__ == '3.2.0', xgboost.__version__"
 check "torch 2.10.0"         python3 -c "import torch; assert torch.__version__.startswith('2.10.0'), torch.__version__"
+check "torch/numpy interop"  python3 -c "import torch, numpy as np; t = torch.from_numpy(np.ones(3)); assert t.numpy().sum() == 3.0"
 check "tensorflow 2.20.0"    python3 -c "import tensorflow; assert tensorflow.__version__ == '2.20.0', tensorflow.__version__"
 
 # GPU checks — custom torch wheel supports sm_60+, so real kernel ops work on the

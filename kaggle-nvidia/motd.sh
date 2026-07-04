@@ -9,8 +9,8 @@ cat <<'MOTD'
  |_|\_\/_/ \_\___|\___|____|___|
 MOTD
 echo ""
-echo "  Kaggle notebook environment mirror — NVIDIA GPU (CUDA 12.8)"
-echo "──────────────────────────────────────────────────────────────"
+echo "  Kaggle competition dev environment - NVIDIA GPU (CUDA 12.8)"
+echo "─────────────────────────────────────────────────────────────"
 echo ""
 echo "  Image:        kaggle-nvidia:$(cat /etc/image-version 2>/dev/null || echo 'unknown')"
 echo "  GPU:          $(nvidia-smi --query-gpu=name --format=csv,noheader 2>/dev/null | paste -sd ', ' || echo 'not available')"

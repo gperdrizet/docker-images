@@ -34,6 +34,7 @@ RUN if [ -f /etc/apt/trusted.gpg ]; then \
         curl \
         git \
         openssh-client \
+        libopenmpi3t64 \
         libcusparselt0 \
         libgomp1 && \
     mkdir -p /run/screen && chmod 777 /run/screen && \

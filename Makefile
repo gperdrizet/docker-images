@@ -78,72 +78,72 @@ base-digests:
 # deeplearning
 build-deeplearning-nvidia:
 	DOCKER_BUILDKIT=1 docker build --network=host --build-arg IMAGE_VERSION=$(VERSION) --shm-size=16g \
-		-t $(DEEPLEARNING_NVIDIA_IMAGE):$(VERSION) -t $(DEEPLEARNING_NVIDIA_IMAGE):latest ./deeplearning-nvidia
+		-t $(DEEPLEARNING_NVIDIA_IMAGE):$(VERSION) -t $(DEEPLEARNING_NVIDIA_IMAGE):latest ./deeplearning/nvidia
 
 build-deeplearning-cpu:
 	DOCKER_BUILDKIT=1 docker build --network=host --build-arg IMAGE_VERSION=$(VERSION) \
-		-t $(DEEPLEARNING_CPU_IMAGE):$(VERSION) -t $(DEEPLEARNING_CPU_IMAGE):latest ./deeplearning-cpu
+		-t $(DEEPLEARNING_CPU_IMAGE):$(VERSION) -t $(DEEPLEARNING_CPU_IMAGE):latest ./deeplearning/cpu
 
 build-deeplearning-mac: buildx-builder
 	DOCKER_BUILDKIT=1 docker buildx build --builder $(BUILDX_BUILDER) --platform linux/arm64 --network=host --build-arg IMAGE_VERSION=$(VERSION) \
 		--cache-from type=registry,ref=$(DEEPLEARNING_MAC_IMAGE):buildcache \
 		--cache-from type=registry,ref=$(DEEPLEARNING_MAC_IMAGE):latest \
 		--cache-to type=registry,ref=$(DEEPLEARNING_MAC_IMAGE):buildcache,mode=max \
-		--load -t $(DEEPLEARNING_MAC_IMAGE):$(VERSION) -t $(DEEPLEARNING_MAC_IMAGE):latest ./deeplearning-mac
+		--load -t $(DEEPLEARNING_MAC_IMAGE):$(VERSION) -t $(DEEPLEARNING_MAC_IMAGE):latest ./deeplearning/mac
 
 build-deeplearning: build-deeplearning-nvidia build-deeplearning-cpu build-deeplearning-mac
 
 # llms
 build-llms-nvidia:
 	DOCKER_BUILDKIT=1 docker build --network=host --build-arg IMAGE_VERSION=$(VERSION) --shm-size=16g \
-		-t $(LLMS_NVIDIA_IMAGE):$(VERSION) -t $(LLMS_NVIDIA_IMAGE):latest ./llms-nvidia
+		-t $(LLMS_NVIDIA_IMAGE):$(VERSION) -t $(LLMS_NVIDIA_IMAGE):latest ./llms/nvidia
 
 build-llms-cpu:
 	DOCKER_BUILDKIT=1 docker build --network=host --build-arg IMAGE_VERSION=$(VERSION) \
-		-t $(LLMS_CPU_IMAGE):$(VERSION) -t $(LLMS_CPU_IMAGE):latest ./llms-cpu
+		-t $(LLMS_CPU_IMAGE):$(VERSION) -t $(LLMS_CPU_IMAGE):latest ./llms/cpu
 
 build-llms-mac: buildx-builder
 	DOCKER_BUILDKIT=1 docker buildx build --builder $(BUILDX_BUILDER) --platform linux/arm64 --network=host --build-arg IMAGE_VERSION=$(VERSION) \
 		--cache-from type=registry,ref=$(LLMS_MAC_IMAGE):buildcache \
 		--cache-from type=registry,ref=$(LLMS_MAC_IMAGE):latest \
 		--cache-to type=registry,ref=$(LLMS_MAC_IMAGE):buildcache,mode=max \
-		--load -t $(LLMS_MAC_IMAGE):$(VERSION) -t $(LLMS_MAC_IMAGE):latest ./llms-mac
+		--load -t $(LLMS_MAC_IMAGE):$(VERSION) -t $(LLMS_MAC_IMAGE):latest ./llms/mac
 
 build-llms: build-llms-nvidia build-llms-cpu build-llms-mac
 
 # datascience
 build-datascience-nvidia:
 	DOCKER_BUILDKIT=1 docker build --network=host --build-arg IMAGE_VERSION=$(VERSION) \
-		-t $(DATASCIENCE_NVIDIA_IMAGE):$(VERSION) -t $(DATASCIENCE_NVIDIA_IMAGE):latest ./datascience-nvidia
+		-t $(DATASCIENCE_NVIDIA_IMAGE):$(VERSION) -t $(DATASCIENCE_NVIDIA_IMAGE):latest ./datascience/nvidia
 
 build-datascience-cpu:
 	DOCKER_BUILDKIT=1 docker build --network=host --build-arg IMAGE_VERSION=$(VERSION) \
-		-t $(DATASCIENCE_CPU_IMAGE):$(VERSION) -t $(DATASCIENCE_CPU_IMAGE):latest ./datascience-cpu
+		-t $(DATASCIENCE_CPU_IMAGE):$(VERSION) -t $(DATASCIENCE_CPU_IMAGE):latest ./datascience/cpu
 
 build-datascience-mac: buildx-builder
 	DOCKER_BUILDKIT=1 docker buildx build --builder $(BUILDX_BUILDER) --platform linux/arm64 --network=host --build-arg IMAGE_VERSION=$(VERSION) \
 		--cache-from type=registry,ref=$(DATASCIENCE_MAC_IMAGE):buildcache \
 		--cache-from type=registry,ref=$(DATASCIENCE_MAC_IMAGE):latest \
 		--cache-to type=registry,ref=$(DATASCIENCE_MAC_IMAGE):buildcache,mode=max \
-		--load -t $(DATASCIENCE_MAC_IMAGE):$(VERSION) -t $(DATASCIENCE_MAC_IMAGE):latest ./datascience-mac
+		--load -t $(DATASCIENCE_MAC_IMAGE):$(VERSION) -t $(DATASCIENCE_MAC_IMAGE):latest ./datascience/mac
 
 build-datascience: build-datascience-nvidia build-datascience-cpu build-datascience-mac
 
 # kaggle
 build-kaggle-nvidia:
 	DOCKER_BUILDKIT=1 docker build --network=host --build-arg IMAGE_VERSION=$(VERSION) --build-arg CACHE_BUST=$(CACHE_BUST) \
-		-t $(KAGGLE_NVIDIA_IMAGE):$(VERSION) -t $(KAGGLE_NVIDIA_IMAGE):latest ./kaggle-nvidia
+		-t $(KAGGLE_NVIDIA_IMAGE):$(VERSION) -t $(KAGGLE_NVIDIA_IMAGE):latest ./kaggle/nvidia
 
 build-kaggle-cpu:
 	DOCKER_BUILDKIT=1 docker build --network=host --build-arg IMAGE_VERSION=$(VERSION) \
-		-t $(KAGGLE_CPU_IMAGE):$(VERSION) -t $(KAGGLE_CPU_IMAGE):latest ./kaggle-cpu
+		-t $(KAGGLE_CPU_IMAGE):$(VERSION) -t $(KAGGLE_CPU_IMAGE):latest ./kaggle/cpu
 
 build-kaggle-mac: buildx-builder
 	DOCKER_BUILDKIT=1 docker buildx build --builder $(BUILDX_BUILDER) --platform linux/arm64 --network=host --build-arg IMAGE_VERSION=$(VERSION) \
 		--cache-from type=registry,ref=$(KAGGLE_MAC_IMAGE):buildcache \
 		--cache-from type=registry,ref=$(KAGGLE_MAC_IMAGE):latest \
 		--cache-to type=registry,ref=$(KAGGLE_MAC_IMAGE):buildcache,mode=max \
-		--load -t $(KAGGLE_MAC_IMAGE):$(VERSION) -t $(KAGGLE_MAC_IMAGE):latest ./kaggle-mac
+		--load -t $(KAGGLE_MAC_IMAGE):$(VERSION) -t $(KAGGLE_MAC_IMAGE):latest ./kaggle/mac
 
 build-kaggle: build-kaggle-nvidia build-kaggle-cpu build-kaggle-mac
 
@@ -331,8 +331,8 @@ wheel-deeplearning-nvidia:
 		--build-arg MAX_JOBS=$(MAX_JOBS) \
 		--shm-size=16g \
 		-t pytorch-builder-deeplearning-nvidia:$(PYTORCH_VERSION) \
-		-f ./deeplearning-nvidia/Dockerfile.build-pytorch \
-		./deeplearning-nvidia
+		-f ./deeplearning/nvidia/Dockerfile.build-pytorch \
+		./deeplearning/nvidia
 
 extract-wheel-deeplearning-nvidia:
 	@echo "Extracting wheel from pytorch-builder-deeplearning-nvidia..."
@@ -357,8 +357,8 @@ wheel-datascience-nvidia:
 		--shm-size=16g \
 		--build-arg CUPY_VERSION=$(CUPY_VERSION) \
 		-t cupy-builder-datascience-nvidia:$(CUPY_VERSION) \
-		-f ./datascience-nvidia/Dockerfile.build-cupy \
-		./datascience-nvidia
+		-f ./datascience/nvidia/Dockerfile.build-cupy \
+		./datascience/nvidia
 
 extract-wheel-datascience-nvidia:
 	@echo "Extracting wheel from cupy-builder-datascience-nvidia..."

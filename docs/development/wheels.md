@@ -91,5 +91,5 @@ gh release create cupy-13.6.0-cu128-cp312 \
   --title "CuPy 13.6.0 CUDA 12.8 (Pascal-Blackwell)" \
   --notes "Custom CuPy wheel with sm_60-sm_100 support"
 
-# 4. Update WHEEL_URL in datascience-nvidia/Dockerfile, then rebuild via CI
+# 4. Update WHEEL_URL in datascience/nvidia/Dockerfile, then rebuild via CI
 ```

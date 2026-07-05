@@ -1,4 +1,4 @@
-# Design Rationale
+# Design rationale
 
 ## datascience / deeplearning / llms
 

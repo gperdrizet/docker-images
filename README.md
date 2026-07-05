@@ -108,7 +108,7 @@ For full documentation (usage guide, development reference, and per-image specif
 - NVIDIA GPU images: Docker + NVIDIA Container Toolkit + host driver >= 570.x
 - Mac images: Docker Desktop for Apple Silicon
 
-**With VS Code (recommended):** start the container, then open the Command Palette (`Ctrl+Shift+P`) and run **Dev Containers: Attach to Running Container**. The `vscode` user is pre-configured with sudo access and a standard project layout. See the [devcontainer repos](#docker-images) above for a one-click setup that handles all of this automatically.
+**With VS Code (recommended):** Use one of the devcontainer repositories as a template to start a new project on GitHub, clone it, and then open the clone directory using VS Codes's Command Palette (`Ctrl+Shift+P`) and run **Dev Containers: Open Folder in Container**. The devcontainer configuration environment set-up and contains a standard project layout.
 
 **Standalone with JupyterLab:** expose port 8888 and launch the server:
 

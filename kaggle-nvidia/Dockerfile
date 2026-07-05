@@ -64,6 +64,7 @@ RUN chmod +x /usr/local/bin/motd.sh && \
 # installs our custom wheel and satisfies the torch dep for all other packages without
 # ever touching PyPI for torch. No nvidia-*-cu12 pip packages are pulled in for torch;
 # the RAPIDS stack (cudf/cuml/cupy) comes from pypi.nvidia.com.
+ARG CACHE_BUST=1
 COPY requirements.txt requirements.txt
 RUN pip install --no-cache-dir --break-system-packages --root-user-action=ignore -r requirements.txt
 

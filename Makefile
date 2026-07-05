@@ -41,6 +41,7 @@ DOCKERHUB_TOKEN ?=
 # gRPC graceful_stop errors. The persistent builder also keeps a local BuildKit
 # layer cache between runs. Create once with: make buildx-builder
 BUILDX_BUILDER ?= mybuilder
+CACHE_BUST     ?= 1
 
 # Image names
 DEEPLEARNING_NVIDIA_IMAGE := gperdrizet/deeplearning-nvidia
@@ -130,7 +131,7 @@ build-datascience: build-datascience-nvidia build-datascience-cpu build-datascie
 
 # kaggle
 build-kaggle-nvidia:
-	DOCKER_BUILDKIT=1 docker build --network=host --build-arg IMAGE_VERSION=$(VERSION) \
+	DOCKER_BUILDKIT=1 docker build --network=host --build-arg IMAGE_VERSION=$(VERSION) --build-arg CACHE_BUST=$(CACHE_BUST) \
 		-t $(KAGGLE_NVIDIA_IMAGE):$(VERSION) -t $(KAGGLE_NVIDIA_IMAGE):latest ./kaggle-nvidia
 
 build-kaggle-cpu:

@@ -19,7 +19,7 @@ echo "==> Testing $IMAGE"
 check "ARM64 architecture"   uname -m
 check "Python 3.12"          python3 -c "import sys; assert sys.version_info[:2] == (3, 12), sys.version"
 
-# Exact version asserts — matching Kaggle's environment is the point of this image
+# Exact version asserts; matching Kaggle's environment is the point of this image
 check "numpy 2.0.2"          python3 -c "import numpy; assert numpy.__version__ == '2.0.2', numpy.__version__"
 check "pandas 2.3.3"         python3 -c "import pandas; assert pandas.__version__ == '2.3.3', pandas.__version__"
 check "sklearn 1.6.1"        python3 -c "import sklearn; assert sklearn.__version__ == '1.6.1', sklearn.__version__"

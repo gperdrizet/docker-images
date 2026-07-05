@@ -1,6 +1,6 @@
-# Building Custom Wheels
+# Building custom wheels
 
-The NVIDIA images use custom-built wheels for wide GPU architecture support (Pascal through Blackwell, sm_60–sm_100). Pre-built wheels are hosted on GitHub Releases and downloaded during image build — wheel builds are infrequent and manual.
+The NVIDIA images use custom-built wheels for wide GPU architecture support (Pascal through Blackwell, sm_60-sm_100). Pre-built wheels are hosted on GitHub Releases and downloaded during image build; wheel builds are infrequent and manual.
 
 ## When to rebuild
 

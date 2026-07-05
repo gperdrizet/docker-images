@@ -1,6 +1,6 @@
 # Deep learning Mac (ARM64) development environment
 
-A ready-to-use deep learning environment for Apple Silicon Macs (M1/M2/M3). Includes both **PyTorch** and **TensorFlow** frameworks. Built as a native `linux/arm64` image — runs in Docker Desktop without Rosetta emulation.
+A ready-to-use deep learning environment for Apple Silicon Macs (M1/M2/M3). Includes both **PyTorch** and **TensorFlow** frameworks. Built as a native `linux/arm64` image; it runs in Docker Desktop without Rosetta emulation.
 
 > **Note:** GPU acceleration is not available inside Docker containers on Apple Silicon: Metal/MPS is a macOS-only framework with no Docker passthrough. This image provides native ARM64 CPU performance only.
 
@@ -9,7 +9,7 @@ A ready-to-use deep learning environment for Apple Silicon Macs (M1/M2/M3). Incl
 ## 1. Features
 
 - **Dual framework support:** Both TensorFlow 2.17 and PyTorch (CPU) pre-installed
-- **Native ARM64:** No Rosetta emulation — runs at native speed on Apple Silicon
+- **Native ARM64:** no Rosetta emulation, runs at native speed on Apple Silicon
 - **VS Code Dev Container ready:** Pre-configured `vscode` user for seamless devcontainer integration
 
 ## 2. Included software

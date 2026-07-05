@@ -14,7 +14,7 @@ PyTorch is added via a custom-built wheel with wide GPU architecture support (se
 | Python | 3.12 |
 | CUDA | 12.8 |
 | PyTorch | 2.11.0 (custom wheel) |
-| GPU support | Pascal–Blackwell (sm_60–sm_100) |
+| GPU support | Pascal-Blackwell (sm_60-sm_100) |
 
 **LLM frameworks:** langchain, llama-index, transformers, smolagents
 

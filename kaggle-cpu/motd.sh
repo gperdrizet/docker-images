@@ -9,7 +9,7 @@ cat <<'MOTD'
  |_|\_\/_/ \_\___|\___|____|___|
 MOTD
 echo ""
-echo "  Kaggle notebook environment mirror — CPU only (x86_64)"
+echo "  Kaggle notebook environment mirror, CPU only (x86_64)"
 echo "───────────────────────────────────────────────────────────"
 echo ""
 echo "  Image:        kaggle-cpu:$(cat /etc/image-version 2>/dev/null || echo 'unknown')"

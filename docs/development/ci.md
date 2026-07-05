@@ -1,4 +1,4 @@
-# CI/CD Infrastructure
+# CI/CD infrastructure
 
 ## GitHub Actions secrets
 

@@ -1,4 +1,4 @@
-# Makefile Reference
+# Makefile reference
 
 These targets are useful for local development and testing. The CI/CD pipeline calls the same targets during a release.
 

@@ -6,4 +6,4 @@
 
 ## kaggle
 
-Package versions are pinned to match a Kaggle notebook pip freeze so local code behaves identically when submitted. The NVIDIA variant ships RAPIDS (cuDF/cuML/CuPy) and a custom PyTorch 2.10.0 wheel with Pascal support — Kaggle's own stock cu128 wheel has no Pascal kernels, so `torch` on Kaggle's P100s silently fails. Same version, but it actually works.
+Package versions are pinned to match a Kaggle notebook pip freeze so local code behaves identically when submitted. The NVIDIA variant ships RAPIDS (cuDF/cuML/CuPy) and a custom PyTorch 2.10.0 wheel with Pascal support; Kaggle's own stock cu128 wheel has no Pascal kernels, so `torch` on Kaggle's P100s silently fails. Same version, but it actually works.

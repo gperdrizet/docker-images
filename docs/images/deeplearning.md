@@ -17,7 +17,7 @@ Based on NVIDIA's NGC TensorFlow container, which provides a validated CUDA + cu
 | PyTorch | 2.11.0 (custom wheel) |
 | CuPy | 13.6.0 (custom wheel) |
 | Keras | 3.x |
-| GPU support | Pascal–Blackwell (sm_60–sm_100) |
+| GPU support | Pascal-Blackwell (sm_60-sm_100) |
 
 **Other packages:** numpy, pandas, scikit-learn, scipy, matplotlib, seaborn, plotly, jupyterlab, keras_tuner, optuna, tensorboard, python-dotenv
 

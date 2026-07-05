@@ -10,7 +10,7 @@
 
 ## Devcontainer repositories
 
-The recommended way to use these images. Each devcontainer repo wraps an image with VS Code configuration, a standard project layout, common extensions, and an environment verification notebook. To start: click **Use this template** on the repo, clone it, then open it in VS Code — the container starts automatically.
+The recommended way to use these images. Each devcontainer repo wraps an image with VS Code configuration, a standard project layout, common extensions, and an environment verification notebook. To start: click **Use this template** on the repo, clone it, then open it in VS Code; the container starts automatically.
 
 | Repo | Use case |
 |------|----------|

@@ -11,7 +11,7 @@ Lightweight data science environment for intro Python and ML courses. Three vari
 | Base image | `nvidia/cuda:12.8.1-runtime-ubuntu24.04` |
 | Python | 3.12 |
 | CUDA | 12.8 |
-| GPU support | Pascal–Blackwell (sm_60–sm_100) |
+| GPU support | Pascal-Blackwell (sm_60-sm_100) |
 
 **Packages:** numpy, pandas, scipy, scikit-learn, xgboost, statsmodels, matplotlib, seaborn, plotly, jupyterlab, optuna, python-dotenv, cupy 13.6.0 (custom wheel)
 

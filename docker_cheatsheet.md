@@ -133,7 +133,7 @@ COPY --from=builder /src/build/myapp /usr/local/bin/
 
 | Approach | Image contains | Typical savings |
 |----------|----------------|-----------------|
-| Single-stage | Source + build tools + artifacts | — |
+| Single-stage | Source + build tools + artifacts | N/A |
 | Multi-stage | Only runtime artifacts | 30-60% smaller |
 
 ### 4.4. Building Python wheels

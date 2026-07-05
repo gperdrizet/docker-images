@@ -1,6 +1,6 @@
 # LLM development Mac (ARM64) environment
 
-A ready-to-use LLM application development environment for Apple Silicon Macs (M1/M2/M3). Includes **LangChain**, **LlamaIndex**, **Hugging Face Transformers**, and API clients for OpenAI and Anthropic. Built as a native `linux/arm64` image — runs in Docker Desktop without Rosetta emulation.
+A ready-to-use LLM application development environment for Apple Silicon Macs (M1/M2/M3). Includes **LangChain**, **LlamaIndex**, **Hugging Face Transformers**, and API clients for OpenAI and Anthropic. Built as a native `linux/arm64` image; it runs in Docker Desktop without Rosetta emulation.
 
 > **Note:** GPU acceleration is not available inside Docker containers on Apple Silicon: Metal/MPS is a macOS-only framework with no Docker passthrough. This image provides native ARM64 CPU performance only.
 
@@ -12,7 +12,7 @@ A ready-to-use LLM application development environment for Apple Silicon Macs (M
 - **API clients:** OpenAI and Anthropic SDKs with LangChain integrations
 - **Vector store:** ChromaDB for embeddings and retrieval
 - **Web UI:** Gradio for building interactive demos
-- **Native ARM64:** No Rosetta emulation — runs at native speed on Apple Silicon
+- **Native ARM64:** no Rosetta emulation, runs at native speed on Apple Silicon
 - **VS Code Dev Container ready:** Pre-configured `vscode` user for seamless devcontainer integration
 
 ## 2. Included software

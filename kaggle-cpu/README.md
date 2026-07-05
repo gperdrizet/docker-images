@@ -4,7 +4,7 @@ Development environment mirroring the Kaggle notebook submission environment as 
 
 ## 1. Features
 
-- Python 3.12 — matches the Kaggle notebook runtime
+- Python 3.12, matches the Kaggle notebook runtime
 - PyTorch 2.10.0 (CPU), TensorFlow 2.20.0, Keras 3.13.2
 - scikit-learn 1.6.1, XGBoost 3.2.0, LightGBM 4.6.0, CatBoost 1.2.10
 - numpy 2.0.2, pandas 2.3.3, polars 1.35.2
@@ -41,7 +41,7 @@ docker run --rm -it \
 ## 4. Notes on environment fidelity
 
 - Versions are pinned from a Kaggle CPU session freeze (2026-07). Kaggle updates its environment periodically; new image releases track those updates.
-- Colab-internal packages (`google-colab`, Kaggle's `learntools`, GCP client libraries) are excluded — they only exist inside Kaggle's managed runtime.
+- Colab-internal packages (`google-colab`, Kaggle's `learntools`, GCP client libraries) are excluded; they only exist inside Kaggle's managed runtime.
 - For GPU work, see `gperdrizet/kaggle-nvidia`.
 
 ## 5. Requirements

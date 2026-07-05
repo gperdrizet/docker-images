@@ -18,7 +18,7 @@ echo "==> Testing $IMAGE"
 
 check "Python 3.12"          python3 -c "import sys; assert sys.version_info[:2] == (3, 12), sys.version"
 
-# Exact version asserts — matching Kaggle's environment is the point of this image
+# Exact version asserts; matching Kaggle's environment is the point of this image
 check "numpy 2.0.2"          python3 -c "import numpy; assert numpy.__version__ == '2.0.2', numpy.__version__"
 check "pandas 2.3.3"         python3 -c "import pandas; assert pandas.__version__ == '2.3.3', pandas.__version__"
 check "sklearn 1.6.1"        python3 -c "import sklearn; assert sklearn.__version__ == '1.6.1', sklearn.__version__"
@@ -27,19 +27,19 @@ check "torch 2.10.0"         python3 -c "import torch; assert torch.__version__.
 check "torch/numpy interop"  python3 -c "import torch, numpy as np; t = torch.from_numpy(np.ones(3)); assert t.numpy().sum() == 3.0"
 check "tensorflow 2.20.0"    python3 -c "import tensorflow; assert tensorflow.__version__ == '2.20.0', tensorflow.__version__"
 
-# GPU checks — custom torch wheel supports sm_60+, so real kernel ops work on the
+# GPU checks: custom torch wheel supports sm_60+, so real kernel ops work on the
 # P100 CI runner (unlike Kaggle's stock wheel).
 check "torch CUDA available" python3 -c "import torch; assert torch.cuda.is_available(), 'CUDA not available'"
 check "torch GPU kernel op"  python3 -c "import torch; x = torch.ones(1000, device='cuda') * 2; assert x.sum().item() == 2000.0"
 
-# RAPIDS — import-only: cudf/cuml/cupy kernels require sm_70+ (Volta or newer),
+# RAPIDS: import-only; cudf/cuml/cupy kernels require sm_70+ (Volta or newer),
 # which the P100 (sm_60) CI runner cannot execute. Same limitation exists on
 # Kaggle's own P100 sessions.
 check "cudf import"          python3 -c "import cudf"
 check "cuml import"          python3 -c "import cuml"
 check "cupy import"          python3 -c "import cupy"
 
-# TensorFlow GPU — soft check (device visibility only). Stock TF 2.20 Pascal
+# TensorFlow GPU: soft check (device visibility only). Stock TF 2.20 Pascal
 # support is unverified; do not require kernel execution.
 check "tensorflow GPU visible" python3 -c "import tensorflow as tf; assert len(tf.config.list_physical_devices('GPU')) > 0"
 

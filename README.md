@@ -1,6 +1,9 @@
 # Docker Images
 
-[![CI](https://github.com/gperdrizet/docker-images/actions/workflows/ci.yml/badge.svg)](https://github.com/gperdrizet/docker-images/actions/workflows/ci.yml)
+[![Build and test](https://github.com/gperdrizet/docker-images/actions/workflows/ci.yml/badge.svg)](https://github.com/gperdrizet/docker-images/actions/workflows/ci.yml)
+[![Docs](https://github.com/gperdrizet/docker-images/actions/workflows/docs.yml/badge.svg)](https://gperdrizet.github.io/docker-images/)
+[![Documentation](https://img.shields.io/badge/Documentation-GitHub%20Pages-0A66C2?logo=github&logoColor=white)](https://gperdrizet.github.io/docker-images/)
+[![DockerHub](https://img.shields.io/badge/DockerHub-gperdrizet-2496ED?logo=docker&logoColor=white)](https://hub.docker.com/u/gperdrizet)
 
 [![Python](https://img.shields.io/badge/Python-3.12-3776AB?logo=python&logoColor=white)](https://www.python.org/)
 [![CUDA](https://img.shields.io/badge/CUDA-12.8-76B900?logo=nvidia&logoColor=white)](https://developer.nvidia.com/cuda-toolkit)
@@ -99,9 +102,9 @@ Twelve containerized AI/ML environments in four families (**datascience**, **dee
 
 ## Documentation
 
-Full documentation (usage guide, development reference, and per-image specifications) is at:
+For full documentation (usage guide, development reference, and per-image specifications) see:
 
-**[https://gperdrizet.github.io/docker-images/](https://gperdrizet.github.io/docker-images)**
+**[Docker images documentation](https://gperdrizet.github.io/docker-images)**
 
 ## License
 

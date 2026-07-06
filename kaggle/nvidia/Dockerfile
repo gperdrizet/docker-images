@@ -74,6 +74,7 @@ RUN echo "${IMAGE_VERSION}" > /etc/image-version
 
 # Validate GPU stack imports at build time
 RUN python3 -c "import torch; print('torch', torch.__version__, 'OK')"
+RUN python3 -c "import torch, numpy as np; t = torch.from_numpy(np.ones(3)); assert float(t.numpy().sum()) == 3.0; print('torch/numpy interop OK')"
 RUN python3 -c "import cupy; print('cupy', cupy.__version__, 'OK')"
 
 EXPOSE 8888

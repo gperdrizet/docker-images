@@ -41,7 +41,7 @@ DOCKERHUB_TOKEN ?=
 # gRPC graceful_stop errors. The persistent builder also keeps a local BuildKit
 # layer cache between runs. Create once with: make buildx-builder
 BUILDX_BUILDER ?= mybuilder
-CACHE_BUST     ?= 1
+CACHE_BUST     ?= $(shell date +%s)
 
 # Image names
 DEEPLEARNING_NVIDIA_IMAGE := gperdrizet/deeplearning-nvidia
@@ -318,16 +318,21 @@ update-readme-all: \
 PYTORCH_VERSION ?= 2.11.0
 CUDA_ARCH_LIST  ?= 6.0;6.1;7.0;7.5;8.0;8.6;8.9;9.0;10.0
 MAX_JOBS        ?= 16
+WHEEL_CACHE_BUST ?= $(shell date +%s)
 
 # deeplearning-nvidia only — llms-nvidia uses the same wheel.
 # Build takes 3-4 hours. Upload resulting wheel to GitHub Releases after building.
 wheel-deeplearning-nvidia:
 	@echo "Building PyTorch wheel for deeplearning-nvidia (Python 3.12, CUDA 12.8)..."
 	@echo "This will take 3-4 hours. Grab some coffee."
+	@echo "Forcing fresh rebuild (no cache) to avoid stale wheel artifacts."
 	DOCKER_BUILDKIT=1 docker build \
+		--no-cache \
+		--pull \
 		--network=host \
 		--build-arg PYTORCH_VERSION=$(PYTORCH_VERSION) \
 		--build-arg CUDA_ARCH_LIST="$(CUDA_ARCH_LIST)" \
+		--build-arg CACHE_BUST=$(WHEEL_CACHE_BUST) \
 		--build-arg MAX_JOBS=$(MAX_JOBS) \
 		--shm-size=16g \
 		-t pytorch-builder-deeplearning-nvidia:$(PYTORCH_VERSION) \

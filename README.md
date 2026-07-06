@@ -196,6 +196,3 @@ Mirror of the Kaggle notebook submission environment. Package versions are pinne
 ## License
 
 The Dockerfiles, scripts, and documentation in this repository are licensed under the [MIT License](LICENSE). Built images incorporate third-party base images with their own upstream licenses.
-
-
-

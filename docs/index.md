@@ -1,13 +1,8 @@
 # Docker Images
 
 [![Build and test](https://github.com/gperdrizet/docker-images/actions/workflows/ci.yml/badge.svg)](https://github.com/gperdrizet/docker-images/actions/workflows/ci.yml)
-[![Docs](https://github.com/gperdrizet/docker-images/actions/workflows/docs.yml/badge.svg)](https://gperdrizet.github.io/docker-images/)
-[![Python](https://img.shields.io/badge/Python-3.12-3776AB?logo=python&logoColor=white)](https://www.python.org/)
-[![CUDA](https://img.shields.io/badge/CUDA-12.8-76B900?logo=nvidia&logoColor=white)](https://developer.nvidia.com/cuda-toolkit)
-[![PyTorch](https://img.shields.io/badge/PyTorch-2.11.0-EE4C2C?logo=pytorch&logoColor=white)](https://pytorch.org/)
-[![TensorFlow](https://img.shields.io/badge/TensorFlow-2.17-FF6F00?logo=tensorflow&logoColor=white)](https://www.tensorflow.org/)
-[![RAPIDS](https://img.shields.io/badge/RAPIDS-26.2-7400FF?logo=nvidia&logoColor=white)](https://rapids.ai/)
-[![LangChain](https://img.shields.io/badge/LangChain-latest-1C3C3C)](https://python.langchain.com/)
+[![Docs](https://github.com/gperdrizet/docker-images/actions/workflows/docs.yml/badge.svg)](https://gperdrizet.github.io/docker-images)
+
 
 Twelve containerized AI/ML environments in four families (**datascience**, **deeplearning**, **llms**, and **kaggle**), each available for NVIDIA GPU, CPU, and Apple Silicon. Used via the devcontainer repos below, which add VS Code configuration and project scaffolding so setup is a single `git clone`.
 
@@ -92,12 +87,14 @@ Twelve containerized AI/ML environments in four families (**datascience**, **dee
   </tbody>
 </table>
 
+
 ## Goals
 
 1. **Eliminate setup friction**: clone a devcontainer repo, open in VS Code, done. No manual environment configuration.
 2. **Wide hardware support**: GPU images cover Pascal through Blackwell; CPU fallbacks for machines without a GPU; native `linux/arm64` for Apple Silicon.
 3. **Low barrier to entry**: any machine works. A 16GB P100 can be had on eBay for ~$90, enough to train deep learning models and host LLMs without cloud compute or proprietary APIs.
 4. **Standardized environments**: the same software stack across all platforms, reducing troubleshooting burden and making community support easier.
+
 
 ## Usage
 
@@ -124,9 +121,10 @@ docker run --rm -it --gpus all -p 8888:8888 -v $(pwd):/workspace \
 
 Replace the image name with whichever family and variant you need. The `-v $(pwd):/workspace` flag mounts your current directory into the container so files persist after the container stops.
 
+
 ## Image families
 
-**`datascience`**
+### `datascience`
 
 [![Python](https://img.shields.io/badge/Python-3.12-3776AB?logo=python&logoColor=white)](https://www.python.org/)
 [![CUDA](https://img.shields.io/badge/CUDA-12.8-76B900?logo=nvidia&logoColor=white)](https://developer.nvidia.com/cuda-toolkit)
@@ -143,7 +141,10 @@ Replace the image name with whichever family and variant you need. The `-v $(pwd
 
 Lightweight intro ML environment. Covers Python, data wrangling, visualization, and classical machine learning. No deep learning frameworks; keeps the image small and fast. The NVIDIA variant adds GPU-accelerated arrays via CuPy.
 
-**`deeplearning`**
+---
+
+
+### `deeplearning`
 
 [![Python](https://img.shields.io/badge/Python-3.12-3776AB?logo=python&logoColor=white)](https://www.python.org/)
 [![CUDA](https://img.shields.io/badge/CUDA-12.8-76B900?logo=nvidia&logoColor=white)](https://developer.nvidia.com/cuda-toolkit)
@@ -156,9 +157,13 @@ Lightweight intro ML environment. Covers Python, data wrangling, visualization, 
 [![scikit-learn](https://img.shields.io/badge/scikit--learn-latest-F7931E?logo=scikitlearn&logoColor=white)](https://scikit-learn.org/)
 [![Optuna](https://img.shields.io/badge/Optuna-latest-3EA7DC)](https://optuna.org/)
 
+
 Full deep learning stack with both TensorFlow 2.17 and PyTorch 2.11.0 pre-installed and GPU-ready. Built on NVIDIA's official NGC TensorFlow container, with PyTorch and CuPy added via custom-built wheels for wide GPU architecture support (Pascal through Blackwell).
 
-**`llms`**
+---
+
+
+### `llms`
 
 [![Python](https://img.shields.io/badge/Python-3.12-3776AB?logo=python&logoColor=white)](https://www.python.org/)
 [![CUDA](https://img.shields.io/badge/CUDA-12.8-76B900?logo=nvidia&logoColor=white)](https://developer.nvidia.com/cuda-toolkit)
@@ -171,7 +176,10 @@ Full deep learning stack with both TensorFlow 2.17 and PyTorch 2.11.0 pre-instal
 
 LLM application development. Includes LangChain, LlamaIndex, Hugging Face Transformers, ChromaDB, and API clients for OpenAI, Anthropic, and Ollama. PyTorch is included via a custom-built wheel with wide GPU support. Designed for building and running LLM-powered applications locally.
 
-**`kaggle`**
+---
+
+
+### `kaggle`
 
 [![Python](https://img.shields.io/badge/Python-3.12-3776AB?logo=python&logoColor=white)](https://www.python.org/)
 [![CUDA](https://img.shields.io/badge/CUDA-12.8-76B900?logo=nvidia&logoColor=white)](https://developer.nvidia.com/cuda-toolkit)
@@ -191,7 +199,9 @@ LLM application development. Includes LangChain, LlamaIndex, Hugging Face Transf
 
 Mirror of the Kaggle notebook submission environment. Package versions are pinned to match a Kaggle notebook pip freeze so code runs identically when submitted to competitions. The NVIDIA variant also includes the RAPIDS stack (cuDF, cuML, CuPy) and a custom PyTorch wheel with Pascal support, fixing a defect in Kaggle's own stock wheel.
 
+---
+
+
 ## License
 
 The Dockerfiles, scripts, and documentation in this repository are licensed under the [MIT License](LICENSE). Built images incorporate third-party base images with their own upstream licenses.
-

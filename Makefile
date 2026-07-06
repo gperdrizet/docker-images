@@ -19,8 +19,8 @@
         update-readme-datascience-nvidia update-readme-datascience-cpu update-readme-datascience-mac \
         update-readme-kaggle-nvidia update-readme-kaggle-cpu update-readme-kaggle-mac \
         update-readme-all \
-        wheel-deeplearning-nvidia \
-        extract-wheel-deeplearning-nvidia \
+		build-pytorch-wheel \
+		extract-pytorch-wheel \
 		wheel-datascience-nvidia \
 		extract-wheel-datascience-nvidia \
 		buildx-builder base-digests
@@ -320,10 +320,11 @@ CUDA_ARCH_LIST  ?= 6.0;6.1;7.0;7.5;8.0;8.6;8.9;9.0;10.0
 MAX_JOBS        ?= 16
 WHEEL_CACHE_BUST ?= $(shell date +%s)
 
-# deeplearning-nvidia only — llms-nvidia uses the same wheel.
-# Build takes 3-4 hours. Upload resulting wheel to GitHub Releases after building.
-wheel-deeplearning-nvidia:
-	@echo "Building PyTorch wheel for deeplearning-nvidia (Python 3.12, CUDA 12.8)..."
+# Shared PyTorch wheel builder used by deeplearning-nvidia, llms-nvidia, and
+# kaggle-nvidia. Build takes 3-4 hours. Upload resulting wheel to GitHub
+# Releases after building.
+build-pytorch-wheel:
+	@echo "Building shared PyTorch wheel (Python 3.12, CUDA 12.8)..."
 	@echo "This will take 3-4 hours. Grab some coffee."
 	@echo "Forcing fresh rebuild (no cache) to avoid stale wheel artifacts."
 	DOCKER_BUILDKIT=1 docker build \
@@ -339,7 +340,7 @@ wheel-deeplearning-nvidia:
 		-f ./deeplearning/nvidia/Dockerfile.build-pytorch \
 		./deeplearning/nvidia
 
-extract-wheel-deeplearning-nvidia:
+extract-pytorch-wheel:
 	@echo "Extracting wheel from pytorch-builder-deeplearning-nvidia..."
 	@mkdir -p ./wheels
 	docker create --name wheel-extract-dl pytorch-builder-deeplearning-nvidia:$(PYTORCH_VERSION)

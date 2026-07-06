@@ -24,25 +24,25 @@ Used by `deeplearning-nvidia`, `llms-nvidia`, and `kaggle-nvidia`.
 
 | Command | Description |
 |---------|-------------|
-| `make wheel-deeplearning-nvidia` | Build PyTorch wheel (Python 3.12, CUDA 12.8) |
-| `make extract-wheel-deeplearning-nvidia` | Extract wheel from builder container to `./wheels/` |
+| `make build-pytorch-wheel` | Build shared PyTorch wheel (Python 3.12, CUDA 12.8) |
+| `make extract-pytorch-wheel` | Extract wheel from builder container to `./wheels/` |
 
 Override defaults via environment variables:
 
 ```bash
-make wheel-deeplearning-nvidia PYTORCH_VERSION=2.12.0
-make wheel-deeplearning-nvidia MAX_JOBS=8
-make wheel-deeplearning-nvidia CUDA_ARCH_LIST="7.0;7.5;8.0;8.6"
+make build-pytorch-wheel PYTORCH_VERSION=2.12.0
+make build-pytorch-wheel MAX_JOBS=8
+make build-pytorch-wheel CUDA_ARCH_LIST="7.0;7.5;8.0;8.6"
 ```
 
 ### Full workflow
 
 ```bash
 # 1. Build (~3-4 hours)
-make wheel-deeplearning-nvidia
+make build-pytorch-wheel
 
 # 2. Extract to ./wheels/
-make extract-wheel-deeplearning-nvidia
+make extract-pytorch-wheel
 
 # 3. Upload to GitHub Releases
 gh release create pytorch-2.11.0-cu128-cp312 \

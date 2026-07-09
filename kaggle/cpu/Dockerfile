@@ -12,7 +12,8 @@ LABEL org.opencontainers.image.source="https://github.com/gperdrizet/docker-imag
 ARG IMAGE_VERSION=dev
 ENV DEBIAN_FRONTEND=noninteractive
 
-RUN apt-get update && \
+RUN chmod 1777 /tmp && \
+    apt-get update && \
     apt-get install -y --no-install-recommends \
         screen \
         procps \
@@ -24,8 +25,8 @@ RUN apt-get update && \
         git \
         libgomp1 && \
     mkdir -p /run/screen && chmod 777 /run/screen && \
-    userdel $(getent passwd 1000 | cut -d: -f1) 2>/dev/null || true && \
-    groupdel $(getent group 1000 | cut -d: -f1) 2>/dev/null || true && \
+    (userdel $(getent passwd 1000 | cut -d: -f1) 2>/dev/null || true) && \
+    (groupdel $(getent group 1000 | cut -d: -f1) 2>/dev/null || true) && \
     groupadd --gid 1000 vscode && \
     useradd --uid 1000 --gid 1000 --shell /bin/bash --create-home vscode && \
     echo "vscode ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers.d/vscode && \

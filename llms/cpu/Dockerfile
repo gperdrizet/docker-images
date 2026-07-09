@@ -8,7 +8,8 @@ LABEL org.opencontainers.image.source="https://github.com/gperdrizet/docker-imag
 ARG IMAGE_VERSION=dev
 
 # Install system packages in a single layer
-RUN apt-get update && \
+RUN chmod 1777 /tmp && \
+    apt-get update && \
     apt-get install -y --no-install-recommends \
         screen \
         sudo \
@@ -21,6 +22,9 @@ RUN apt-get update && \
         zstd && \
     # Create screen run directory with proper permissions
     mkdir -p /run/screen && chmod 777 /run/screen && \
+    # Remove any pre-existing uid/gid 1000 account before recreating vscode user
+    (userdel $(getent passwd 1000 | cut -d: -f1) 2>/dev/null || true) && \
+    (groupdel $(getent group 1000 | cut -d: -f1) 2>/dev/null || true) && \
     # Create vscode group and user for devcontainer
     groupadd --gid 1000 vscode && \
     useradd --uid 1000 --gid 1000 --shell /bin/bash --create-home vscode && \

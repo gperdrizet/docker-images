@@ -26,6 +26,7 @@ RUN apt-get update && \
     useradd --uid 1000 --gid 1000 --shell /bin/bash --create-home vscode && \
     echo "vscode ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers.d/vscode && \
     chmod 0440 /etc/sudoers.d/vscode && \
+    mkdir -p /home/vscode && chown -R vscode:vscode /home/vscode && \
     # Add .local/bin to vscode user's PATH
     echo 'export PATH="/home/vscode/.local/bin:$PATH"' >> /home/vscode/.bashrc && \
     # Set Hugging Face cache directory

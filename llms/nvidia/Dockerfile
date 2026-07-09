@@ -19,6 +19,7 @@ RUN if [ -f /etc/apt/trusted.gpg ]; then \
         cp /etc/apt/trusted.gpg /etc/apt/trusted.gpg.d/cuda-keyring.gpg && \
         rm -f /etc/apt/trusted.gpg; \
     fi && \
+    chmod 1777 /tmp && \
     apt-get update && \
     apt-get install -y --no-install-recommends \
         python3.12 \
@@ -39,8 +40,8 @@ RUN if [ -f /etc/apt/trusted.gpg ]; then \
     mkdir -p /run/screen && chmod 777 /run/screen && \
     ln -sf /usr/bin/python3.12 /usr/bin/python && \
     ln -sf /usr/bin/python3.12 /usr/bin/python3 && \
-    userdel $(getent passwd 1000 | cut -d: -f1) 2>/dev/null || true && \
-    groupdel $(getent group 1000 | cut -d: -f1) 2>/dev/null || true && \
+    (userdel $(getent passwd 1000 | cut -d: -f1) 2>/dev/null || true) && \
+    (groupdel $(getent group 1000 | cut -d: -f1) 2>/dev/null || true) && \
     groupadd --gid 1000 vscode && \
     useradd --uid 1000 --gid 1000 --shell /bin/bash --create-home vscode && \
     echo "vscode ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers.d/vscode && \
